@@ -20,21 +20,28 @@ class Vector
 		T & 									reference;
 		T const &								const_reference;
 		typename Allocator::pointer				pointer;
+		//iterator
+		//const_iterator
 		//std::reverse_iterator<iterator> 		reverse_iterator;
 		//std::const_reverse_iterator<const_iterator>	const_reverse_iterator;
 
 		/*
 		** Constructors
 		*/
-		Vector(void){ std::cout << GREEN << "A vector has been created" << RESET << std::endl; }
-		explicit Vector(Allocator const & alloc):
-			allocator_type(alloc){ std::cout << GREEN << "A vector has been created" << RESET << std::endl; }
-		explicit Vector(size_t count, T const & value, Allocator const & alloc = Allocator()):
-			
+		Vector(void)
 		{
 			std::cout << GREEN << "A vector has been created" << RESET << std::endl;
 		}
 		
+		explicit Vector(Allocator const & alloc)
+		{
+			std::cout << GREEN << "A vector has been created" << RESET << std::endl;
+		}
+		explicit Vector(size_t count, T const & value, Allocator const & alloc = Allocator())
+		{
+			std::cout << GREEN << "A vector has been created" << RESET << std::endl;
+		}
+
 		template < typename InputIt>
 		Vector(InputIt first, InputIt last, Allocator const & alloc = Allocator())
 		{
@@ -150,7 +157,6 @@ class Vector
 		/*
 		** End of modifiers
 		*/
-
 };
 
 /*
