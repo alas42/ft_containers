@@ -1,13 +1,10 @@
 NAME = ft_containers
 
-HEADER_FILES = Vector.hpp \
-	Map.hpp \
-	Stack.hpp
+HEADER_FILES = templates/vector.hpp \
+	templates/map.hpp \
+	templates/stack.hpp
 
-SOURCES_FILES =	main.cpp \
-	Vector.cpp \
-	Map.cpp \
-	Stack.cpp
+SOURCES_FILES =	main.cpp
 
 OBJS = $(SOURCES_FILES:.cpp=.o)
 
