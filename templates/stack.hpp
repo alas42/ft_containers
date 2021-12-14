@@ -9,28 +9,32 @@
 # define MAGENTA "\033[35m"
 # define RED "\033[31m"
 
-class Stack
+namespace ft
 {
-	public :
-		/*
-		** Canonical Form
-		*/
-		Stack(void);
-		~Stack(void);
-		Stack(Stack const & other);
-		Stack & operator = (Stack const & other);
+	template < typename T, typename C = ft::vector<T> >
+	class stack
+	{
+		public :
+			/*
+			** Canonical Form
+			*/
+			stack(void);
+			~stack(void);
+			stack(stack const & other);
+			stack & operator = (stack const & other);
 
-		/*
-		** Other constructors
-		*/
-		/*
-		** Misc
-		*/
-		/*
-		** Guetters and setters
-		*/
-	private :
-	
-};
+			/*
+			** Other constructors
+			*/
+			/*
+			** Misc
+			*/
+			/*
+			** Guetters and setters
+			*/
+		private :
+		
+	};
+}
 
 #endif
