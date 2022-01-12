@@ -1,20 +1,27 @@
 NAME = ft_containers
 
-HEADER_FILES = templates/vector.hpp \
-	templates/map.hpp \
-	templates/stack.hpp
+NAME2 = containers
 
-SOURCES_FILES =	vector_main.cpp
+FIRST_HEADER_FILES = templates/vector.hpp
 
-OBJS = $(SOURCES_FILES:.cpp=.o)
+FIRST_SOURCES_FILES =	vector_main.cpp
+
+SCD_SOURCES_FILES = stl_vector_main.cpp
+
+FIRST_OBJS = $(FIRST_SOURCES_FILES:.cpp=.o)
+
+SCD_OBJS = $(SCD_SOURCES_FILES:.cpp=.o)
 
 CPPFLAGS = -Wall -Werror -Wextra 
 CC = clang++ -std=c++98
 
-all: $(NAME)
+all: $(NAME) $(NAME2)
 
-$(NAME): $(OBJS) $(HEADER_FILES)
-	$(CC) $(CPPFLAGS) $(SOURCES_FILES) -o $(NAME)
+$(NAME): $(FIRST_OBJS) $(FIRST_HEADER_FILES)
+	$(CC) $(CPPFLAGS) $(FIRST_SOURCES_FILES) -o $(NAME)
+
+$(NAME2): $(SCD_OBJS)
+	$(CC) $(CPPFLAGS) $(SCD_SOURCES_FILES) -o $(NAME2)
 
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) -o $@ -c $<

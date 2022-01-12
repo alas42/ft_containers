@@ -15,18 +15,18 @@ namespace ft
 	class vector
 	{
 		public :
-			typedef T 										value_type;
-			typedef Allocator								allocator_type;
-			typedef typename Allocator::size_type			size_type;
-			typedef typename Allocator::difference_type		difference_type;
-			typedef T & 									reference;
-			typedef T const &								const_reference;
-			typedef typename Allocator::pointer				pointer;
-			typedef typename Allocator::const_pointer		const_pointer;
-			typedef typename std::iterator<std::random_access_iterator_tag, value_type>	iterator;
-			typedef typename std::iterator<std::random_access_iterator_tag, const value_type> const_iterator;
-			typedef std::reverse_iterator<iterator> 		reverse_iterator;
-			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
+			typedef T 																			value_type;
+			typedef Allocator																	allocator_type;
+			typedef typename Allocator::size_type												size_type;
+			typedef typename Allocator::difference_type											difference_type;
+			typedef T &																			reference;
+			typedef T const &																	const_reference;
+			typedef typename Allocator::pointer													pointer;
+			typedef typename Allocator::const_pointer											const_pointer;
+			typedef typename std::iterator<std::random_access_iterator_tag, value_type>			iterator;
+			typedef typename std::iterator<std::random_access_iterator_tag, const value_type> 	const_iterator;
+			typedef std::reverse_iterator<iterator> 											reverse_iterator;
+			typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 			/*
 			** Constructors
@@ -36,25 +36,23 @@ namespace ft
 				std::cout << GREEN << "A vector(void) has been created" << RESET << std::endl;
 			}
 			
-			explicit vector(Allocator const & alloc)
+			/*explicit vector(Allocator const & alloc)
 			{
-				(void)alloc;
 				std::cout << GREEN << "A vector(alloc) has been created" << RESET << std::endl;
 			}
 			explicit vector(size_type count, T const & value, Allocator const & alloc = Allocator())
 			{
-				(void)alloc;
-				(void)count;
-				(void)value;
+				this->d_a = new T[count];
+				std::fill(this->begin(), this->end(), value);
 				std::cout << GREEN << "A vector(count, value, alloc) has been created" << RESET << std::endl;
-			}
+			}*/
 
 			template < typename InputIt>
 			vector(InputIt first, InputIt last, Allocator const & alloc = Allocator())
 			{
 				(void)alloc;
-				(void)first;
-				(void)last;
+				int distance = std::distance(first, last);
+				std::uninitialized_copy(first, last, thhis->d_a);
 				std::cout << GREEN << "A vector(first, last, alloc) has been created" << RESET << std::endl;
 			}
 
@@ -72,12 +70,16 @@ namespace ft
 			*/
 			~vector(void)
 			{
+				delete [] this->d_a;
 				std::cout << RED << "A vector has been destroyed" << RESET << std::endl;
 			}
 			vector & operator = (vector const & other)
 			{
 				if (this != &other)
 				{
+					delete [] this->d_a;
+					this->d_a = new T[other->size()];
+					
 					std::cout << MAGENTA << "vector Assignation called" << RESET << std::endl;
 				}
 				return *this;
@@ -173,6 +175,8 @@ namespace ft
 			/*
 			** End of modifiers
 			*/
+		protected:
+			T * d_a;
 	};
 
 /*			**** SOMETHING WITH FRIEND KEYWORD ****							

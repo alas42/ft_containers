@@ -3,7 +3,6 @@
 #include <deque>
 
 #include <vector>
-#include "templates/vector.hpp"
 
 #include <stdlib.h>
 
@@ -31,48 +30,39 @@ int main(int argc, char** argv)
 
 	const int seed = atoi(argv[1]);
 	srand(seed);
-	ft::vector<Buffer> vector_buffer;
 
+	std::vector<std::string> std_vector_str;
+	std::vector<int> std_vector_int;
+	std::vector<Buffer> std_vector_buffer;
+	
 	for (int i = 0; i < COUNT; i++)
 	{
-		std::cout << i << ": "; 
-		vector_buffer.push_back(Buffer());
+		std_vector_buffer.push_back(Buffer());
 	}
 
 	for (int i = 0; i < COUNT; i++)
 	{
 		const int idx = rand() % COUNT;
-		vector_buffer[idx].idx = 5;
+		std_vector_buffer[idx].idx = 5;
 	}
 	
-	ft::vector<Buffer>().swap(vector_buffer);
+	std::vector<Buffer>().swap(std_vector_buffer);
 
 	try
 	{
 		for (int i = 0; i < COUNT; i++)
 		{
 			const int idx = rand() % COUNT;
-			vector_buffer.at(idx);
+			std_vector_buffer.at(idx);
 			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTYls " <<std::endl;
 		}
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "good, it has to be empty" << std::endl;
+		//NORMAL ! :P
 	}
 
 	std::cout << std::endl;
 	
-	{
-		ft::vector<std::string> vector_str;
-		ft::vector<int> vector_int;
-		
-		for (int i = 0; i < COUNT; i++)
-		{
-			std::cout << i << ": " << (i + 60) % 70 << std::endl;
-			vector_int.push_back((i + 60) % 70);
-		}
-
-	}
 	return (0);
 }

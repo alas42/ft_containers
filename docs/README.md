@@ -140,4 +140,24 @@ WHAT IS AN ITERATOR ?
 
 In C++, every iterator is treated as a pointer
 "Due to different types of iterator categories, C++ defines the iterator traits which a programmer needs to specify if he/she wants the best optimization when STL algorithm is used."
-"n C++98, iterator traits are defined with typedef typename sintaxis"
+"in C++98, iterator traits are defined with typedef typename sintaxis"
+
+Allocator does only allocate space as for new allocate and instanciate or create elements
+We do not want that so we have to uses allocator's methods
+
+Allocators method that we have to use :
+
+pointer allocate(size_type n, const void * hint = 0) allocates n* sizeof(T) bytes of unititialized storage
+    returns a poitner to the first element of an array whose elements have not been constructed yet
+void deallocate(T * p, std::size_t n) deallocates storage pointed by p 
+    [wich must be a pointer obtained by an earlier call to allocate]
+
+max_size (returns the largest supported allocation size)
+void construct(pointer p, const_reference val) constructs an object in allocated storage pointed to by p
+destroy(pointer p) - destructs an object pointed by p in allocated storage
+
+To learn a frigging lot about allocators : https://www.drdobbs.com/the-standard-librarian-what-are-allocato/184403759
+
+To learn about iterators with a slide-show : http://www.cse.unsw.edu.au/~cs6771/16s2/lectures/lec08-1.pdf
+AND : https://web.stanford.edu/class/cs107l/handouts/04-Custom-Iterators.pdf
+
