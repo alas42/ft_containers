@@ -42,7 +42,6 @@ namespace ft
 			*/
 			vector(void): m_data(0), m_size(0), m_capacity(0)
 			{
-
 				std::cout << GREEN << "A vector(void) has been created" << RESET << std::endl;
 			}
 			
@@ -72,9 +71,12 @@ namespace ft
 
 			template < typename InputIt>
 			vector(InputIt first, InputIt last, Allocator const & alloc = Allocator())
+				: m_data(0), m_size(0), m_capacity(0) 
 			{
 				std::cout << GREEN << "A vector(first, last, alloc) has been created" << RESET << std::endl;
 				this->m_allocator = alloc;
+				this->m_size = std::distance(first, last);
+				this->m_capacity = m_size;
 				std::uninitialized_copy(first, last, this->m_data);
 			}
 
@@ -95,7 +97,7 @@ namespace ft
 				std::cout << RED << "A vector has been destroyed" << RESET << std::endl;
 				for (size_type i = 0; i < this->m_size; i++)
 					this->m_allocator.destroy(&m_data[0]);
-				this->m_allocator.deallocate(m_data, this->m_size);
+				this->m_allocator.deallocate(m_data, this->m_capacity);
 			}
 
 			vector & operator = (vector const & other)
@@ -105,11 +107,12 @@ namespace ft
 				{
 					for (size_type i = 0; i < this->m_size; i++)
 						this->m_allocator.destroy(&m_data[0]);
-					this->m_allocator.deallocate(m_data, this->m_size);
+					this->m_allocator.deallocate(m_data, this->m_capacity);
 					this->m_size = other.m_size;
+					this->m_capacity = other.m_capacity;
 					try
 					{
-						this->m_data = this->m_allocator.allocate(this->m_size, this->m_data);
+						this->m_data = this->m_allocator.allocate(this->m_capacity, this->m_data);
 						for(size_type i = 0; i < this->m_size; i++)
 							this->m_allocator.construct(&this->m_data[i], other.m_data[i]);
 					}
