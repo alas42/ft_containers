@@ -27,10 +27,12 @@ $(NAME2): $(SCD_OBJS)
 	$(CC) $(CPPFLAGS) -o $@ -c $<
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(FIRST_OBJS)
+	rm -f $(SCD_OBJS)
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(NAME2)
 
 re: fclean all
 
