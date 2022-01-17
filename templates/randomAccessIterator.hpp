@@ -74,7 +74,7 @@ namespace ft
 
 				difference_type				operator-(const randomAccessIterator<T>& rawIterator)
 				{
-					return std::distance(rawIterator.getPtr(),this->getPtr());
+					return std::distance(rawIterator.m_ptr, m_ptr);
 				}
 
 				reference operator[](difference_type count) const

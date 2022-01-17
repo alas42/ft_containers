@@ -331,8 +331,20 @@ namespace ft
 
 			iterator insert( iterator pos, T const & value ) // 1 - Inserts value before pos
 			{
-				(void)pos;
-				(void)value;
+				if (this->m_size == this->m_capacity)
+					this->reserve(this->m_size + 1);
+				iterator tmp = pos;
+				iterator ite = end();
+				while (tmp != ite)
+				{
+					value_type tmp_value(*tmp);
+					this->m_allocator.destroy(tmp->m_ptr);
+					this->m_allocator.construct(tmp->m_ptr + 1, tmp_value);
+					tmp++;
+				}
+				this->m_allocator.construct(pos->m_ptr, value);
+				this->m_size++;
+				return pos - 1;
 			}
 			void insert( iterator pos, size_type count, T const & value ) // 3 - Insert count copied of the value before pos
 			{

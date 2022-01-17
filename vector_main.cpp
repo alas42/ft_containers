@@ -66,12 +66,24 @@ int main(int argc, char** argv)
 		ft::vector<std::string> vector_str;
 		ft::vector<int> vector_int;
 		
-		for (int i = 0; i < COUNT; i++)
+		for (unsigned long i = 0; i < 52; i++)
 		{
-			std::cout << i << ": " << (i + 60) % 70 << std::endl;
-			vector_int.push_back((i + 60) % 70);
+			vector_int.push_back((static_cast<int>(i) + 60) % 70);
 		}
-		for (int i = 0; i < COUNT; i++)
+		std::cout << "\nAFTER PUSH_BACKS" << std::endl;
+		for (unsigned long i = 0; i < vector_int.size(); i++)
+		{
+			std::cout << i << ": " << vector_int[i] << std::endl;
+		}
+
+		ft::randomAccessIterator<int> it = vector_int.begin();
+
+		vector_int.insert(it, 10);
+
+		it = vector_int.begin();
+
+		std::cout << "\nAFTER INSERT" << std::endl;
+		for (unsigned long i = 0; i < vector_int.size(); i++)
 		{
 			std::cout << i << ": " << vector_int[i] << std::endl;
 		}
