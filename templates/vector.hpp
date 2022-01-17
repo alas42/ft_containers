@@ -2,6 +2,7 @@
 # define VECTOR_HPP
 
 # include <iostream>
+# include <stdexcept>
 # include "iterator_traits.hpp"
 # include "randomAccessIterator.hpp"
 
@@ -16,13 +17,7 @@ namespace ft
 	template <typename T, typename Allocator = std::allocator<T> >
 	class vector
 	{
-		/*
-			protected:
-				value_type *					m_data;
-				size_type						m_size;
-				size_type						m_capacity;
-				Allocator						m_allocator;
-		*/
+
 		public :
 			typedef T 																			value_type;
 			typedef Allocator																	allocator_type;
@@ -32,8 +27,8 @@ namespace ft
 			typedef T const &																	const_reference;
 			typedef typename Allocator::pointer													pointer;
 			typedef typename Allocator::const_pointer											const_pointer;
-			typedef typename ft::randomAccessIterator<value_type>			iterator;
-			typedef typename ft::randomAccessIterator<const value_type> 	const_iterator;
+			typedef typename ft::randomAccessIterator<value_type>								iterator;
+			typedef typename ft::randomAccessIterator<const value_type> 						const_iterator;
 			typedef std::reverse_iterator<iterator> 											reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
 
@@ -108,8 +103,8 @@ namespace ft
 					for (size_type i = 0; i < this->m_size; i++)
 						this->m_allocator.destroy(&m_data[0]);
 					this->m_allocator.deallocate(m_data, this->m_capacity);
-					this->m_size = other.m_size;
-					this->m_capacity = other.m_capacity;
+					this->m_size = other.size();
+					this->m_capacity = other.capacity();
 					try
 					{
 						this->m_data = this->m_allocator.allocate(this->m_capacity, this->m_data);
@@ -119,7 +114,7 @@ namespace ft
 					catch(const std::exception& e)
 					{
 						std::cerr << e.what() << '\n';
-						throw;
+						throw ("=");
 					}
 				}
 				return *this;
@@ -133,15 +128,31 @@ namespace ft
 			*/
 			void assign(size_type count, value_type const & value)
 			{
-				(void)count;
-				(void)value;
+				try
+				{
+					erase(begin(), end());
+					insert(begin(), count, value);
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("assign");
+				}
 			}
 
 			template< class InputIt >
 			void assign(InputIt first, InputIt last)
 			{
-				(void)first;
-				(void)last;
+				try
+				{
+					erase(begin(), end());
+					insert(begin(), first, last);
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("assign");
+				}
 			}
 			/*
 			** End of Misc
@@ -201,11 +212,11 @@ namespace ft
 				return m_data[m_size - 1];
 			}
 
-			T* data()
+			T * data()
 			{
 				return m_data;
 			}
-			const T* data() const
+			const T * data() const
 			{
 				return m_data;
 			}
@@ -274,7 +285,30 @@ namespace ft
 
 			void reserve( size_type new_cap )
 			{
-				(void)new_cap;
+				value_type * new_data;
+				iterator first = begin();
+				iterator last = end();
+				if (new_cap <= this->m_capacity)
+					return ;
+				else if (new_cap > max_size())
+					throw std::length_error("length-error in reserve");
+				try
+				{
+					while (new_cap < this->m_capacity && new_cap < max_size()) /*change in a loop that * 2 the current capacity till its over new_cap ?*/
+						new_cap *= 2;
+					new_data = this->m_allocator.allocate(new_cap, 0);
+					std::copy(first, last, &(new_data[0]));
+					for (size_t i = 0; i < this->m_size; i++)
+						this->m_allocator.destroy(&(this->m_data[i]));
+					this->m_allocator.deallocate(m_data, this->m_capacity);
+					this->m_data = new_data;
+					this->m_capacity = new_cap;
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("reserve");
+				}
 			}
 
 			size_type capacity() const
@@ -291,23 +325,23 @@ namespace ft
 			void clear()
 			{
 				for (size_type i = 0; i < this->m_size; i++)
-					this->m_allocator.destroy(&m_data[0]);
+					this->m_allocator.destroy(&m_data[i]);
 				this->m_size = 0;
 			}
 
-			iterator insert( iterator pos, T const & value )
+			iterator insert( iterator pos, T const & value ) // 1 - Inserts value before pos
 			{
 				(void)pos;
 				(void)value;
 			}
-			void insert( iterator pos, size_type count, T const & value )
+			void insert( iterator pos, size_type count, T const & value ) // 3 - Insert count copied of the value before pos
 			{
 				(void)pos;
 				(void)count;
 				(void)value;
 			}
 			template< class InputIt >
-			void insert( iterator pos, InputIt first, InputIt last )
+			void insert( iterator pos, InputIt first, InputIt last ) // 4 - Inserts elems from range [first, last) before pos
 			{
 				(void)pos;
 				(void)first;
@@ -316,37 +350,111 @@ namespace ft
 
 			iterator erase( iterator pos )
 			{
-				(void)pos;
+				try
+				{
+					~*pos();
+					this->left_shift(pos);
+					this->m_size--;
+					return (iterator(&(m_data[pos + 1])));
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("erase");
+				}
 			}
+
 			iterator erase( iterator first, iterator last )
 			{
-				(void)first;
-				(void)last;
+				try
+				{
+					if (first == last)
+						throw ("no-op");
+					iterator i;
+					if (last == end())
+					{
+						i = end();
+					}
+					else
+					{
+						i = last + 1;
+					}
+					while (first != last)
+					{
+						this->m_allocator.destroy(&(*first));
+						first++;
+						this->m_size--;
+					}
+					return (i);
+				}
+				catch(const std::exception & e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("erase it2");
+				}
 			}
 
 			void push_back( T const & value )
 			{
-				(void)value;
+				try
+				{
+					if (this->m_size == this->m_capacity)
+						this->reserve(m_size + 1);
+					this->m_data[this->m_size] = value;
+					this->m_size++;
+				}
+				catch(const std::exception & e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("push_back");
+				}				
 			}
 
 			void pop_back()
 			{
-
+				try
+				{
+					this->m_allocator.destroy(&(m_data[this->m_size - 1]));
+					this->m_size--;
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("pop_back");
+				}
 			}
 
-			void resize( size_type count )
-			{
-				(void)count;
-			}
 			void resize( size_type count, T value = T() )
 			{
-				(void)count;
-				(void)value;
+				try
+				{
+					if (count > this->m_capacity)
+						this->reserve(count);
+					else if (count < this->m_size)
+					{
+						for (size_t i = count; i < this->m_size ; i++)
+						{
+							this->m_allocator.destroy(&this->m_data[i]);
+						}
+					}
+					for (size_type i = this->m_size; i < count; i++)
+					{
+						this->m_allocator.construct(&this->m_data[i], value);
+					}
+					this->m_size = count;
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					throw ("resize");
+				}
 			}
 
 			void swap( vector & other )
 			{
-				(void)other;
+				vector tmp(*this);
+				*this = other;
+				other = tmp;
 			}
 			/*
 			** End of modifiers
@@ -357,6 +465,16 @@ namespace ft
 			size_type						m_size;
 			size_type						m_capacity;
 			Allocator						m_allocator;
+
+		private:
+			void left_shift(iterator position)
+			{
+				while (position != end())
+				{
+					position = position + 1;
+					position++;
+				}
+			}
 	};
 
 /*			**** SOMETHING WITH FRIEND KEYWORD ****							

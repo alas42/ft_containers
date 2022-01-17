@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
 	const int seed = atoi(argv[1]);
 	srand(seed);
-	ft::vector<Buffer> vector_buffer;
+	/*ft::vector<Buffer> vector_buffer;
 
 	for (int i = 0; i < COUNT; i++)
 	{
@@ -60,9 +60,8 @@ int main(int argc, char** argv)
 	{
 		std::cout << "good, it has to be empty" << std::endl;
 	}
-
+	*/
 	std::cout << std::endl;
-	
 	{
 		ft::vector<std::string> vector_str;
 		ft::vector<int> vector_int;
@@ -72,7 +71,10 @@ int main(int argc, char** argv)
 			std::cout << i << ": " << (i + 60) % 70 << std::endl;
 			vector_int.push_back((i + 60) % 70);
 		}
-
+		for (int i = 0; i < COUNT; i++)
+		{
+			std::cout << i << ": " << vector_int[i] << std::endl;
+		}
 	}
 	return (0);
 }
