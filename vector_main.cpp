@@ -3,7 +3,8 @@
 #include <deque>
 
 #include <vector>
-#include "templates/vector.hpp"
+#include "templates/containers/vector.hpp"
+#include "templates/containers/stack.hpp"
 
 #include <stdlib.h>
 
@@ -152,6 +153,22 @@ int main(int argc, char** argv)
 				std::cout << RESET << std::endl;
 			}
 		}
+
+		{
+			std::cout << MAGENTA << "\n\n[BACK FRONT DATA EMPTY]" << RESET << std::endl;
+			std::cout << MAGENTA << "back : " << RESET << vector_int.back() << std::endl;
+			std::cout << MAGENTA << "front : " << RESET << vector_int.front() << std::endl; 
+			std::cout << MAGENTA << "data : " << RESET << vector_int.data() << std::endl;
+			std::cout << MAGENTA << "empty : " << RESET;
+			if (vector_int.empty())
+					std::cout << GREEN << "true";
+			else
+				std::cout << RED << "false";
+			std::cout << RESET << std::endl;
+		}
+
+
+
 	}
 	return (0);
 }

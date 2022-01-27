@@ -1,6 +1,10 @@
 NAME = ft_containers
 
-FIRST_HEADER_FILES = templates/vector.hpp
+FIRST_HEADER_FILES = templates/containers/vector.hpp \
+	templates/containers/stack.hpp \
+	templates/iterators/iterator_traits.hpp \
+	templates/iterators/randomAccessIterator.hpp \
+	templates/iterators/reverse_iterator.hpp
 
 FIRST_SOURCES_FILES =	vector_main.cpp
 

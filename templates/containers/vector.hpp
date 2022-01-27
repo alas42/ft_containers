@@ -3,8 +3,9 @@
 
 # include <iostream>
 # include <stdexcept>
-# include "iterator_traits.hpp"
-# include "randomAccessIterator.hpp"
+# include "../iterators/iterator_traits.hpp"
+# include "../iterators/reverse_iterator.hpp"
+# include "../iterators/randomAccessIterator.hpp"
 
 # define RESET "\033[0m"
 # define GREEN "\033[32m"
@@ -29,8 +30,8 @@ namespace ft
 			typedef typename Allocator::const_pointer											const_pointer;
 			typedef typename ft::randomAccessIterator<value_type>								iterator;
 			typedef typename ft::randomAccessIterator<const value_type> 						const_iterator;
-			typedef std::reverse_iterator<iterator> 											reverse_iterator;
-			typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 			/*
 			** Constructors
@@ -505,9 +506,8 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		ft::randomAccessIterator<const T> ltb = lhs.begin();
 		ft::randomAccessIterator<const T> rtb = rhs.begin();
-		for (; ltb != lhs.end(); ltb++)
+		for (ft::randomAccessIterator<const T> ltb = lhs.begin(); ltb != lhs.end(); ltb++)
 		{
 			if (*ltb != *rtb)
 				return (false);
