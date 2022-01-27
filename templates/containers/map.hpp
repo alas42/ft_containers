@@ -13,10 +13,10 @@
 ** It has a member class, whatever that means (maybe like an exception ?)
 */
 
-namespace ft{
+namespace ft
+{
 
 	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<std::pair<const Key, T> > >
-
 	class map
 	{
 		public :
