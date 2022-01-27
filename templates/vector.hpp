@@ -21,8 +21,8 @@ namespace ft
 		public :
 			typedef T 																			value_type;
 			typedef Allocator																	allocator_type;
-			typedef typename Allocator::size_type												size_type;
-			typedef typename Allocator::difference_type											difference_type;
+			typedef size_t																		size_type;
+			typedef std::ptrdiff_t																difference_type;
 			typedef T &																			reference;
 			typedef T const &																	const_reference;
 			typedef typename Allocator::pointer													pointer;
@@ -36,20 +36,16 @@ namespace ft
 			** Constructors
 			*/
 			vector(void): m_data(0), m_size(0), m_capacity(0)
-			{
-				std::cout << GREEN << "A vector(void) has been created" << RESET << std::endl;
-			}
+			{}
 			
 			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0)
 			{
-				std::cout << GREEN << "A vector(alloc) has been created" << RESET << std::endl;
 				this->m_allocator = alloc;
 			}
 
 			explicit vector(size_type count, T const & value, Allocator const & alloc = Allocator())
 				:  m_data(0), m_size(count), m_capacity(count)
 			{
-				std::cout << GREEN << "A vector(count, value, alloc) has been created" << RESET << std::endl;
 				this->m_allocator = alloc;
 				try
 				{
@@ -68,7 +64,6 @@ namespace ft
 			vector(InputIt first, InputIt last, Allocator const & alloc = Allocator())
 				: m_data(0), m_size(0), m_capacity(0) 
 			{
-				std::cout << GREEN << "A vector(first, last, alloc) has been created" << RESET << std::endl;
 				this->m_allocator = alloc;
 				this->m_size = std::distance(first, last);
 				this->m_capacity = m_size;
@@ -77,7 +72,6 @@ namespace ft
 
 			vector(vector const & other): m_data(0), m_size(0), m_capacity(0)
 			{
-				std::cout << GREEN << "A vector(other) has been created" << RESET << std::endl;
 				*this = other;
 			}
 			/*
@@ -89,15 +83,12 @@ namespace ft
 			*/
 			~vector(void)
 			{
-				std::cout << RED << "A vector has been destroyed" << RESET << std::endl;
-				for (size_type i = 0; i < this->m_size; i++)
-					this->m_allocator.destroy(&m_data[0]);
+				this->clear();
 				this->m_allocator.deallocate(m_data, this->m_capacity);
 			}
 
 			vector & operator = (vector const & other)
 			{
-				std::cout << MAGENTA << "vector Assignation called" << RESET << std::endl;
 				if (this != &other)
 				{
 					for (size_type i = 0; i < this->m_size; i++)
@@ -285,24 +276,25 @@ namespace ft
 
 			void reserve( size_type new_cap )
 			{
-				value_type * new_data;
-				iterator first = begin();
-				iterator last = end();
+				size_type power_of_two = 2;
 				if (new_cap <= this->m_capacity)
 					return ;
 				else if (new_cap > max_size())
 					throw std::length_error("length-error in reserve");
 				try
 				{
-					while (new_cap < this->m_capacity && new_cap < max_size()) /*change in a loop that * 2 the current capacity till its over new_cap ?*/
-						new_cap *= 2;
-					new_data = this->m_allocator.allocate(new_cap, 0);
-					std::copy(first, last, &(new_data[0]));
-					for (size_t i = 0; i < this->m_size; i++)
-						this->m_allocator.destroy(&(this->m_data[i]));
-					this->m_allocator.deallocate(m_data, this->m_capacity);
+					while (power_of_two < new_cap && power_of_two < max_size())
+						power_of_two *= 2;
+					allocator_type alloc;
+					value_type * new_data = alloc.allocate(power_of_two, 0);
+					for (size_type i = 0; i < this->size(); i++)
+					{
+						alloc.construct(&new_data[i], this->m_data[i]);
+						alloc.destroy(&this->m_data[i]);
+					}
+					alloc.deallocate(m_data, this->m_capacity);
 					this->m_data = new_data;
-					this->m_capacity = new_cap;
+					this->m_capacity = power_of_two;
 				}
 				catch(const std::exception& e)
 				{
@@ -329,35 +321,53 @@ namespace ft
 				this->m_size = 0;
 			}
 
-			iterator insert( iterator pos, T const & value ) // 1 - Inserts value before pos
+			iterator insert( iterator pos, T const & value )
 			{
-				if (this->m_size == this->m_capacity)
-					this->reserve(this->m_size + 1);
-				iterator tmp = pos;
-				iterator ite = end();
-				while (tmp != ite)
+				insert(pos, (size_type)1, value);
+				return pos;
+			}
+
+			void insert( iterator pos, size_type count, T const & value )
+			{
+				size_type offset = pos - this->begin();
+				this->reserve(this->m_size + count);
+				Allocator alloc;
+				
+				for (size_type i = this->size(); i >= offset; i--)
 				{
-					value_type tmp_value(*tmp);
-					this->m_allocator.destroy(tmp->m_ptr);
-					this->m_allocator.construct(tmp->m_ptr + 1, tmp_value);
-					tmp++;
+					alloc.construct(&this->m_data[i + count], this->m_data[i]);
+					alloc.destroy(&this->m_data[i]);
+					if (i == 0)
+						break ;
 				}
-				this->m_allocator.construct(pos->m_ptr, value);
-				this->m_size++;
-				return pos - 1;
+				for (size_type i = 0; i < count; i++)
+				{
+					alloc.destroy(&this->m_data[offset + i]);
+					alloc.construct(&this->m_data[offset + i], value);
+				}
+				this->m_size += count;
 			}
-			void insert( iterator pos, size_type count, T const & value ) // 3 - Insert count copied of the value before pos
-			{
-				(void)pos;
-				(void)count;
-				(void)value;
-			}
+
 			template< class InputIt >
-			void insert( iterator pos, InputIt first, InputIt last ) // 4 - Inserts elems from range [first, last) before pos
+			void insert( iterator pos, InputIt first, InputIt last )
 			{
-				(void)pos;
-				(void)first;
-				(void)last;
+				size_type offset = pos - this->begin();
+				size_type count = last - first;
+				this->reserve(this->m_size + count);
+
+				for (size_type i = this->size(); i >= offset; i--)
+				{
+					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
+					this->m_allocator.destroy(&this->m_data[i]);
+					if (i == 0)
+						break ;
+				}
+				for (size_type i = 0; i < count; i++)
+				{
+					this->m_allocator.destroy(&this->m_data[offset + i]);
+					this->m_allocator.construct(&this->m_data[offset + i], *(first + i));
+				}
+				this->m_size += count;
 			}
 
 			iterator erase( iterator pos )
@@ -378,19 +388,15 @@ namespace ft
 
 			iterator erase( iterator first, iterator last )
 			{
+				iterator i;
 				try
 				{
 					if (first == last)
 						throw ("no-op");
-					iterator i;
 					if (last == end())
-					{
 						i = end();
-					}
 					else
-					{
 						i = last + 1;
-					}
 					while (first != last)
 					{
 						this->m_allocator.destroy(&(*first));
@@ -489,16 +495,56 @@ namespace ft
 			}
 	};
 
-/*			**** SOMETHING WITH FRIEND KEYWORD ****							
-	template <typename T, typename Allocator>
-	void swap (ft::vector<T, Alloc> & x, ft::vector<T, Alloc> & y);
-	bool operator==( const ft::vector<T,Alloc> & lhs, const ft::vector<T,Alloc> & rhs );
-	bool operator!=( const std::vector<T,Alloc> & lhs, const std::vector<T,Alloc> & rhs );
-	bool operator<( const std::vector<T,Alloc> & lhs, const std::vector<T,Alloc> & rhs );
-	bool operator<=( const std::vector<T,Alloc> & lhs, const std::vector<T,Alloc> & rhs );
-	bool operator>( const std::vector<T,Alloc> & lhs, const std::vector<T,Alloc> & rhs );
-	bool operator>=( const std::vector<T,Alloc> & lhs, const std::vector<T,Alloc> & rhs );
-*/
+	template <typename T>
+	void swap (ft::vector<T> & x, ft::vector<T> & y)
+	{
+		x.swap(y);
+	}
+	template <typename T>
+	bool operator==( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		ft::randomAccessIterator<const T> ltb = lhs.begin();
+		ft::randomAccessIterator<const T> rtb = rhs.begin();
+		for (; ltb != lhs.end(); ltb++)
+		{
+			if (*ltb != *rtb)
+				return (false);
+			rtb++;
+		}
+		return (true);
+	}
+	template <typename T>
+	bool operator!=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		return (!(lhs == rhs));
+	}
+	template <typename T>
+	bool operator<( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		ft::randomAccessIterator<const T> ltb = lhs.begin();
+		ft::randomAccessIterator<const T> rtb = rhs.begin();
+		ft::randomAccessIterator<const T> lte = lhs.end();
+		ft::randomAccessIterator<const T> rte = rhs.end();
+		return (std::lexicographical_compare(ltb, lte, rtb, rte));
+	}
+	template <typename T>
+	bool operator<=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		return (lhs < rhs || lhs < rhs);
+	}
+	template <typename T>
+	bool operator>( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		return (!(lhs < rhs));
+	}
+	template <typename T>
+	bool operator>=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
+	{
+		return (lhs > rhs || lhs == rhs);
+	}
+
 }
 
 #endif
