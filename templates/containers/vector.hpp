@@ -12,7 +12,7 @@
 # define MAGENTA "\033[35m"
 # define RED "\033[31m"
 
-
+  
 namespace ft
 {
 	template <typename T, typename Allocator = std::allocator<T> >

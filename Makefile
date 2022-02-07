@@ -5,8 +5,8 @@ FIRST_HEADER_FILES = templates/containers/vector.hpp \
 	templates/iterators/iterator_traits.hpp \
 	templates/iterators/randomAccessIterator.hpp \
 	templates/iterators/reverse_iterator.hpp \
-	templates/iterators/bidirectionnalIterator.hpp
-
+	templates/containers/map.hpp
+#templates/iterators/bidirectionnalIterator.hpp
 FIRST_SOURCES_FILES =	vector_main.cpp
 
 #SCD_SOURCES_FILES = stl_vector_main.cpp
