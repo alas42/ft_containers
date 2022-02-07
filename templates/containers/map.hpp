@@ -4,6 +4,7 @@
 # include <string>
 # include <iostream>
 # include <stdexcept>
+# include "../pairs/pair.hpp"
 # include "../iterators/iterator_traits.hpp"
 # include "../iterators/reverse_iterator.hpp"
 # include "../iterators/bidirectionalIterator.hpp"
@@ -23,6 +24,7 @@ namespace ft
 	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<std::pair<const Key, T> > >
 	class map
 	{
+
 		public :
 			typedef Key			 																key_type;
 			typedef T																			mapped_type;
@@ -40,6 +42,17 @@ namespace ft
 			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
   
+			class value_compare : public ft::binary_function<value_type, value_type, bool>
+			{
+				public:
+					bool operator()(const value_type& left, const value_type& right) const
+					{
+						return (comp(left.first, right.first));
+					}
+					value_compare(Compare c) : comp(c){}
+				protected:
+					Compare comp;
+			};
 			/*
 			** Constructors
 			*/
@@ -47,10 +60,12 @@ namespace ft
 			{
 
 			}
+
 			map(map const & other)
 			{
-
+				*this = other;
 			}
+
 			explicit map(const Compare & comp, const Allocator & alloc = Allocator())
 			{
 
@@ -71,7 +86,11 @@ namespace ft
 			~map(void){}
 			map & operator = (map const & other)
 			{
+				if (this != &other)
+				{
 
+				}
+				return (*this);
 			}
 			/*
 			** End of destructor and = operator
@@ -96,7 +115,9 @@ namespace ft
 
 			}
 			const T& at( const Key& key ) const
-			{}
+			{
+
+			}
 			T& operator[]( const Key& key )
 			{
 
@@ -123,9 +144,18 @@ namespace ft
 			/*
 			** Capacity
 			*/
-			bool empty() const{}
-			size_type size() const{}
-			size_type max_size() const{}
+			bool empty() const
+			{
+				return (begin() == end());
+			}
+			size_type size() const
+			{
+				return (std::distance(begin(), end()));
+			}
+			size_type max_size() const
+			{
+				return this->_alloc.max_size();
+			}
 			/*
 			** End of capacity
 			*/
@@ -133,7 +163,10 @@ namespace ft
 			/*
 			** Modifiers
 			*/
-			void clear(){}
+			void clear()
+			{
+
+			}
 			std::pair<iterator, bool> insert( const value_type& value )
 			{
 

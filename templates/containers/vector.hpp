@@ -6,13 +6,15 @@
 # include "../iterators/iterator_traits.hpp"
 # include "../iterators/reverse_iterator.hpp"
 # include "../iterators/randomAccessIterator.hpp"
+# include "../misc/is_integral.hpp"
+# include "../misc/enable_if.hpp"
 
 # define RESET "\033[0m"
 # define GREEN "\033[32m"
 # define MAGENTA "\033[35m"
 # define RED "\033[31m"
 
-  
+
 namespace ft
 {
 	template <typename T, typename Allocator = std::allocator<T> >
