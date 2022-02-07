@@ -166,9 +166,6 @@ int main(int argc, char** argv)
 				std::cout << RED << "false";
 			std::cout << RESET << std::endl;
 		}
-
-
-
 	}
 	return (0);
 }

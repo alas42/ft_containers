@@ -13,20 +13,16 @@
 # define GREEN "\033[32m"
 # define MAGENTA "\033[35m"
 # define RED "\033[31m"
-     
-/* 
-** It has a member class, whatever that means (maybe like an exception ?)
-*/
 
 namespace ft
 {
- 
+
 	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<std::pair<const Key, T> > >
 	class map
 	{
 
 		public :
-			typedef Key			 																key_type;
+			typedef Key																			key_type;
 			typedef T																			mapped_type;
 			typedef std::pair<const key, T>														value_type;
 			typedef std::size_t																	size_type;
@@ -41,7 +37,7 @@ namespace ft
 			typedef typename ft::bidirectionalIterator<const value_type> 						const_iterator;
 			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
-  
+
 			class value_compare : public ft::binary_function<value_type, value_type, bool>
 			{
 				public:
@@ -301,4 +297,5 @@ namespace ft
 
 	}
 }
+
 #endif
