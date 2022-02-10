@@ -1,18 +1,12 @@
-NAME = ft_containers
-NAME2 = containers
+NAME = 	ft_containers
 
 FIRST_HEADER_FILES = templates/containers/vector.hpp \
-	templates/containers/stack.hpp \
 	templates/iterators/iterator_traits.hpp \
 	templates/iterators/randomAccessIterator.hpp \
-	templates/iterators/reverse_iterator.hpp \
-	templates/containers/map.hpp
-#templates/iterators/bidirectionnalIterator.hpp
+	templates/iterators/reverse_iterator.hpp
 
 FIRST_SOURCES_FILES =	vector_main.cpp
-SCD_SOURCES_FILES = stl_vector_main.cpp
 
-SCD_OBJS = $(SCD_SOURCES_FILES:.cpp=.o)
 FIRST_OBJS = $(FIRST_SOURCES_FILES:.cpp=.o)
 
 CPPFLAGS = -Wall -Werror -Wextra 
@@ -26,19 +20,12 @@ $(NAME): $(FIRST_OBJS) $(FIRST_HEADER_FILES)
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) -o $@ -c $<
 
-std: $(NAME2)
-
-$(NAME2): $(SCD_OBJS)
-	$(CC) $(CPPFLAGS) $(SCD_SOURCES_FILES) -o $(NAME2)
-
 clean:
 	rm -f $(FIRST_OBJS)
-	rm -f $(SCD_OBJS)
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f $(NAME2)
 
-re: fclean all std
+re: fclean all
 
 .PHONY: all clean fclean re

@@ -5,8 +5,8 @@
 # include <stdexcept>
 # include <algorithm>
 # include "../iterators/iterator_traits.hpp"
-# include "../iterators/reverse_iterator.hpp"
 # include "../iterators/randomAccessIterator.hpp"
+# include "../iterators/reverse_iterator.hpp"
 # include "../misc/is_integral.hpp"
 # include "../misc/enable_if.hpp"
 
@@ -31,10 +31,10 @@ namespace ft
 			typedef T const &																	const_reference;
 			typedef typename Allocator::pointer													pointer;
 			typedef typename Allocator::const_pointer											const_pointer;
-			typedef typename ft::randomAccessIterator<value_type>								iterator;
-			typedef typename ft::randomAccessIterator<const value_type> 						const_iterator;
-			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
+			typedef ft::random_access_iterator<T>										iterator;
+			typedef ft::random_access_iterator<const T> 									const_iterator;
+			typedef ft::reverse_iterator<iterator> 				reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 			/*
 			** Constructors
@@ -60,12 +60,10 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw;
 				}
 			}
 
-			template < typename InputIt>
-			vector(InputIt first, InputIt last, Allocator const & alloc = Allocator())
+			vector(iterator first, iterator last, Allocator const & alloc = Allocator())
 				: m_data(0), m_size(0), m_capacity(0) 
 			{
 				this->m_allocator = alloc;
@@ -126,6 +124,7 @@ namespace ft
 				try
 				{
 					erase(begin(), end());
+					std::cout << "erase works" << std::endl;
 					insert(begin(), count, value);
 				}
 				catch(const std::exception& e)
@@ -135,13 +134,12 @@ namespace ft
 				}
 			}
 
-			template< class InputIt >
-			void assign(InputIt first, InputIt last)
+			void assign(iterator first, iterator last)
 			{
 				try
 				{
-					erase(begin(), end());
-					insert(begin(), first, last);
+					this->erase(begin(), end());
+					this->insert(begin(), first, last);
 				}
 				catch(const std::exception& e)
 				{
@@ -241,20 +239,20 @@ namespace ft
 			}
 			reverse_iterator rbegin()
 			{
-				return reverse_iterator(&m_data[m_size - 1]);
+				return reverse_iterator(--end());
 			}
 			const_reverse_iterator rbegin() const
 			{
-				return const_reverse_iterator(&m_data[m_size - 1]);
+				return const_reverse_iterator(--end());
 			}
 
 			reverse_iterator rend()
 			{
-				return reverse_iterator(&m_data[-1]);
+				return reverse_iterator(begin());
 			}
 			const_reverse_iterator rend() const
 			{
-				return const_reverse_iterator(&m_data[-1]);
+				return const_reverse_iterator(begin());
 			}
 			/*
 			** End ITERATORS
@@ -335,25 +333,23 @@ namespace ft
 			{
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
-				Allocator alloc;
 				
 				for (size_type i = this->size(); i >= offset; i--)
 				{
-					alloc.construct(&this->m_data[i + count], this->m_data[i]);
-					alloc.destroy(&this->m_data[i]);
+					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
+					this->m_allocator.destroy(&this->m_data[i]);
 					if (i == 0)
 						break ;
 				}
 				for (size_type i = 0; i < count; i++)
 				{
-					alloc.destroy(&this->m_data[offset + i]);
-					alloc.construct(&this->m_data[offset + i], value);
+					this->m_allocator.destroy(&this->m_data[offset + i]);
+					this->m_allocator.construct(&this->m_data[offset + i], value);
 				}
 				this->m_size += count;
 			}
 
-			template< class InputIt >
-			void insert( iterator pos, InputIt first, InputIt last )
+			void insert( iterator pos, iterator first, iterator last )
 			{
 				size_type offset = pos - this->begin();
 				size_type count = last - first;
@@ -369,7 +365,7 @@ namespace ft
 				for (size_type i = 0; i < count; i++)
 				{
 					this->m_allocator.destroy(&this->m_data[offset + i]);
-					this->m_allocator.construct(&this->m_data[offset + i], *(first + i));
+					this->m_allocator.construct(&this->m_data[offset + i], *first++);
 				}
 				this->m_size += count;
 			}
@@ -378,10 +374,7 @@ namespace ft
 			{
 				try
 				{
-					~*pos();
-					this->left_shift(pos);
-					this->m_size--;
-					return (iterator(&(m_data[pos + 1])));
+					return (erase(pos, pos + 1));
 				}
 				catch(const std::exception& e)
 				{
@@ -395,8 +388,6 @@ namespace ft
 				iterator i;
 				try
 				{
-					if (first == last)
-						throw ("no-op");
 					if (last == end())
 						i = end();
 					else
@@ -509,8 +500,8 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		ft::randomAccessIterator<const T> rtb = rhs.begin();
-		for (ft::randomAccessIterator<const T> ltb = lhs.begin(); ltb != lhs.end(); ltb++)
+		ft::random_access_iterator<const T> rtb = rhs.begin();
+		for (ft::random_access_iterator<const T> ltb = lhs.begin(); ltb != lhs.end(); ltb++)
 		{
 			if (*ltb != *rtb)
 				return (false);
@@ -526,10 +517,10 @@ namespace ft
 	template <typename T>
 	bool operator<( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
-		ft::randomAccessIterator<const T> ltb = lhs.begin();
-		ft::randomAccessIterator<const T> rtb = rhs.begin();
-		ft::randomAccessIterator<const T> lte = lhs.end();
-		ft::randomAccessIterator<const T> rte = rhs.end();
+		ft::random_access_iterator<const T> ltb = lhs.begin();
+		ft::random_access_iterator<const T> rtb = rhs.begin();
+		ft::random_access_iterator<const T> lte = lhs.end();
+		ft::random_access_iterator<const T> rte = rhs.end();
 		return (std::lexicographical_compare(ltb, lte, rtb, rte));
 	}
 	template <typename T>

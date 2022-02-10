@@ -1,10 +1,6 @@
 #include <iostream>
 #include <string>
-
 #include "templates/containers/vector.hpp"
-#include "templates/containers/stack.hpp"
-
-#include <stdlib.h>
 
 #define MAX_RAM 215000
 #define BUFFER_SIZE 4096
@@ -157,7 +153,8 @@ int main(int argc, char** argv)
 			ft::vector<int> myvector;
 			int sum (0);
 
-			for (int i=1;i<=10;i++) myvector.push_back(i);
+			for (int i=1;i<=10;i++)
+				myvector.push_back(i);
 
 			while (!myvector.empty())
 			{
@@ -168,23 +165,26 @@ int main(int argc, char** argv)
 			std::cout << "total: " << sum << '\n';
 		}
 
-		/*
 		{
 			std::cout << MAGENTA << "\n\nTEST OF ASSIGN" << RESET << std::endl;
 			ft::vector<int> first;
 			ft::vector<int> second;
 			ft::vector<int> third;
+			try
+			{
+				first.assign(7, 100);
+				ft::vector<int>::iterator it;
+				it = first.begin() + 1;
 
-			first.assign (7,100);             // 7 ints with a value of 100
+				second.assign(it, first.end()-1); // the 5 central values of first
 
-			ft::vector<int>::iterator it;
-			it = first.begin()+1;
-
-			second.assign (it, first.end()-1); // the 5 central values of first
-
-			int myints[] = {1776,7, 4};
-			third.assign (myints,myints + 3);   // assigning from array.
-
+				int myints[] = {1776,7, 4};
+				third.assign(myints, myints + 3);   // assigning from array.
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << "DONTKNOW - " << e.what() << '\n';
+			}
 			std::cout << "Size of first: " << int (first.size()) << '\n';
 			std::cout << "Size of second: " << int (second.size()) << '\n';
 			std::cout << "Size of third: " << int (third.size()) << '\n';
@@ -239,33 +239,19 @@ int main(int argc, char** argv)
 		}
 		{
 			std::cout << MAGENTA << "\n\nTEST OF RBEGIN" << RESET << std::endl;
-			ft::vector<int> myvector(5, 0, std::allocator<ft::vector<int>::value_type>());  // 5 default-constructed ints
+			ft::vector<int> myvector(5, 0);
 
-			int i =0;
 			ft::vector<int>::reverse_iterator rit = myvector.rbegin();
-			for (; rit!= myvector.rend(); ++rit)
-				*rit = ++i;
-
-			std::cout << "myvector contains:";
+			//int i = 0;
+			/*for (; rit!= myvector.rend(); rit++)
+				*rit = ++i;*/
+			
+			/*std::cout << "myvector contains:";
 			for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-				std::cout << ' ' << *it;
-			std::cout << '\n';
+				std::cout << ' ' << *it;*/
 		}
 		{
-			std::cout << MAGENTA << "\n\nTEST OF REND" << RESET << std::endl;
-			ft::vector<int> myvector(5, 0, std::allocator<ft::vector<int>::value_type>());  // 5 default-constructed ints
-
-			int i =0;
-			ft::vector<int>::reverse_iterator rit = myvector.rend();
-			for (; rit != myvector.rbegin(); --rit)
-				*rit = ++i;
-
-			std::cout << "myvector contains:";
-			for (ft::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-				std::cout << ' ' << *it;
-			std::cout << '\n';
-		}*/
-		{
+			std::cout << MAGENTA << "\n\nCAPACITY AND MAX_SIZE" << RESET << std::endl;
 			ft::vector<int> myvector;
 
 			// set some content in the vector:
