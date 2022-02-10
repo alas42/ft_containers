@@ -3,6 +3,7 @@
 
 # include <iostream>
 # include <stdexcept>
+# include <algorithm>
 # include "../iterators/iterator_traits.hpp"
 # include "../iterators/reverse_iterator.hpp"
 # include "../iterators/randomAccessIterator.hpp"

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
-#include <deque>
-
 #include <vector>
+#include <iterator>
+
+#include "templates/containers/vector.hpp"
+#include "templates/containers/stack.hpp"
 
 #include <stdlib.h>
 
@@ -30,39 +32,253 @@ int main(int argc, char** argv)
 
 	const int seed = atoi(argv[1]);
 	srand(seed);
+	std::vector<Buffer> vector_buffer;
 
-	std::vector<std::string> std_vector_str;
-	std::vector<int> std_vector_int;
-	std::vector<Buffer> std_vector_buffer;
-	
 	for (int i = 0; i < COUNT; i++)
 	{
-		std_vector_buffer.push_back(Buffer());
+		vector_buffer.push_back(Buffer());
 	}
 
 	for (int i = 0; i < COUNT; i++)
 	{
 		const int idx = rand() % COUNT;
-		std_vector_buffer[idx].idx = 5;
+		vector_buffer[idx].idx = 5;
 	}
 	
-	std::vector<Buffer>().swap(std_vector_buffer);
+	std::vector<Buffer>().swap(vector_buffer);
 
 	try
 	{
 		for (int i = 0; i < COUNT; i++)
 		{
 			const int idx = rand() % COUNT;
-			std_vector_buffer.at(idx);
+			vector_buffer.at(idx);
 			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTYls " <<std::endl;
 		}
 	}
 	catch(const std::exception& e)
 	{
-		//NORMAL ! :P
+		std::cout << "good, it has to be empty" << std::endl;
 	}
-
-	std::cout << std::endl;
 	
+	std::cout << std::endl;
+	{
+		std::vector<std::string> vector_str;
+		std::vector<int> vector_int;
+		std::vector<int> vector_int2;
+		
+		for (unsigned long i = 0; i < 51; i++)
+		{
+			vector_int.push_back((static_cast<int>(i) + 60) % 70);
+		}
+	
+		for (unsigned long i = 0; i < 10; i++)
+		{
+			vector_int2.push_back(static_cast<int>(i));
+		}
+
+		std::cout << MAGENTA << "\n[AFTER PUSH_BACKS]" << RESET << std::endl;
+		std::cout << "size of vector = " << vector_int.size() << " || max_size = " << vector_int.max_size() <<  std::endl;
+	
+		for (unsigned long i = 0; i < vector_int.size(); i++)
+		{
+			std::cout << i << ": " << vector_int[i];
+			if (i % 10 == 9)
+				std::cout << std::endl;
+			else
+				std::cout << " |##| ";
+		}
+
+		std::vector<int>::iterator it = vector_int.begin();
+	
+		vector_int.insert(it, (size_t)15, 10);
+
+		it = vector_int.begin() + 5;
+		vector_int.insert(it, (size_t)30, 0);
+
+
+		std::cout << MAGENTA << "\n\nAFTER INSERT" << RESET << std::endl;
+		for (unsigned long i = 0; i < vector_int.size(); i++)
+		{
+			std::cout << i << " : " << vector_int[i];
+			if (i % 10 == 9)
+				std::cout << std::endl;
+			else
+				std::cout << " |##| ";
+		}
+
+		std::cout << MAGENTA << "\n\nAFTER SWAP" << RESET << std::endl;
+		vector_int.swap(vector_int2);
+
+		for (unsigned long i = 0; i < vector_int.size(); i++)
+		{
+			std::cout << i << " : " << vector_int[i];
+			if (i % 10 == 9)
+				std::cout << std::endl;
+			else
+				std::cout << " |##| ";
+		}
+
+
+		{
+			std::cout << MAGENTA << "\n\n[BACK FRONT DATA EMPTY]" << RESET << std::endl;
+			std::cout << MAGENTA << "back : " << RESET << vector_int.back() << std::endl;
+			std::cout << MAGENTA << "front : " << RESET << vector_int.front() << std::endl; 
+			std::cout << MAGENTA << "data : " << RESET << vector_int.data() << std::endl;
+			std::cout << MAGENTA << "empty : " << RESET;
+			if (vector_int.empty())
+					std::cout << GREEN << "true";
+			else
+				std::cout << RED << "false";
+			std::cout << RESET << std::endl;
+		}
+		{
+			std::cout << MAGENTA << "\n\nTEST OF CLEAR" << RESET << std::endl;
+			std::vector<int> myvector;
+			myvector.push_back (100);
+			myvector.push_back (200);
+			myvector.push_back (300);
+
+			std::cout << "myvector contains:";
+			for (unsigned i=0; i<myvector.size(); i++)
+				std::cout << ' ' << myvector[i];
+			std::cout << '\n';
+
+			myvector.clear();
+			myvector.push_back (1101);
+			myvector.push_back (2202);
+
+			std::cout << "myvector contains:";
+			for (unsigned i=0; i<myvector.size(); i++)
+				std::cout << ' ' << myvector[i];
+			std::cout << '\n';
+		}
+		{
+			std::cout << MAGENTA << "\n\nTEST OF EMPTY" << RESET << std::endl;
+			std::vector<int> myvector;
+			int sum (0);
+
+			for (int i=1;i<=10;i++) myvector.push_back(i);
+
+			while (!myvector.empty())
+			{
+				sum += myvector.back();
+				myvector.pop_back();
+			}
+
+			std::cout << "total: " << sum << '\n';
+		}
+
+		{
+			std::cout << MAGENTA << "\n\nTEST OF ASSIGN" << RESET << std::endl;
+			std::vector<int> first;
+			std::vector<int> second;
+			std::vector<int> third;
+
+			first.assign (7,100);             // 7 ints with a value of 100
+
+			std::vector<int>::iterator it;
+			it = first.begin()+1;
+
+			second.assign (it, first.end()-1); // the 5 central values of first
+
+			int myints[] = {1776,7, 4};
+			third.assign (myints,myints + 3);   // assigning from array.
+
+			std::cout << "Size of first: " << int (first.size()) << '\n';
+			std::cout << "Size of second: " << int (second.size()) << '\n';
+			std::cout << "Size of third: " << int (third.size()) << '\n';
+		}
+		{
+			std::cout << MAGENTA << "\n\n[COMPARAISONS]" << RESET << std::endl;
+			std::cout << "size of vector_int = " << vector_int.size() << ", of vector_int2 = " << vector_int2.size() << std::endl;
+			bool comparisons[6];
+			std::string signs[6];
+
+			comparisons[0] = (vector_int < vector_int2);
+			signs[0] = "<";
+
+			comparisons[1] = (vector_int <= vector_int2);
+			signs[1] = "<=";
+		
+			comparisons[2] = (vector_int > vector_int2);
+			signs[2] = ">";
+
+			comparisons[3] = (vector_int >= vector_int2);
+			signs[3] = ">=";
+
+			comparisons[4] = (vector_int == vector_int2);
+			signs[4] = "==";
+
+			comparisons[5] = (vector_int != vector_int2);
+			signs[5] = "!=";
+
+			for (int i = 0; i < 6; i++)
+			{
+				std::cout << MAGENTA << signs[i] << " ";
+				if (comparisons[i])
+					std::cout << GREEN << "true";
+				else
+					std::cout << RED << "false";
+				std::cout << RESET << std::endl;
+			}
+		}
+		{
+			std::cout << MAGENTA << "\n\nTEST OF ERASE" << RESET << std::endl;
+			std::vector<int> myvector;
+
+			for (int i=1; i<=10; i++) myvector.push_back(i);
+
+			myvector.erase (myvector.begin()+5);
+			myvector.erase (myvector.begin(),myvector.begin()+3);
+
+			std::cout << "myvector contains:";
+			for (unsigned i=0; i<myvector.size(); ++i)
+				std::cout << ' ' << myvector[i];
+			std::cout << '\n';
+		}
+		{
+			std::cout << MAGENTA << "\n\nTEST OF RBEGIN" << RESET << std::endl;
+			std::vector<int> myvector(5, 0, std::allocator<std::vector<int>::value_type>());  // 5 default-constructed ints
+
+			int i =0;
+			std::vector<int>::reverse_iterator rit = myvector.rbegin();
+			for (; rit!= myvector.rend(); ++rit)
+				*rit = ++i;
+
+			std::cout << "myvector contains:";
+			for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+				std::cout << ' ' << *it;
+			std::cout << '\n';
+		}
+		{
+			std::cout << MAGENTA << "\n\nTEST OF REND" << RESET << std::endl;
+			std::vector<int> myvector(5, 0, std::allocator<std::vector<int>::value_type>());  // 5 default-constructed ints
+
+			int i =0;
+			std::vector<int>::reverse_iterator rit = myvector.rend();
+			for (; rit != myvector.rbegin(); --rit)
+				*rit = ++i;
+
+			std::cout << "myvector contains:";
+			for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
+				std::cout << ' ' << *it;
+			std::cout << '\n';
+		}
+		{
+			std::vector<int> myvector;
+
+			// set some content in the vector:
+			for (int i=0; i<100; i++) myvector.push_back(i);
+
+			std::cout << "size: " << (int) myvector.size() << '\n';
+			if (myvector.capacity() >= myvector.size())
+				std::cout << "capacity: is fine\n";
+			else
+				std::cout << "capcity is not fine : " << myvector.capacity() << '\n';
+			if (myvector.max_size() > 10000)
+				std::cout << "max_size is fine\n";
+		}
+	}
 	return (0);
 }
