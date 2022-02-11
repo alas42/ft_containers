@@ -10,21 +10,22 @@ namespace ft
 	class reverse_iterator
 	{
 		public :
-			typedef Iter									iterator_type;
-			typedef typename Iter::value_type				value_type;
-			typedef typename Iter::iterator_category		iterator_category;
-			typedef typename Iter::difference_type			difference_type;
-			typedef typename Iter::pointer					pointer;
-			typedef typename Iter::reference				reference;
+			typedef Iter														iterator_type;
+			typedef typename ft::iterator_traits<Iter>::value_type				value_type;
+			typedef typename ft::iterator_traits<Iter>::iterator_category		iterator_category;
+			typedef typename ft::iterator_traits<Iter>::difference_type			difference_type;
+			typedef typename ft::iterator_traits<Iter>::pointer					pointer;
+			typedef typename ft::iterator_traits<Iter>::reference				reference;
 
 			reverse_iterator(void){}
 			explicit reverse_iterator( iterator_type x ): current(x){}
-
-			reverse_iterator( const reverse_iterator<value_type> & other )
+			template < class U>
+			reverse_iterator( const reverse_iterator<U> & other )
 			{
 				*this = other;
 			}
-			reverse_iterator<Iter>& operator=( const reverse_iterator<value_type> & other )
+			template < class U>
+			reverse_iterator<Iter>& operator=( const reverse_iterator<U> & other )
 			{
 				if (this != &other)
 				{
@@ -64,13 +65,13 @@ namespace ft
 			reverse_iterator<Iter> operator++( int )
 			{
 				reverse_iterator tmp(*this);
-				++(*this);
+				--current;
 				return (tmp);
 			}
 			reverse_iterator<Iter> operator--( int )
 			{
 				reverse_iterator tmp(*this);
-				--(*this);
+				++current;
 				return (tmp);
 			}
 			reverse_iterator<Iter> operator+( difference_type n ) const
@@ -85,11 +86,13 @@ namespace ft
 			}
 			reverse_iterator<Iter>& operator+=( difference_type n )
 			{
-				current -= n;return (*this);
+				current -= n;
+				return (*this);
 			}
 			reverse_iterator<Iter>& operator-=( difference_type n )
 			{
-				current += n;return (*this);
+				current += n;
+				return (*this);
 			}
 		
 		protected :

@@ -238,26 +238,12 @@ int main(int argc, char** argv)
 			std::cout << '\n';
 		}
 		{
-			std::cout << MAGENTA << "\n\nTEST OF RBEGIN" << RESET << std::endl;
+			std::cout << MAGENTA << "\n\nTEST OF RBEGIN && REND" << RESET << std::endl;
 			std::vector<int> myvector(5, 0, std::allocator<std::vector<int>::value_type>());  // 5 default-constructed ints
 
 			int i =0;
 			std::vector<int>::reverse_iterator rit = myvector.rbegin();
 			for (; rit!= myvector.rend(); ++rit)
-				*rit = ++i;
-
-			std::cout << "myvector contains:";
-			for (std::vector<int>::iterator it = myvector.begin(); it != myvector.end(); ++it)
-				std::cout << ' ' << *it;
-			std::cout << '\n';
-		}
-		{
-			std::cout << MAGENTA << "\n\nTEST OF REND" << RESET << std::endl;
-			std::vector<int> myvector(5, 0, std::allocator<std::vector<int>::value_type>());  // 5 default-constructed ints
-
-			int i =0;
-			std::vector<int>::reverse_iterator rit = myvector.rend();
-			for (; rit != myvector.rbegin(); --rit)
 				*rit = ++i;
 
 			std::cout << "myvector contains:";

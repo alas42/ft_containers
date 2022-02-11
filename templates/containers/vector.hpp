@@ -60,6 +60,7 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
+					throw;
 				}
 			}
 
@@ -107,7 +108,7 @@ namespace ft
 					catch(const std::exception& e)
 					{
 						std::cerr << e.what() << '\n';
-						throw ("=");
+						throw;
 					}
 				}
 				return *this;
@@ -124,13 +125,11 @@ namespace ft
 				try
 				{
 					erase(begin(), end());
-					std::cout << "erase works" << std::endl;
 					insert(begin(), count, value);
 				}
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("assign");
 				}
 			}
 
@@ -144,7 +143,6 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("assign");
 				}
 			}
 			/*
@@ -239,11 +237,11 @@ namespace ft
 			}
 			reverse_iterator rbegin()
 			{
-				return reverse_iterator(--end());
+				return reverse_iterator(end());
 			}
 			const_reverse_iterator rbegin() const
 			{
-				return const_reverse_iterator(--end());
+				return const_reverse_iterator(end());
 			}
 
 			reverse_iterator rend()
@@ -301,7 +299,7 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("reserve");
+					throw;
 				}
 			}
 
@@ -334,12 +332,10 @@ namespace ft
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
 				
-				for (size_type i = this->size(); i >= offset; i--)
+				for (size_type i = this->size(); i <= this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
-					if (i == 0)
-						break ;
 				}
 				for (size_type i = 0; i < count; i++)
 				{
@@ -355,12 +351,10 @@ namespace ft
 				size_type count = last - first;
 				this->reserve(this->m_size + count);
 
-				for (size_type i = this->size(); i >= offset; i--)
+				for (size_type i = this->size(); i <= this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
-					if (i == 0)
-						break ;
 				}
 				for (size_type i = 0; i < count; i++)
 				{
@@ -379,7 +373,7 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("erase");
+					throw;
 				}
 			}
 
@@ -403,7 +397,7 @@ namespace ft
 				catch(const std::exception & e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("erase it2");
+					throw;
 				}
 			}
 
@@ -419,7 +413,7 @@ namespace ft
 				catch(const std::exception & e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("push_back");
+					throw;
 				}				
 			}
 
@@ -433,7 +427,7 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("pop_back");
+					throw;
 				}
 			}
 
@@ -459,7 +453,7 @@ namespace ft
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
-					throw ("resize");
+					throw;
 				}
 			}
 

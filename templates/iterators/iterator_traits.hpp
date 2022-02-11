@@ -15,7 +15,6 @@ namespace ft
 		typedef typename Iter::pointer pointer;
 		typedef typename Iter::reference reference;
 	};
-
 }
 
 #endif

@@ -19,7 +19,10 @@ namespace ft
 			public:
 				bidirectionalIterator(): m_ptr(0){}
 				bidirectionalIterator(pointer ptr): m_ptr(ptr){}
-				bidirectionalIterator(const bidirectionalIterator<T> & copy){*this = copy;}
+				bidirectionalIterator(const bidirectionalIterator<T> & copy)
+				{
+					*this = copy;
+				}
 				~bidirectionalIterator(){}
 
 				bidirectionalIterator<T>&	operator=(pointer ptr)
@@ -43,9 +46,16 @@ namespace ft
 				{
 					return (this->m_ptr == b.m_ptr);
 				}
-				bidirectionalIterator<T>&	operator++(){++m_ptr;return (*this);}
-				bidirectionalIterator<T>&	operator--(){--m_ptr;return (*this);}
-
+				bidirectionalIterator<T>&	operator++()
+				{
+					++m_ptr;
+					return (*this);
+				}
+				bidirectionalIterator<T>&	operator--()
+				{
+					--m_ptr;
+					return (*this);
+				}
 				bidirectionalIterator<T>		operator++(int)
 				{
 					bidirectionalIterator temp(*this);

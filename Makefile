@@ -1,31 +1,46 @@
 NAME = 	ft_containers
+NAME2 = stl_containers
 
-FIRST_HEADER_FILES = templates/containers/vector.hpp \
+HEADER_FILES = templates/containers/vector.hpp \
+	templates/containers/stack.hpp \
+	templates/containers/map.hpp \
 	templates/iterators/iterator_traits.hpp \
 	templates/iterators/randomAccessIterator.hpp \
-	templates/iterators/reverse_iterator.hpp
+	templates/iterators/reverse_iterator.hpp \
+	templates/iterators/bidirectionalIterator.hpp
 
-FIRST_SOURCES_FILES =	vector_main.cpp
+SOURCES_FILES =	ft_containers_main.cpp
+SOURCES_FILES2 = stl_containers_main.cpp
 
-FIRST_OBJS = $(FIRST_SOURCES_FILES:.cpp=.o)
+OBJS = $(SOURCES_FILES:.cpp=.o)
+OBJS2 = $(SOURCES_FILES2:.cpp=.o)
 
 CPPFLAGS = -Wall -Werror -Wextra 
 CC = clang++ -std=c++98
 
 all: $(NAME)
 
-$(NAME): $(FIRST_OBJS) $(FIRST_HEADER_FILES)
-	$(CC) $(CPPFLAGS) $(FIRST_SOURCES_FILES) -o $(NAME)
+$(NAME): $(OBJS) $(HEADER_FILES)
+	$(CC) $(CPPFLAGS) $(SOURCES_FILES) -o $(NAME)
+
+stl : $(NAME2)
+
+$(NAME2): $(OBJS2)
+	$(CC) $(CPPFLAGS) $(SOURCES_FILES2) -o $(NAME2)
 
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) -o $@ -c $<
 
 clean:
-	rm -f $(FIRST_OBJS)
+	rm -f $(OBJS)
+	rm -f $(OBJS2)
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(NAME2)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+re2: fclean all stl
+
+.PHONY: all clean fclean re stl
