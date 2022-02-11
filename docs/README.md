@@ -123,11 +123,9 @@ Yeah, so since tuple are a c++11 thing, I will say we have to code it too...
 
 [H]
 std::make_pair
-create a std::apir object ? then it just calls std::pair and returns it... why tho ?
+create a std::pair object ? then it just calls std::pair and returns it... why tho ?
 why not calll std::pair directly ?
 
-Et voila, you have 140 hours if you want. Don't forget a fucking main that will test EVERYTHING YOU DID.
-140 hours, that's what, one month ?
 Hilf mir Gott, die sind verrueckt
 
 WHAT IS AN ALLOCATOR ? 

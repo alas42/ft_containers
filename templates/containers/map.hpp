@@ -1,11 +1,13 @@
-#ifndef map_HPP
-# define map_HPP
+#ifndef MAP_HPP
+# define MAP_HPP
 
 # include <string>
 # include <iostream>
 # include <stdexcept>
-# include "../pairs/pair.hpp"
-# include "../iterators/iterator_traits.hpp"
+# include <utility>
+# include <functional>
+
+# include "../tree/RedBlackTree.hpp"
 # include "../iterators/reverse_iterator.hpp"
 # include "../iterators/bidirectionalIterator.hpp"
 
@@ -24,17 +26,17 @@ namespace ft
 		public :
 			typedef Key																			key_type;
 			typedef T																			mapped_type;
-			typedef std::pair<const key, T>														value_type;
+			typedef std::pair<const Key, T>														value_type;
 			typedef std::size_t																	size_type;
 			typedef std::ptrdiff_t																difference_type;
 			typedef Compare																		key_compare;
 			typedef Allocator																	allocator_type;
 			typedef T &																			reference;
 			typedef T const &																	const_reference;
-			typename Allocator::pointer															pointer;
-			typename Allocator::const_pointer													const_pointer;
-			typedef typename ft::bidirectionalIterator<value_type>								iterator;
-			typedef typename ft::bidirectionalIterator<const value_type> 						const_iterator;
+			typedef typename Allocator::pointer													pointer;
+			typedef typename Allocator::const_pointer											const_pointer;
+			typedef ft::bidirectionalIterator<value_type>										iterator;
+			typedef ft::bidirectionalIterator<const value_type> 								const_iterator;
 			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 
@@ -52,23 +54,18 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			map(void)
-			{
-
-			}
+			map(void): _ptr(0){}
 
 			map(map const & other)
 			{
 				*this = other;
 			}
 
-			explicit map(const Compare & comp, const Allocator & alloc = Allocator())
-			{
-
-			}
+			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc), _ptr(0);
+			{}
 			
 			template< class InputIt >
-			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() )
+			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc), _ptr(0)
 			{
 
 			}
@@ -79,12 +76,16 @@ namespace ft
 			/*
 			** Destructor and = operator
 			*/
-			~map(void){}
+			~map(void)
+			{
+
+			}
 			map & operator = (map const & other)
 			{
 				if (this != &other)
 				{
-
+					this->_compare = other.key_comp();
+					this->_alloc = other.get_allocator();
 				}
 				return (*this);
 			}
@@ -125,10 +126,22 @@ namespace ft
 			/*
 			** Iterators
 			*/
-			iterator begin(){}
-			const_iterator begin() const{}
-			iterator end(){}
-			const_iterator end() const{}
+			iterator begin()
+			{
+
+			}
+			const_iterator begin() const
+			{
+
+			}
+			iterator end()
+			{
+
+			}
+			const_iterator end() const
+			{
+
+			}
 			reverse_iterator rbegin(){}
 			const_reverse_iterator rbegin() const{}
 			reverse_iterator rend(){}
@@ -163,24 +176,25 @@ namespace ft
 			{
 
 			}
-			std::pair<iterator, bool> insert( const value_type& value )
+			std::pair<iterator, bool> insert( const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
 			{
 
 			}
-			iterator insert( iterator hint, const value_type& value )
+			iterator insert( iterator hint, const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
 			{
 
 			}
 			template< class InputIt >
-			void insert( InputIt first, InputIt last )
+			void insert( InputIt first, InputIt last ) //if the container doesn't already contain an element with an equivalent key.
 			{
 
 			}
 			void erase( iterator pos )
 			{
-
+				if (pos == end())
+					return;
 			}
-			void erase( iterator first, iterator last )
+			void erase( iterator first, iterator last ) //Removes the elements in the range [first; last), which must be a valid range in *this.
 			{
 
 			}
@@ -244,8 +258,7 @@ namespace ft
 			*/
 			key_compare key_comp() const
 			{
-
-
+				return this->_compare;
 			}
 			map::value_compare value_comp() const
 			{
@@ -256,6 +269,7 @@ namespace ft
 			*/
 
 		protected :
+			Compare		_compare;
 			Allocator	_alloc;
 			pointer		_ptr;
 	};
