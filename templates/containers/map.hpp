@@ -7,6 +7,7 @@
 # include <utility>
 # include <functional>
 
+# include "../comparisons/binary_function.hpp"
 # include "../tree/RedBlackTree.hpp"
 # include "../iterators/reverse_iterator.hpp"
 # include "../iterators/bidirectionalIterator.hpp"
@@ -70,7 +71,8 @@ namespace ft
 			template< class InputIt >
 			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc)
 			{
-
+				(void)first;
+				(void)last;
 			}
 			/*
 			** End of Constructors
@@ -112,15 +114,15 @@ namespace ft
 			*/
 			T& at( const Key& key )
 			{
-
+				(void)key;
 			}
 			const T& at( const Key& key ) const
 			{
-
+				(void)key;
 			}
 			T& operator[]( const Key& key )
 			{
-
+				(void)key;
 			}
 			/*
 			** End of Element access
@@ -179,18 +181,20 @@ namespace ft
 			{
 
 			}
+			/*
 			std::pair<iterator, bool> insert( const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
 			{
-
+				
 			}
 			iterator insert( iterator hint, const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
 			{
 
-			}
+			}*/
 			template< class InputIt >
 			void insert( InputIt first, InputIt last ) //if the container doesn't already contain an element with an equivalent key.
 			{
-
+				(void)first;
+				(void)last;
 			}
 			void erase( iterator pos )
 			{
@@ -199,15 +203,16 @@ namespace ft
 			}
 			void erase( iterator first, iterator last ) //Removes the elements in the range [first; last), which must be a valid range in *this.
 			{
-
+				(void)first;
+				(void)last;
 			}
 			size_type erase( const Key& key )
 			{
-
+				(void)key;
 			}
 			void swap( map& other )
 			{
-
+				(void)other;
 			}
 			/*
 			** End of Modifiers
@@ -215,44 +220,44 @@ namespace ft
 
 			/*
 			** Lookup
-			*/
+			*
 			size_type count( const Key& key ) const
 			{
-
+				(void)key;
 			}
 			iterator find( const Key& key )
 			{
-
+				(void)key;
 			}
 			const_iterator find( const Key& key ) const
 			{
-
+				(void)key;
 			}
 			std::pair<iterator,iterator> equal_range( const Key& key )
 			{
-
+				(void)key;
 			}
 			std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
 			{
-
+				(void)key;
 			}
 			iterator lower_bound( const Key& key )
 			{
-
+				(void)key;
 			}
 			const_iterator lower_bound( const Key& key ) const
 			{
-
+				(void)key;
 			}
 			iterator upper_bound( const Key& key )
 			{
-
+				(void)key;
 			}
 			const_iterator upper_bound( const Key& key ) const
 			{
-
+				(void)key;
 			}
-			/*
+			
 			** End of Lookup
 			*/
 
@@ -274,9 +279,9 @@ namespace ft
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;
-			ft::RedBlackTree _rbtree;
+			ft::RedBlackTree<value_type> _rbtree;
 	};
-
+/*
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
@@ -313,6 +318,7 @@ namespace ft
 	{
 
 	}
+	*/
 }
 
 #endif

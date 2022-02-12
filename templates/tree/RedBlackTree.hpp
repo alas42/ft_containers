@@ -22,7 +22,7 @@ namespace ft
 			/*
 			** SEARCH / INSERT / DELETE BY VAL
 			*/
-			Node<value_type> * search(value_type & const val)
+			Node<value_type> * search(value_type & val)
 			{
 				Node<value_type> * temp = root;
 
@@ -46,7 +46,7 @@ namespace ft
 				}
 				return temp;
 			}
-			void	insert(value_type & const val)
+			void	insert(value_type & val)
 			{
 				Node<value_type> * new_node = new Node<value_type>(val);
 				if (root == 0)
@@ -67,7 +67,7 @@ namespace ft
 					fixRedNode(new_node);
 				}
 			}
-			void	deleteByValue(value_type & const val)
+			void	deleteByValue(value_type & val)
 			{
 				if (root == 0)
 					return ;
@@ -123,10 +123,10 @@ namespace ft
 				Node<value_type> * parent = x->_parent, * grandparent = parent->_parent, * uncle = x->uncle();
 				if (parent->_c != BLACK)
 				{
-					if (uncle != 0 && uncle->_c == RED)
+					if (uncle != 0 && uncle->_c == CRED)
 					{
 						uncle->_c = parent->_c = BLACK;
-						grandparent->_c = RED;
+						grandparent->_c = CRED;
 						fixRedNode(grandparent);
 					}
 					else
@@ -189,7 +189,7 @@ namespace ft
 						else
 						{
 							if (x->sibling() != 0)
-								x->sibling()->_c = RED;
+								x->sibling()->_c = CRED;
 						}
 						if (x->isOnLeft())
 							parent->_left = 0;
@@ -234,9 +234,9 @@ namespace ft
 					fixDoubleBlack(parent);
 				else
 				{
-					if (sibling->_c == RED)
+					if (sibling->_c == CRED)
 					{
-						parent->_c = RED;
+						parent->_c = CRED;
 						sibling->_c = BLACK;
 						if (sibling->isOnLeft())
 							rightRotate(parent);
@@ -248,7 +248,7 @@ namespace ft
 					{
 						if (sibling->hasRedChild())
 						{
-							if (sibling->_left != 0 && sibling->_left->_c == RED)
+							if (sibling->_left != 0 && sibling->_left->_c == CRED)
 							{
 								if (sibling->isOnLeft())
 								{
@@ -282,7 +282,7 @@ namespace ft
 						}
 						else
 						{
-							sibling->_c = RED;
+							sibling->_c = CRED;
 							if (parent->_c == BLACK)
 								fixDoubleBlack(parent);
 							else

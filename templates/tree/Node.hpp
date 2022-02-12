@@ -4,7 +4,7 @@
 
 namespace ft
 {
-	enum COLOR {RED, BLACK};
+	enum COLOR {CRED, BLACK};
 
 	template <typename T>
 	class Node
@@ -21,7 +21,7 @@ namespace ft
 			Node(value_type & value): _value(value)
 			{
 				_parent = _left = _right = 0;
-				_c = RED;
+				_c = CRED;
 			}
 			Node *uncle(void)
 			{
@@ -34,7 +34,7 @@ namespace ft
 			}
 			bool isOnLeft(void)
 			{
-				return this == parent->_left;
+				return this == _parent->_left;
 			}
 			Node *sibling(void)
 			{
@@ -59,7 +59,7 @@ namespace ft
 			}
 			bool hasRedChild(void)
 			{
-				return ((_left != 0 && _left->_c == RED) || (_right != 0 && _right->_c == RED));
+				return ((_left != 0 && _left->_c == CRED) || (_right != 0 && _right->_c == CRED));
 			}
 	};
 
