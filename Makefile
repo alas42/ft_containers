@@ -4,8 +4,8 @@ NAME2 = stl_containers
 HEADER_FILES = templates/containers/vector.hpp \
 	templates/containers/stack.hpp \
 	templates/containers/map.hpp \
-	templates/tree/Node.hpp \
 	templates/tree/RedBlackTree.hpp \
+	templates/tree/Node.hpp \
 	templates/iterators/iterator_traits.hpp \
 	templates/iterators/randomAccessIterator.hpp \
 	templates/iterators/reverse_iterator.hpp \

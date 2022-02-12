@@ -54,18 +54,21 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			map(void): _ptr(0){}
+			map(void)
+			{
+				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
+			}
 
 			map(map const & other)
 			{
 				*this = other;
 			}
 
-			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc), _ptr(0);
+			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc)
 			{}
 			
 			template< class InputIt >
-			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc), _ptr(0)
+			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc)
 			{
 
 			}
@@ -271,7 +274,7 @@ namespace ft
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;
-			pointer		_ptr;
+			ft::RedBlackTree _rbtree;
 	};
 
 	template< class Key, class T, class Compare, class Alloc >

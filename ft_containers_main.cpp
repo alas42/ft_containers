@@ -2,6 +2,7 @@
 #include <string>
 #include "templates/containers/vector.hpp"
 #include "templates/containers/stack.hpp"
+#include "templates/containers/map.hpp"
 
 #define MAX_RAM 215000
 #define BUFFER_SIZE 4096
@@ -326,7 +327,7 @@ int main(int argc, char** argv)
 	{
 		std::cout << MAGENTA << "\n|****MAPS****|" << RESET << std::endl;
 		{
-			
+			ft::map<int, int> myints;
 		}
 	}
 	return (0);
