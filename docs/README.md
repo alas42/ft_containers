@@ -159,3 +159,14 @@ To learn a frigging lot about allocators : https://www.drdobbs.com/the-standard-
 To learn about iterators with a slide-show : http://www.cse.unsw.edu.au/~cs6771/16s2/lectures/lec08-1.pdf
 AND : https://web.stanford.edu/class/cs107l/handouts/04-Custom-Iterators.pdf
 
+---> THE QUESTION IS : WHY USE an allocator on ft::map when there is no reserve function in place ?
+
+But, the rest in not very difficult.
+Use allocator to allocate and construct the nodes.
+Et voila.
+Does the pair needs to be allocated ? No, well I don't think so anyway.
+The bidirectionnal iterator is a mystery to me.
+Does he has access to the root Node ?
+I understand how begin() and end() should work but not what map::iterator++ will do
+    Maybe it should look into the redblacktree and look for the next key, i don't know.
+    I will try it tomorrow

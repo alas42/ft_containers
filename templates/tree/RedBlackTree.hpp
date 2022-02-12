@@ -5,13 +5,15 @@
 
 namespace ft
 {
-	template <typename T>
+	template <typename PAIR> // std::pair<const Key, value>
 	class RedBlackTree
 	{
 		public:
-			typedef T value_type;
+			typedef PAIR value_type;
+
 		private:
 			Node<value_type> * root;
+
 		public:
 			RedBlackTree(void): root(0){}
 			Node<value_type> * getRoot(void)

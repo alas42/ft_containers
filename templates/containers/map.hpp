@@ -55,9 +55,10 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			map(void)
+			map(void): _size(0)
 			{
 				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
+				//m_data = this->m_allocator.allocate(count, m_data);
 			}
 
 			map(map const & other)
@@ -280,6 +281,7 @@ namespace ft
 			Compare		_compare;
 			Allocator	_alloc;
 			ft::RedBlackTree<value_type> _rbtree;
+			size_type	_size;
 	};
 /*
 	template< class Key, class T, class Compare, class Alloc >

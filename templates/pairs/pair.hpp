@@ -32,37 +32,34 @@ namespace ft
 			*/
 			pair& operator=( const pair& other )
 			{}
-
-			template< typename T1, typename T2 >
-			friend ft::pair<T1,T2> make_pair( T1 t, T2 u )
-			{}
-
-			/*
-			** Comparison Operators
-			*/
-			template< typename T1, typename T2 >
-			bool operator==( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
-
-			template< typename T1, typename T2 >
-			bool operator!=( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
-
-			template< typename T1, typename T2 >
-			bool operator<( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
-
-			template< typename T1, typename T2 >
-			bool operator<=( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
-
-			template< typename T1, typename T2 >
-			bool operator>( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
-
-			template< typename T1, typename T2 >
-			bool operator>=( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs )
-			{}
 	};
+	template< class T1, class T2 >
+	ft::pair<T1,T2> make_pair( T1 t, T2 u )
+	{
+
+	}
+	template< typename T1, typename T2 >
+	bool operator==( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
+
+	template< typename T1, typename T2 >
+	bool operator!=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
+
+	template< typename T1, typename T2 >
+	bool operator<( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
+
+	template< typename T1, typename T2 >
+	bool operator<=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
+
+	template< typename T1, typename T2 >
+	bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
+
+	template< typename T1, typename T2 >
+	bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs )
+	{}
 }
 #endif

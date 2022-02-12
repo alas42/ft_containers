@@ -6,12 +6,12 @@ namespace ft
 {
 	enum COLOR {CRED, BLACK};
 
-	template <typename T>
+	template <typename T> // std::pair<const Key, value>
 	class Node
 	{
 		public:
 			typedef T value_type;
-
+	
 		public:
 			COLOR _c;
 			Node *_parent, *_left, *_right;
