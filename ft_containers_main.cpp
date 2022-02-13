@@ -229,6 +229,10 @@ int main(int argc, char** argv)
 						std::cout << RED << "false";
 					std::cout << RESET << std::endl;
 				}
+				ft::vector<int>::iterator it = vector_int.begin();
+				ft::vector<int>::iterator it2 = vector_int.begin();
+				if (it != it2)
+					std::cout << "test" << std::endl;
 			}
 			{
 				std::cout << MAGENTA << "\n\nTEST OF ERASE" << RESET << std::endl;

@@ -170,3 +170,19 @@ Does he has access to the root Node ?
 I understand how begin() and end() should work but not what map::iterator++ will do
     Maybe it should look into the redblacktree and look for the next key, i don't know.
     I will try it tomorrow
+
+Map sources: RedBlackTrees and Nodes
+https://www.geeksforgeeks.org/red-black-tree-set-1-introduction-2/
+https://github.com/dbjnbnrj/redblacktrees/blob/master/rb_node.h
+
+I have to be more logical.
+
+The redblacktree is it just a tool to handle nodes OR is it the ONLY WAY a map can access to a NODE ?
+If it is the caase, I have to overload every iterator functions in redblacktree too.
+Bit heavy, ain't it ?
+Okay, so it is "just" a tool, what now ?
+-> iterator have to access to the the contents of the nodes. should they have a redblacktree in it ?
+-> Nope, if I have to make it right, they point to a pair OR I have to specialise the iterator.
+-> Messy and actually I can't even if I want, the map iterator, a bidirectionnal one has to point over
+    value_type (ft::pair<const Key, T>).
+damn, how then ?

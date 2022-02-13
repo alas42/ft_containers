@@ -22,9 +22,12 @@ namespace ft
 				random_access_iterator(const random_access_iterator<T> & copy){*this = copy;}
 				~random_access_iterator(){}
 
-				random_access_iterator<T>&	operator=(pointer ptr)
+				random_access_iterator<T>&	operator=(const random_access_iterator<T>& copy)
 				{
-					m_ptr = ptr;
+					if (this != &copy)
+					{
+						this->m_ptr = copy.m_ptr;
+					}
 					return (*this);
 				}
 				reference 					operator*() const

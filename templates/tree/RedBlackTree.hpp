@@ -10,13 +10,14 @@ namespace ft
 	{
 		public:
 			typedef PAIR value_type;
+			typedef Node<value_type> rb_node;
 
 		private:
-			Node<value_type> * root;
+			rb_node * root;
 
 		public:
 			RedBlackTree(void): root(0){}
-			Node<value_type> * getRoot(void)
+			rb_node * getRoot(void)
 			{
 				return root;
 			}
@@ -24,9 +25,9 @@ namespace ft
 			/*
 			** SEARCH / INSERT / DELETE BY VAL
 			*/
-			Node<value_type> * search(value_type & val)
+			rb_node * search(value_type & val)
 			{
-				Node<value_type> * temp = root;
+				rb_node * temp = root;
 
 				while (temp != 0)
 				{
@@ -41,16 +42,16 @@ namespace ft
 						break ;
 					else
 					{
-						if (temp->right == 0)
+						if (temp->_right == 0)
 							break ;
-						temp = temp->right;
+						temp = temp->_right;
 					}
 				}
 				return temp;
 			}
 			void	insert(value_type & val)
 			{
-				Node<value_type> * new_node = new Node<value_type>(val);
+				rb_node * new_node = new rb_node(val);
 				if (root == 0)
 				{
 					new_node->_c = BLACK;
@@ -58,11 +59,11 @@ namespace ft
 				}
 				else
 				{
-					Node<value_type> * temp = search(val);
+					rb_node * temp = search(val);
 					if (temp->_value == val)
 						return ;
 					new_node->_parent = temp;
-					if (val < temp->_left)
+					if (val < temp->_value)
 						temp->_left = new_node;
 					else
 						temp->_right = new_node;
@@ -73,7 +74,7 @@ namespace ft
 			{
 				if (root == 0)
 					return ;
-				Node<value_type> * nodel = search(val);
+				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
 				deleteNode(nodel);
@@ -81,48 +82,48 @@ namespace ft
 			/*
 			** Operations on Nodes
 			*/
-			void	leftRotate(Node<value_type> *x)
+			void	leftRotate(rb_node *x)
 			{
-				Node<value_type> *n_parent = x->_right;
+				rb_node *n_parent = x->_right;
 				if (x == root)
 					root = n_parent;
 				x->moveDown(n_parent);
 				x->_right = n_parent->_left;
 				if (n_parent->_left != 0)
 					n_parent->_left->_parent = x;
-				n_parent->left = x;
+				n_parent->_left = x;
 			}
-			void	rightRotate(Node<value_type> *x)
+			void	rightRotate(rb_node *x)
 			{
-				Node<value_type> *n_parent = x->_left;
+				rb_node *n_parent = x->_left;
 				if (x == root)
 					root = n_parent;
 				x->moveDown(n_parent);
 				x->_left = n_parent->_right;
 				if (n_parent->_right != 0)
 					n_parent->_right->_parent = x;
-				n_parent->right = x;
+				n_parent->_right = x;
 			}
-			void	swapColors(Node<value_type> *x1, Node<value_type> *x2)
+			void	swapColors(rb_node *x1, rb_node *x2)
 			{
 				ft::COLOR temp = x1->_c;
 				x1->_c = x2->_c;
 				x2->_c = temp;
 			}
-			void	swapValues(Node<value_type> *x1, Node<value_type> *x2)
+			void	swapValues(rb_node *x1, rb_node *x2)
 			{
 				value_type temp = x1->_value;
 				x1->_value = x2->_value;
 				x2->_value = x1->_value;
 			}
-			void	fixRedNode(Node<value_type> *x)
+			void	fixRedNode(rb_node *x)
 			{
 				if (x == root)
 				{
 					x->_c = BLACK;
 					return ;
 				}
-				Node<value_type> * parent = x->_parent, * grandparent = parent->_parent, * uncle = x->uncle();
+				rb_node * parent = x->_parent, * grandparent = parent->_parent, * uncle = x->uncle();
 				if (parent->_c != BLACK)
 				{
 					if (uncle != 0 && uncle->_c == CRED)
@@ -158,28 +159,28 @@ namespace ft
 					}
 				}
 			}
-			Node<value_type> * successor(Node<value_type> * x)
+			rb_node * successor(rb_node * x)
 			{
-				Node<value_type> * temp = x;
-				while (temp->left != 0)
-					temp = temp->left;
+				rb_node * temp = x;
+				while (temp->_left != 0)
+					temp = temp->_left;
 				return temp;
 			}
-			Node<value_type> * BRTreplace(Node<value_type> * x)
+			rb_node * BRTreplace(rb_node * x)
 			{
 				if (x->_left == 0 && x->_right == 0)
 					return 0;
 				if (x->_left != 0 && x->_right != 0)
-					return successor(x->right);
+					return successor(x->_right);
 				if (x->_left != 0)
 					return x->_left;
-				return x->right;
+				return x->_right;
 			}
-			void deleteNode(Node<value_type> * x)
+			void deleteNode(rb_node * x)
 			{
-				Node<value_type> * replacing_node = BRTreplace(x);
+				rb_node * replacing_node = BRTreplace(x);
 				bool both_black = ((replacing_node == 0 || replacing_node == BLACK) && (x->_c == BLACK));
-				Node<value_type> * parent = x->_parent;
+				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
 				{
 					if (x == root)
@@ -201,7 +202,7 @@ namespace ft
 					delete x;
 					return ;
 				}
-				if (x->_left == 0 || x->right == 0)
+				if (x->_left == 0 || x->_right == 0)
 				{
 					if (x == root)
 					{
@@ -227,11 +228,11 @@ namespace ft
 				swapValues(replacing_node, x);
 				deleteNode(replacing_node);
 			}
-			void	fixDoubleBlack(Node<value_type> * x)
+			void	fixDoubleBlack(rb_node * x)
 			{
 				if (x == root)
 					return ;
-				Node<value_type> * sibling = x->sibling(), * parent = x->_parent;
+				rb_node * sibling = x->sibling(), * parent = x->_parent;
 				if (sibling == 0)
 					fixDoubleBlack(parent);
 				else

@@ -23,7 +23,6 @@ namespace ft
 	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<std::pair<const Key, T> > >
 	class map
 	{
-
 		public :
 			typedef Key																			key_type;
 			typedef T																			mapped_type;
@@ -58,7 +57,13 @@ namespace ft
 			map(void): _size(0)
 			{
 				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
-				//m_data = this->m_allocator.allocate(count, m_data);
+				value_type x0(10, 20);
+				value_type x1(20, 10);
+				value_type x2(5, 90);
+				_rbtree.insert(x0);
+				_rbtree.insert(x1);
+				_rbtree.insert(x2);
+				_size += 3;			
 			}
 
 			map(map const & other)
@@ -283,6 +288,10 @@ namespace ft
 			ft::RedBlackTree<value_type> _rbtree;
 			size_type	_size;
 	};
+	/*
+	** This comparison will either compare two redblacktrees that has to implement these methods
+	** OR just do it here thank the iterators. If so..
+	*/
 /*
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
