@@ -186,3 +186,20 @@ Okay, so it is "just" a tool, what now ?
 -> Messy and actually I can't even if I want, the map iterator, a bidirectionnal one has to point over
     value_type (ft::pair<const Key, T>).
 damn, how then ?
+
+MORE LOGICAL DAM..T
+Actually, a iterator doesn't has to access the rbtree. Just to two functions of node 
+1. predecessor
+2. successor
+
+A newly instanciated iterator is useless.
+It will be assigned the begin() or end() of the map or sonething like that
+There is no problem anymore, right ?
+I guess huh.
+Next, on the plate we have :
+    .Actually implement begin() and end() to test everything we just did
+    .Do the rest of the functions like insert and stuff
+    .Substract new and delete with the allocator's functions
+    .Do Compare (value_compare) friend class ( and pair actually (code already written but is it correct ? ))
+    .SFINAE : Enable_if and is_integral
+    . AND TEST THE SHIT OUT OF IT
