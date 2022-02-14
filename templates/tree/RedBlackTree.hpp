@@ -5,7 +5,7 @@
 
 namespace ft
 {
-	template <typename PAIR> // std::pair<const Key, value>
+	template <typename PAIR> // ft::pair<const Key, value>
 	class RedBlackTree
 	{
 		public:

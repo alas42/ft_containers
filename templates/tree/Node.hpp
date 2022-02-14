@@ -6,7 +6,7 @@ namespace ft
 {
 	enum COLOR {CRED, BLACK};
 
-	template <typename PAIR> // std::pair<const Key, value>
+	template <typename PAIR> // ft::pair<const Key, value>
 	class Node
 	{
 		public:
@@ -78,8 +78,6 @@ namespace ft
 			}
 			Node * predecessor(void)
 			{
-				if (this != 0)
-				{
 					if (_left != 0)
 						return (_left->max());
 					if (!isOnLeft())
@@ -89,13 +87,9 @@ namespace ft
 					if (pred_node != 0)
 						return pred_node->_parent;
 					return 0;
-				}
-				return 0;
 			}
 			Node * successor(void)
 			{
-				if (this != 0)
-				{
 					if (_right != 0)
 						return (_right->min());
 					if (isOnLeft())
@@ -105,8 +99,6 @@ namespace ft
 					if (succ_node != 0)
 						return succ_node->_parent;
 					return 0;
-				}
-				return 0;
 			}
 	};
 }

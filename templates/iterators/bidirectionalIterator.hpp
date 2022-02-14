@@ -12,6 +12,10 @@ namespace ft
 	template <typename PAIR>
 	class bidirectionalIterator
 	{
+		/*
+		** I modified nothing public, the iterator does return a std::pair<> pointer
+		** and not the complete node, I hope I am correct in my assumptions
+		*/
 			public:
 				typedef typename ft::bidirectional_iterator_tag		iterator_category;
 				typedef PAIR										value_type;
@@ -19,8 +23,16 @@ namespace ft
 				typedef value_type *								pointer;
 				typedef value_type &								reference;
 
+			protected:
+				typedef ft::Node<value_type> * node_pointer;
+				node_pointer m_ptr;
+
 			public:
-				bidirectionalIterator(): m_ptr2(0){}
+				bidirectionalIterator(): m_ptr(0){}
+				bidirectionalIterator(node_pointer node)
+				{
+					m_ptr = node;
+				}
 				bidirectionalIterator(const bidirectionalIterator<value_type> & copy)
 				{
 					*this = copy;
@@ -30,38 +42,34 @@ namespace ft
 				{
 					if (this != &copy)
 					{
-						/*
-						** when begin() or something like that is called, 
-						** here I could take the pointer to the node and add it.
-						*/
-						this->m_ptr2 = copy.m_ptr2;
+						this->m_ptr = copy.m_ptr;
 					}
 					return (*this);
 				}
 				reference 					operator*() const
 				{
-					return this->m_ptr2->_value;
+					return this->m_ptr->_value;
 				}
 				pointer 					operator->() const
 				{
-					return &(this->m_ptr2->_value);
+					return &(this->m_ptr->_value);
 				}
 				bool						operator!=(const bidirectionalIterator<value_type> & b)
 				{
-					return (this->m_ptr2 != b.m_ptr2);
+					return (this->m_ptr != b.m_ptr);
 				}
 				bool						operator==(const bidirectionalIterator<value_type> & b)
 				{
-					return (this->m_ptr2== b.m_ptr2);
+					return (this->m_ptr == b.m_ptr);
 				}
 				bidirectionalIterator<value_type>&	operator++()
 				{
-					m_ptr2 = m_ptr2->successor();
+					m_ptr = m_ptr->successor();
 					return (*this);
 				}
 				bidirectionalIterator<value_type>&	operator--()
 				{
-					m_ptr2 = m_ptr2->predecessor();
+					m_ptr = m_ptr->predecessor();
 					return (*this);
 				}
 				bidirectionalIterator<value_type>		operator++(int)
@@ -76,10 +84,6 @@ namespace ft
 					operator--();
 					return temp;
 				}
-
-			protected:
-				typedef ft::Node<value_type> * node_pointer;
-				node_pointer m_ptr2;
 	};
 }
 

@@ -7,6 +7,7 @@
 # include <utility>
 # include <functional>
 
+# include "../pairs/pair.hpp"
 # include "../comparisons/binary_function.hpp"
 # include "../tree/RedBlackTree.hpp"
 # include "../iterators/reverse_iterator.hpp"
@@ -20,13 +21,13 @@
 namespace ft
 {
 
-	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<std::pair<const Key, T> > >
+	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<ft::pair<const Key, T> > >
 	class map
 	{
 		public :
 			typedef Key																			key_type;
 			typedef T																			mapped_type;
-			typedef std::pair<const Key, T>														value_type;
+			typedef ft::pair<const Key, T>														value_type;
 			typedef std::size_t																	size_type;
 			typedef std::ptrdiff_t																difference_type;
 			typedef Compare																		key_compare;
@@ -60,10 +61,22 @@ namespace ft
 				value_type x0(10, 20);
 				value_type x1(20, 10);
 				value_type x2(5, 90);
+				value_type x3(2, 90);
+				value_type x4(1, 90);
+				value_type x5(21, 90);
 				_rbtree.insert(x0);
 				_rbtree.insert(x1);
 				_rbtree.insert(x2);
-				_size += 3;			
+				_rbtree.insert(x3);
+				_rbtree.insert(x4);
+				_rbtree.insert(x5);
+				_size += 6;
+				iterator it = this->begin();
+				while (it != this->end())
+				{
+					std::cout << (*it).first << std::endl;
+					it++;
+				}
 			}
 
 			map(map const & other)
@@ -139,24 +152,28 @@ namespace ft
 			*/
 			iterator begin()
 			{
-
+				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				return iterator(ptr->min());
 			}
 			const_iterator begin() const
 			{
-
+				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				return iterator(ptr->min());
 			}
-			iterator end()
+			iterator end() //have to get a dummy node
 			{
-
+				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				return iterator(ptr->max());
 			}
-			const_iterator end() const
+			const_iterator end() const //have to get a dummy node
 			{
-
+				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				return iterator(ptr->max());
 			}
 			reverse_iterator rbegin(){}
 			const_reverse_iterator rbegin() const{}
-			reverse_iterator rend(){}
-			const_reverse_iterator rend() const{}
+			reverse_iterator rend(){}//have to get a dummy node
+			const_reverse_iterator rend() const{}//have to get a dummy node
 			/*
 			** End of Iterators
 			*/
