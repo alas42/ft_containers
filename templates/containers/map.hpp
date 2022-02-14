@@ -134,15 +134,29 @@ namespace ft
 			*/
 			T& at( const Key& key )
 			{
-				(void)key;
+				iterator	it = find(key);
+				if (it != end())
+					return (*it)->second;
+				throw std::out_of_range("key not found");
 			}
 			const T& at( const Key& key ) const
 			{
-				(void)key;
+				const_iterator	it = find(key);
+				if (it != end())
+					return (*it)->second;
+				throw std::out_of_range("key not found");
 			}
 			T& operator[]( const Key& key )
 			{
-				(void)key;
+				iterator	it = find(key);
+				if (it != end())
+					return (*it)->second;
+				else
+				{
+					T new_second = T();
+					//insert(new_second);
+					return new_second;
+				}
 			}
 			/*
 			** End of Element access
@@ -159,31 +173,22 @@ namespace ft
 			const_iterator begin() const
 			{
 				ft::Node<value_type> * ptr = _rbtree.getRoot();
-				return iterator(ptr->min());
+				return const_iterator(ptr->min());
 			}
-			iterator end() //have to get a dummy node
-			{
-				/*
-				** How can I get it to work ?
-				** I can add a node after the max ? why not.
-				** If it's linked to the "last elem" and the "first" it could work for rend and end
-				** HOW THO ? A node that is saved in rbtree as a "singularity" or something like that
-				** should always be linked to min and max.
-				** If empty, points to itself ?
-				** 
-				*/
-				ft::Node<value_type> * ptr = _rbtree.getRoot();
-				return iterator(ptr->max());
-			}
-			const_iterator end() const //have to get a dummy node
+			iterator end()
 			{
 				ft::Node<value_type> * ptr = _rbtree.getRoot();
 				return iterator(ptr->max());
 			}
-			reverse_iterator rbegin(){}
-			const_reverse_iterator rbegin() const{}
-			reverse_iterator rend(){}//have to get a dummy node
-			const_reverse_iterator rend() const{}//have to get a dummy node
+			const_iterator end() const
+			{
+				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				return const_iterator(ptr->max());
+			}
+			reverse_iterator rbegin(){ return reverse_iterator(end()); }
+			const_reverse_iterator rbegin() const{ return const_reverse_iterator(end()); }
+			reverse_iterator rend(){ return reverse_iterator(begin()); }
+			const_reverse_iterator rend() const{ return const_reverse_iterator(begin()); }
 			/*
 			** End of Iterators
 			*/
@@ -206,7 +211,11 @@ namespace ft
 			/*
 			** End of capacity
 			*/
-
+												/*
+												**      F5CK, I need to use compare and stuff and not parcouring it like a vector
+												**		I need to start at the root and from there compare and choose a branch
+												**		AAAH, I'm dumb
+												*/ 
 			/*
 			** Modifiers
 			*/
@@ -215,16 +224,16 @@ namespace ft
 
 			}
 			/*
-			std::pair<iterator, bool> insert( const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
+			std::pair<iterator, bool> insert( const value_type& value )
 			{
 				
 			}
-			iterator insert( iterator hint, const value_type& value ) //if the container doesn't already contain an element with an equivalent key.
+			iterator insert( iterator hint, const value_type& value )
 			{
 
 			}*/
 			template< class InputIt >
-			void insert( InputIt first, InputIt last ) //if the container doesn't already contain an element with an equivalent key.
+			void insert( InputIt first, InputIt last )
 			{
 				(void)first;
 				(void)last;
@@ -234,7 +243,7 @@ namespace ft
 				if (pos == end())
 					return;
 			}
-			void erase( iterator first, iterator last ) //Removes the elements in the range [first; last), which must be a valid range in *this.
+			void erase( iterator first, iterator last )
 			{
 				(void)first;
 				(void)last;
@@ -253,19 +262,48 @@ namespace ft
 
 			/*
 			** Lookup
-			*
+			*/
 			size_type count( const Key& key ) const
 			{
-				(void)key;
+				iterator	it = begin();
+				iterator	ite = end();
+				size_type	i = 0;
+
+				while (it != ite)
+				{
+					if ((*it).first == key)
+						i++;
+					it++;
+				}
+				return i;
 			}
 			iterator find( const Key& key )
 			{
-				(void)key;
+				iterator	it = begin();
+				iterator	ite = end();
+
+				while (it != ite)
+				{
+					if ((*it).first == key)
+						return (it);
+					it++;
+				}
+				return (ite);
 			}
 			const_iterator find( const Key& key ) const
 			{
-				(void)key;
+				const_iterator	it = begin();
+				const_iterator	ite = end();
+
+				while (it != ite)
+				{
+					if ((*it).first == key)
+						return (it);
+					it++;
+				}
+				return (ite);
 			}
+			/*
 			std::pair<iterator,iterator> equal_range( const Key& key )
 			{
 				(void)key;

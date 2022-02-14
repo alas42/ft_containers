@@ -13,9 +13,9 @@ namespace ft
 			typedef PAIR value_type;
 	
 		public:
-			value_type  _value;
-			Node *_parent, *_left, *_right;
-			COLOR _c;
+			value_type  	_value;
+			Node			*_parent, *_left, *_right;
+			COLOR			_c;
 
 		public:
 			Node(void): _value(), _parent(0), _left(0), _right(0), _c(CRED){}
