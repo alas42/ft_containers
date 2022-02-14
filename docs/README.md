@@ -197,9 +197,9 @@ It will be assigned the begin() or end() of the map or sonething like that
 There is no problem anymore, right ?
 I guess huh.
 Next, on the plate we have :
-    .Actually implement begin() and end() to test everything we just did
+    .Actually implement end() to test everything we just did
     .Do the rest of the functions like insert and stuff
     .Substract new and delete with the allocator's functions
-    .Do Compare (value_compare) friend class ( and pair actually (code already written but is it correct ? ))
+    .Do Compare (value_compare) friend class
     .SFINAE : Enable_if and is_integral
     . AND TEST THE SHIT OUT OF IT

@@ -55,21 +55,22 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			map(void): _size(0)
+			map(void): _compare(), _alloc(), _rbtree(), _size(0)
 			{
 				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
-				value_type x0(10, 20);
+				value_type x5(21, 90);
+				value_type x0(10, 20); // it stops here because first inserted equals to root node
 				value_type x1(20, 10);
 				value_type x2(5, 90);
 				value_type x3(2, 90);
 				value_type x4(1, 90);
-				value_type x5(21, 90);
+
+				_rbtree.insert(x5);
 				_rbtree.insert(x0);
 				_rbtree.insert(x1);
 				_rbtree.insert(x2);
 				_rbtree.insert(x3);
 				_rbtree.insert(x4);
-				_rbtree.insert(x5);
 				_size += 6;
 				iterator it = this->begin();
 				while (it != this->end())
@@ -162,6 +163,15 @@ namespace ft
 			}
 			iterator end() //have to get a dummy node
 			{
+				/*
+				** How can I get it to work ?
+				** I can add a node after the max ? why not.
+				** If it's linked to the "last elem" and the "first" it could work for rend and end
+				** HOW THO ? A node that is saved in rbtree as a "singularity" or something like that
+				** should always be linked to min and max.
+				** If empty, points to itself ?
+				** 
+				*/
 				ft::Node<value_type> * ptr = _rbtree.getRoot();
 				return iterator(ptr->max());
 			}

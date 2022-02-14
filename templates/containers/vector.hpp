@@ -4,6 +4,7 @@
 # include <iostream>
 # include <stdexcept>
 # include <algorithm>
+# include "../comparisons/lexicographical_compare.hpp"
 # include "../iterators/iterator_traits.hpp"
 # include "../iterators/randomAccessIterator.hpp"
 # include "../iterators/reverse_iterator.hpp"
@@ -515,7 +516,7 @@ namespace ft
 		ft::random_access_iterator<const T> rtb = rhs.begin();
 		ft::random_access_iterator<const T> lte = lhs.end();
 		ft::random_access_iterator<const T> rte = rhs.end();
-		return (std::lexicographical_compare(ltb, lte, rtb, rte));
+		return (ft::lexicographical_compare(ltb, lte, rtb, rte));
 	}
 	template <typename T>
 	bool operator<=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )

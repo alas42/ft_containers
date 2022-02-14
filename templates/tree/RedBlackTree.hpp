@@ -5,7 +5,7 @@
 
 namespace ft
 {
-	template <typename PAIR> // ft::pair<const Key, value>
+	template <typename PAIR>
 	class RedBlackTree
 	{
 		public:
@@ -14,16 +14,30 @@ namespace ft
 
 		private:
 			rb_node * root;
+			rb_node * before_begin;
+			rb_node * after_end;
 
 		public:
-			RedBlackTree(void): root(0){}
-			rb_node * getRoot(void)
+			RedBlackTree(void)
 			{
-				return root;
+				root = 0;
+				before_begin = new rb_node();
+				after_end = new rb_node();
 			}
-			
+			RedBlackTree(RedBlackTree const & other) { *this == other; }
+			RedBlackTree operator=(RedBlackTree const & other)
+			{
+				if (this == &other)
+				{
+					/*
+					** DEEP COPY PLZ
+					*/
+				}
+				return *this;
+			}
+			rb_node * getRoot(void) { return root; }
 			/*
-			** SEARCH / INSERT / DELETE BY VAL
+			** BASIC OPERATIONS ON NODES [SEARCH / INSERT / DELETE]
 			*/
 			rb_node * search(value_type & val)
 			{
@@ -79,103 +93,6 @@ namespace ft
 					return ;
 				deleteNode(nodel);
 			}
-			/*
-			** Operations on Nodes
-			*/
-			void	leftRotate(rb_node *x)
-			{
-				rb_node *n_parent = x->_right;
-				if (x == root)
-					root = n_parent;
-				x->moveDown(n_parent);
-				x->_right = n_parent->_left;
-				if (n_parent->_left != 0)
-					n_parent->_left->_parent = x;
-				n_parent->_left = x;
-			}
-			void	rightRotate(rb_node *x)
-			{
-				rb_node *n_parent = x->_left;
-				if (x == root)
-					root = n_parent;
-				x->moveDown(n_parent);
-				x->_left = n_parent->_right;
-				if (n_parent->_right != 0)
-					n_parent->_right->_parent = x;
-				n_parent->_right = x;
-			}
-			void	swapColors(rb_node *x1, rb_node *x2)
-			{
-				ft::COLOR temp = x1->_c;
-				x1->_c = x2->_c;
-				x2->_c = temp;
-			}
-			void	swapValues(rb_node *x1, rb_node *x2)
-			{
-				value_type temp = x1->_value;
-				x1->_value = x2->_value;
-				x2->_value = x1->_value;
-			}
-			void	fixRedNode(rb_node *x)
-			{
-				if (x == root)
-				{
-					x->_c = BLACK;
-					return ;
-				}
-				rb_node * parent = x->_parent, * grandparent = parent->_parent, * uncle = x->uncle();
-				if (parent->_c != BLACK)
-				{
-					if (uncle != 0 && uncle->_c == CRED)
-					{
-						uncle->_c = parent->_c = BLACK;
-						grandparent->_c = CRED;
-						fixRedNode(grandparent);
-					}
-					else
-					{
-						if (parent->isOnLeft())
-						{
-							if (x->isOnLeft())
-								swapColors(parent, grandparent);
-							else
-							{
-								leftRotate(parent);
-								swapColors(x, grandparent);
-							}
-							rightRotate(grandparent);
-						}
-						else
-						{
-							if (x->isOnLeft())
-							{
-								rightRotate(parent);
-								swapColors(x, grandparent);
-							}
-							else
-								swapColors(parent, grandparent);
-							leftRotate(grandparent);
-						}
-					}
-				}
-			}
-			rb_node * successor(rb_node * x)
-			{
-				rb_node * temp = x;
-				while (temp->_left != 0)
-					temp = temp->_left;
-				return temp;
-			}
-			rb_node * BRTreplace(rb_node * x)
-			{
-				if (x->_left == 0 && x->_right == 0)
-					return 0;
-				if (x->_left != 0 && x->_right != 0)
-					return successor(x->_right);
-				if (x->_left != 0)
-					return x->_left;
-				return x->_right;
-			}
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = BRTreplace(x);
@@ -191,8 +108,8 @@ namespace ft
 							fixDoubleBlack(x);
 						else
 						{
-							if (x->sibling() != 0)
-								x->sibling()->_c = CRED;
+							if (sibling(x) != 0)
+								sibling(x)->_c = CRED;
 						}
 						if (x->isOnLeft())
 							parent->_left = 0;
@@ -228,11 +145,85 @@ namespace ft
 				swapValues(replacing_node, x);
 				deleteNode(replacing_node);
 			}
+			/*
+			** GETTERS FOR FAMILY MEMBERS
+			*/
+			rb_node *uncle(rb_node *x)
+			{
+				if (x->_parent == 0 || x->_parent->_parent == 0)
+					return 0;
+				if (x->_parent->isOnLeft())
+					return x->_parent->_parent->_right;
+				return x->_parent->_parent->_left;
+			}
+			rb_node *sibling(rb_node *x)
+			{
+				if (x == 0 || x->_parent == 0)
+					return 0;
+				if(x->isOnLeft())
+					return x->_parent->_right;
+				return x->_parent->_left;
+			}
+			/*
+			** MOVING A NODE IN THE TREE
+			*/
+			void	moveDown(rb_node *x, rb_node *n_parent)
+			{
+				if (x->_parent != 0)
+				{
+					if (x->isOnLeft())
+						x->_parent->_left = n_parent;
+					else
+						x->_parent->_right = n_parent;
+				}
+				n_parent->_parent = x->_parent;
+				x->_parent = n_parent; 
+			}
+			void	leftRotate(rb_node *x)
+			{
+				rb_node *n_parent = x->_right;
+				if (x == root)
+					root = n_parent;
+				moveDown(x, n_parent);
+				x->_right = n_parent->_left;
+				if (n_parent->_left != 0)
+					n_parent->_left->_parent = x;
+				n_parent->_left = x;
+			}
+			void	rightRotate(rb_node *x)
+			{
+				rb_node *n_parent = x->_left;
+				if (x == root)
+					root = n_parent;
+				moveDown(x, n_parent);
+				x->_left = n_parent->_right;
+				if (n_parent->_right != 0)
+					n_parent->_right->_parent = x;
+				n_parent->_right = x;
+			}
+			/*
+			** SWAPINGS
+			*/
+			void	swapColors(rb_node *x1, rb_node *x2)
+			{
+				ft::COLOR temp = x1->_c;
+				x1->_c = x2->_c;
+				x2->_c = temp;
+			}
+			void	swapValues(rb_node *x1, rb_node *x2)
+			{
+				value_type temp = x1->_value;
+				x1->_value = x2->_value;
+				x2->_value = x1->_value;
+			}
+			/*
+			** FIXING POST-OPERATIONS ON TREE
+			*/
 			void	fixDoubleBlack(rb_node * x)
 			{
 				if (x == root)
 					return ;
-				rb_node * sibling = x->sibling(), * parent = x->_parent;
+				rb_node * sibling = sibling(x), * parent = x->_parent;
 				if (sibling == 0)
 					fixDoubleBlack(parent);
 				else
@@ -294,6 +285,67 @@ namespace ft
 					}
 				}
 			}
+			void	fixRedNode(rb_node *x)
+			{
+				if (x == root)
+				{
+					x->_c = BLACK;
+					return ;
+				}
+				rb_node * parent = x->_parent, * grandparent = parent->_parent, * uncle = this->uncle(x);
+				if (parent->_c != BLACK)
+				{
+					if (uncle != 0 && uncle->_c == CRED)
+					{
+						uncle->_c = parent->_c = BLACK;
+						grandparent->_c = CRED;
+						fixRedNode(grandparent);
+					}
+					else
+					{
+						if (parent->isOnLeft())
+						{
+							if (x->isOnLeft())
+								swapColors(parent, grandparent);
+							else
+							{
+								leftRotate(parent);
+								swapColors(x, grandparent);
+							}
+							rightRotate(grandparent);
+						}
+						else
+						{
+							if (x->isOnLeft())
+							{
+								rightRotate(parent);
+								swapColors(x, grandparent);
+							}
+							else
+								swapColors(parent, grandparent);
+							leftRotate(grandparent);
+						}
+					}
+				}
+			}
+			rb_node * successor_deletion(rb_node * x)
+			{
+				rb_node * temp = x;
+				while (temp->_left != 0)
+					temp = temp->_left;
+				return temp;
+			}
+			rb_node * BRTreplace(rb_node * x)
+			{
+				if (x->_left == 0 && x->_right == 0)
+					return 0;
+				if (x->_left != 0 && x->_right != 0)
+					return successor_deletion(x->_right);
+				if (x->_left != 0)
+					return x->_left;
+				return x->_right;
+			}
+
 	};
 }
 
