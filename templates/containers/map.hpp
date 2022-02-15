@@ -55,25 +55,37 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			map(void): _compare(), _alloc(), _rbtree(), _size(0)
+			map(void): _compare(), _alloc(), _rbtree()
 			{
 				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
 				value_type x5(21, 90);
-				value_type x0(10, 20); // it stops here because first inserted equals to root node
+				value_type x0(10, 20);
 				value_type x1(20, 10);
-				value_type x2(5, 90);
-				value_type x3(2, 90);
-				value_type x4(1, 90);
+				value_type x2(5, 60);
+				value_type x3(2, 55);
+				value_type x4(1, 30);
 
-				_rbtree.insert(x5);
-				_rbtree.insert(x0);
-				_rbtree.insert(x1);
-				_rbtree.insert(x2);
-				_rbtree.insert(x3);
-				_rbtree.insert(x4);
-				_size += 6;
+				this->insert(x5);
+				this->insert(x0);
+				this->insert(x1);
+				this->insert(x2);
+				this->insert(x3);
+				this->insert(x4);
 				iterator it = this->begin();
-				while (it != this->end())
+				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
+				{
+					std::cout << (*it).first << std::endl;
+					it++;
+				}
+				iterator lb = this->lower_bound(5);
+				iterator ub = this->upper_bound(5);
+				std::cout << (*lb).second << "}{" << (*ub).second << std::endl;
+			//	std::cout << "Is there a key 3 ? " << this->count(3) << std::endl;
+				std::cout << "Is there a key 20 ? " << this->count(20) << std::endl;
+
+				clear();
+				it = this->begin();
+				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
 				{
 					std::cout << (*it).first << std::endl;
 					it++;
@@ -85,14 +97,13 @@ namespace ft
 				*this = other;
 			}
 
-			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc)
+			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc), _rbtree()
 			{}
 			
 			template< class InputIt >
-			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc)
+			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _alloc(alloc), _rbtree()
 			{
-				(void)first;
-				(void)last;
+				this->insert(first, last);
 			}
 			/*
 			** End of Constructors
@@ -103,7 +114,7 @@ namespace ft
 			*/
 			~map(void)
 			{
-
+				this->clear();
 			}
 			map & operator = (map const & other)
 			{
@@ -154,7 +165,7 @@ namespace ft
 				else
 				{
 					T new_second = T();
-					//insert(new_second);
+					insert(value_type(key, new_second));
 					return new_second;
 				}
 			}
@@ -172,7 +183,7 @@ namespace ft
 			}
 			const_iterator begin() const
 			{
-				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				ft::Node<const value_type> * ptr = _rbtree.getRoot();
 				return const_iterator(ptr->min());
 			}
 			iterator end()
@@ -182,7 +193,7 @@ namespace ft
 			}
 			const_iterator end() const
 			{
-				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				ft::Node<const value_type> * ptr = _rbtree.getRoot();
 				return const_iterator(ptr->max());
 			}
 			reverse_iterator rbegin(){ return reverse_iterator(end()); }
@@ -210,51 +221,62 @@ namespace ft
 			}
 			/*
 			** End of capacity
-			*/
-												/*
-												**      F5CK, I need to use compare and stuff and not parcouring it like a vector
-												**		I need to start at the root and from there compare and choose a branch
-												**		AAAH, I'm dumb
-												*/ 
+			*/ 
 			/*
 			** Modifiers
 			*/
 			void clear()
 			{
-
+				while (begin() != end())
+					this->erase(begin());
 			}
-			/*
-			std::pair<iterator, bool> insert( const value_type& value )
+			
+			ft::pair<iterator, bool> insert( const value_type& value )
 			{
-				
+				ft::pair<ft::Node<value_type> *, bool> inserted = this->_rbtree.insert(value);
+				return (ft::pair<iterator, bool>(iterator(inserted.first), inserted.second));
 			}
 			iterator insert( iterator hint, const value_type& value )
 			{
-
-			}*/
+				(void)hint;
+				return (this->insert(value).first);
+			}
 			template< class InputIt >
 			void insert( InputIt first, InputIt last )
 			{
-				(void)first;
-				(void)last;
+				while (first != last)
+				{
+					insert(*first);
+					first++;
+				}
 			}
 			void erase( iterator pos )
 			{
-				if (pos == end())
-					return;
+				this->_rbtree.deleteByValue(*pos);
 			}
 			void erase( iterator first, iterator last )
 			{
-				(void)first;
-				(void)last;
+				while (first != last)
+				{
+					erase(*first);
+					first++;
+				}
 			}
 			size_type erase( const Key& key )
 			{
-				(void)key;
+				iterator it = find(key);
+				if (it != end())
+				{
+					erase(it);
+					return (1);
+				}
+				return (0);
 			}
 			void swap( map& other )
 			{
-				(void)other;
+				map temp = other;
+				other = *this;
+				*this = temp;
 			}
 			/*
 			** End of Modifiers
@@ -265,17 +287,13 @@ namespace ft
 			*/
 			size_type count( const Key& key ) const
 			{
-				iterator	it = begin();
-				iterator	ite = end();
-				size_type	i = 0;
-
-				while (it != ite)
-				{
-					if ((*it).first == key)
-						i++;
-					it++;
-				}
-				return i;
+				const_iterator it = lower_bound(key);
+				const_iterator itend = end();
+				if (it == itend)
+					return 0;
+				if (!this->_compare((*it).first, key) && !this->_compare(key, (*it).first))
+					return (1);
+				return (0);
 			}
 			iterator find( const Key& key )
 			{
@@ -303,35 +321,90 @@ namespace ft
 				}
 				return (ite);
 			}
-			/*
+			
 			std::pair<iterator,iterator> equal_range( const Key& key )
 			{
-				(void)key;
+				return (std::pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
 			}
-			std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+			/*std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
 			{
-				(void)key;
-			}
+				return (std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
+			}*/
 			iterator lower_bound( const Key& key )
 			{
-				(void)key;
+				Node<value_type> * node = this->_rbtree.getRoot();
+				iterator it = end();
+				while (node && (node->_left || node->_right))
+				{
+					if (this->_compare(node->_value.first, key))
+						node = node->_right;
+					else
+					{
+						it = iterator(node);
+						node = node->_left;
+					}
+				}
+				return it;
 			}
 			const_iterator lower_bound( const Key& key ) const
 			{
-				(void)key;
+				Node<const value_type> * node = this->_rbtree.getRoot();
+				const_iterator it = end();
+				while (node && (node->_left || node->_right))
+				{
+					if (this->_compare(node->_value.first, key))
+						node = node->_right;
+					else
+					{
+						it = const_iterator(node);
+						node = node->_left;
+					}
+				}
+				return it;
 			}
 			iterator upper_bound( const Key& key )
 			{
-				(void)key;
+				Node<value_type> * node = this->_rbtree.getRoot();
+				iterator it = end();
+				while (node && (node->_left || node->_right))
+				{
+					if (this->_compare(node->_value.first, key))
+						node = node->_right;
+					else if (this->_compare(key, node->_value.first))
+					{
+						it = iterator(node);
+						node = node->_left;
+					}
+					else
+					{
+						node = node->_right;
+					}
+				}
+				return it;
 			}
-			const_iterator upper_bound( const Key& key ) const
+			/*const_iterator upper_bound( const Key& key ) const
 			{
-				(void)key;
-			}
-			
+				Node<value_type> * node = this->_rbtree.getRoot();
+				const_iterator it = end();
+				while (node && (node->_left || node->_right))
+				{
+					if (this->_compare(node->_value.first, key))
+						node = node->_right;
+					else if (this->_compare(key, node->_value.first))
+					{
+						it = const_iterator(node);
+						node = node->_left;
+					}
+					else
+					{
+						node = node->_right;
+					}
+				}
+				return it;
+			}*/
+			/*
 			** End of Lookup
 			*/
-
 			/*
 			** Oberservers
 			*/
@@ -341,7 +414,7 @@ namespace ft
 			}
 			map::value_compare value_comp() const
 			{
-
+				return this->value_comp();
 			}
 			/*
 			** End of Observers
@@ -351,50 +424,58 @@ namespace ft
 			Compare		_compare;
 			Allocator	_alloc;
 			ft::RedBlackTree<value_type> _rbtree;
-			size_type	_size;
 	};
-	/*
-	** This comparison will either compare two redblacktrees that has to implement these methods
-	** OR just do it here thank the iterators. If so..
-	*/
-/*
+
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		if (lhs.size() != rhs.size())
+			return (false);
+		ft::bidirectionalIterator<ft::pair<const Key, T> > rtb = rhs.begin();
+		for (ft::bidirectionalIterator<ft::pair<const Key, T> > ltb = lhs.begin(); ltb != lhs.end(); ltb++)
+		{
+			if (*ltb != *rtb)
+				return (false);
+			rtb++;
+		}
+		return (true);
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator!=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		return (!(lhs == rhs));
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		ft::bidirectionalIterator<ft::pair<const Key, T> > ltb = lhs.begin();
+		ft::bidirectionalIterator<ft::pair<const Key, T> > rtb = rhs.begin();
+		ft::bidirectionalIterator<ft::pair<const Key, T> > lte = lhs.end();
+		ft::bidirectionalIterator<ft::pair<const Key, T> > rte = rhs.end();
+		return (ft::lexicographical_compare(ltb, lte, rtb, rte, lhs.key_comp()));
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		return (lhs == rhs || lhs < rhs);
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		return (!(lhs <= rhs));
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		return (!(lhs < rhs));
 	}
 
 	template< class Key, class T, class Compare, class Alloc >
 	void swap( map<Key,T,Compare,Alloc>& lhs, map<Key,T,Compare,Alloc>& rhs )
 	{
-
+		lhs.swap(rhs);
 	}
-	*/
+	
 }
 
 #endif

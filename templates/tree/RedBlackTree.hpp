@@ -11,6 +11,7 @@ namespace ft
 		public:
 			typedef PAIR value_type;
 			typedef Node<value_type> rb_node;
+			typedef Node<const value_type> const_rb_node;
 
 		private:
 			rb_node * root;
@@ -25,6 +26,7 @@ namespace ft
 				after_end = new rb_node();
 			}
 			RedBlackTree(RedBlackTree const & other) { *this == other; }
+			~RedBlackTree(void){ delete before_begin; delete after_end; }
 			RedBlackTree operator=(RedBlackTree const & other)
 			{
 				if (this == &other)
@@ -35,11 +37,13 @@ namespace ft
 				}
 				return *this;
 			}
+			ft::Node<const value_type> * getRoot(void) const { return root; }
 			rb_node * getRoot(void) { return root; }
+
 			/*
 			** BASIC OPERATIONS ON NODES [SEARCH / INSERT / DELETE]
 			*/
-			rb_node * search(value_type & val)
+			rb_node * search(value_type const & val)
 			{
 				rb_node * temp = root;
 
@@ -63,7 +67,7 @@ namespace ft
 				}
 				return temp;
 			}
-			void	insert(value_type & val)
+			ft::pair<rb_node *, bool>	insert(const value_type & val) // do it bool ?
 			{
 				rb_node * new_node = new rb_node(val);
 				if (root == 0)
@@ -75,7 +79,10 @@ namespace ft
 				{
 					rb_node * temp = search(val);
 					if (temp->_value == val)
-						return ;
+					{
+						delete new_node;
+						return ft::pair<rb_node *, bool>(temp, false);
+					}
 					new_node->_parent = temp;
 					if (val < temp->_value)
 						temp->_left = new_node;
@@ -83,8 +90,9 @@ namespace ft
 						temp->_right = new_node;
 					fixRedNode(new_node);
 				}
+				return ft::pair<rb_node *, bool>(new_node, true);
 			}
-			void	deleteByValue(value_type & val)
+			void	deleteByValue(value_type const & val)
 			{
 				if (root == 0)
 					return ;
@@ -96,7 +104,7 @@ namespace ft
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = BRTreplace(x);
-				bool both_black = ((replacing_node == 0 || replacing_node == BLACK) && (x->_c == BLACK));
+				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
 				{
@@ -123,9 +131,9 @@ namespace ft
 				{
 					if (x == root)
 					{
-						x->_value = replacing_node->_value;
-						x->_left = replacing_node->_right = 0;
-						delete replacing_node;
+						replacing_node->_right = replacing_node->_left = 0;
+						this->root = replacing_node;
+						delete x;
 					}
 					else
 					{
@@ -142,8 +150,8 @@ namespace ft
 					}
 					return ;
 				}
-				swapValues(replacing_node, x);
-				deleteNode(replacing_node);
+				swapNodes(replacing_node, x);
+				deleteNode(x); // can be replacing_node if I did my math wrong
 			}
 			/*
 			** GETTERS FOR FAMILY MEMBERS
@@ -210,11 +218,18 @@ namespace ft
 				x1->_c = x2->_c;
 				x2->_c = temp;
 			}
-			void	swapValues(rb_node *x1, rb_node *x2)
+			void	swapNodes(rb_node *x1, rb_node *x2)
 			{
-				value_type temp = x1->_value;
-				x1->_value = x2->_value;
-				x2->_value = x1->_value;
+				rb_node x(x1->_value);
+				x._parent = x1->_parent;
+				x._left = x1->_left;
+				x._right = x1->_right;
+				x1->_parent = x2->_parent;
+				x1->_left = x2->_left;
+				x1->_right = x2->_right;
+				x2->_parent = x._parent;
+				x2->_left = x._left;
+				x2->_right = x._right;
 			}
 			/*
 			** FIXING POST-OPERATIONS ON TREE
@@ -223,7 +238,7 @@ namespace ft
 			{
 				if (x == root)
 					return ;
-				rb_node * sibling = sibling(x), * parent = x->_parent;
+				rb_node * sibling = this->sibling(x), * parent = x->_parent;
 				if (sibling == 0)
 					fixDoubleBlack(parent);
 				else

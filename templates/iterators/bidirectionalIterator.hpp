@@ -22,9 +22,9 @@ namespace ft
 				typedef std::ptrdiff_t								difference_type;
 				typedef value_type *								pointer;
 				typedef value_type &								reference;
+				typedef ft::Node<value_type> * 						node_pointer;
 
 			protected:
-				typedef ft::Node<value_type> * node_pointer;
 				node_pointer m_ptr;
 
 			public:
@@ -45,6 +45,10 @@ namespace ft
 						this->m_ptr = copy.m_ptr;
 					}
 					return (*this);
+				}
+				node_pointer				getNode(void)
+				{
+					return this->m_ptr;
 				}
 				reference 					operator*() const
 				{

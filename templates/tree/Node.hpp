@@ -19,7 +19,7 @@ namespace ft
 
 		public:
 			Node(void): _value(), _parent(0), _left(0), _right(0), _c(CRED){}
-			Node(value_type & value): _value(value)
+			Node(value_type const & value): _value(value)
 			{
 				_parent = _left = _right = 0;
 				_c = CRED;
@@ -41,6 +41,8 @@ namespace ft
 			bool hasRedChild(void) { return ((_left != 0 && _left->_c == CRED) || (_right != 0 && _right->_c == CRED));	}
 			Node * max(void) { return (_right == 0 ? this :	_right->max()); }
 			Node * min(void) { return (_left == 0 ? this : _left->min()); }
+			Node * max(void) const { return (_right == 0 ? this :	_right->max()); }
+			Node * min(void) const { return (_left == 0 ? this : _left->min()); }
 			Node * predecessor(void)
 			{
 				if (_left != 0)

@@ -521,19 +521,18 @@ namespace ft
 	template <typename T>
 	bool operator<=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
-		return (lhs < rhs || lhs < rhs);
+		return (lhs == rhs || lhs < rhs);
 	}
 	template <typename T>
 	bool operator>( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
-		return (!(lhs < rhs));
+		return (!(lhs <= rhs));
 	}
 	template <typename T>
 	bool operator>=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
-		return (lhs > rhs || lhs == rhs);
+		return (!(lhs < rhs));
 	}
-
 }
 
 #endif
