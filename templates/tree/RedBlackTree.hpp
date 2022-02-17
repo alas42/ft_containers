@@ -5,21 +5,22 @@
 
 namespace ft
 {
-	template <typename PAIR>
+	template <typename PAIR, typename Compare>
 	class RedBlackTree
 	{
 		public:
 			typedef PAIR value_type;
+			typedef Compare key_compare;
 			typedef Node<value_type> rb_node;
-			typedef Node<const value_type> const_rb_node;
 
-		private:
-			rb_node * root;
-			rb_node * before_begin;
-			rb_node * after_end;
+		protected:
+			Compare		compare;
+			rb_node *	root;
+			rb_node *	before_begin;
+			rb_node *	after_end;
 
 		public:
-			RedBlackTree(void)
+			RedBlackTree(void): compare()
 			{
 				root = 0;
 				before_begin = new rb_node();
@@ -31,15 +32,14 @@ namespace ft
 			{
 				if (this == &other)
 				{
+					this->compare = other.compare;
 					/*
 					** DEEP COPY PLZ
 					*/
 				}
 				return *this;
 			}
-			ft::Node<const value_type> * getRoot(void) const { return root; }
-			rb_node * getRoot(void) { return root; }
-
+			rb_node * getRoot(void) const { return root; }
 			/*
 			** BASIC OPERATIONS ON NODES [SEARCH / INSERT / DELETE]
 			*/
@@ -49,14 +49,14 @@ namespace ft
 
 				while (temp != 0)
 				{
-					if (val < temp->_value)
+					if (compare(val.first, temp->_value.first))
 					{
 						if (temp->_left == 0)
 							break;
 						else
 							temp = temp->_left;
 					}
-					else if (val == temp->_value)
+					else if ((!compare(val.first, temp->_value.first) && !compare(temp->_value.first, val.first)))
 						break ;
 					else
 					{
@@ -67,7 +67,7 @@ namespace ft
 				}
 				return temp;
 			}
-			ft::pair<rb_node *, bool>	insert(const value_type & val) // do it bool ?
+			ft::pair<rb_node *, bool>	insert(const value_type & val)
 			{
 				rb_node * new_node = new rb_node(val);
 				if (root == 0)
@@ -78,13 +78,13 @@ namespace ft
 				else
 				{
 					rb_node * temp = search(val);
-					if (temp->_value == val)
+					if ((!compare(val.first, temp->_value.first) && !compare(temp->_value.first, val.first)))
 					{
 						delete new_node;
 						return ft::pair<rb_node *, bool>(temp, false);
 					}
 					new_node->_parent = temp;
-					if (val < temp->_value)
+					if (compare(val.first, temp->_value.first))
 						temp->_left = new_node;
 					else
 						temp->_right = new_node;
@@ -189,7 +189,7 @@ namespace ft
 			}
 			void	leftRotate(rb_node *x)
 			{
-				rb_node *n_parent = x->_right;
+				rb_node * n_parent = x->_right;
 				if (x == root)
 					root = n_parent;
 				moveDown(x, n_parent);
@@ -200,7 +200,7 @@ namespace ft
 			}
 			void	rightRotate(rb_node *x)
 			{
-				rb_node *n_parent = x->_left;
+				rb_node * n_parent = x->_left;
 				if (x == root)
 					root = n_parent;
 				moveDown(x, n_parent);

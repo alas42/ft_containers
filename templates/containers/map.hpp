@@ -59,8 +59,9 @@ namespace ft
 			{
 				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
 				value_type x5(21, 90);
-				value_type x0(10, 20);
+
 				value_type x1(20, 10);
+				value_type x0(10, 20);
 				value_type x2(5, 60);
 				value_type x3(2, 55);
 				value_type x4(1, 30);
@@ -74,15 +75,15 @@ namespace ft
 				iterator it = this->begin();
 				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
 				{
-					std::cout << (*it).first << std::endl;
+					std::cout << (*it).first << "::" << (*it).second << std::endl;					
 					it++;
 				}
 				iterator lb = this->lower_bound(5);
 				iterator ub = this->upper_bound(5);
-				std::cout << (*lb).second << "}{" << (*ub).second << std::endl;
-			//	std::cout << "Is there a key 3 ? " << this->count(3) << std::endl;
-				std::cout << "Is there a key 20 ? " << this->count(20) << std::endl;
-
+				std::cout << "lower_bound{" << (*lb).second << "}{" << (*ub).second << "}upper_bound" << std::endl;
+				/*std::cout << "Is there a key 3 ? " << this->count(3) << std::endl;
+				std::cout << "Is there a key 20 ? " << this->count(20) << std::endl;*/
+				print_map();
 				clear();
 				it = this->begin();
 				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
@@ -145,27 +146,27 @@ namespace ft
 			*/
 			T& at( const Key& key )
 			{
-				iterator	it = find(key);
-				if (it != end())
+				iterator	it = this->find(key);
+				if (it != this->end())
 					return (*it)->second;
 				throw std::out_of_range("key not found");
 			}
 			const T& at( const Key& key ) const
 			{
-				const_iterator	it = find(key);
-				if (it != end())
+				const_iterator	it = this->find(key);
+				if (it != this->end())
 					return (*it)->second;
 				throw std::out_of_range("key not found");
 			}
 			T& operator[]( const Key& key )
 			{
-				iterator	it = find(key);
-				if (it != end())
+				iterator	it = this->find(key);
+				if (it != this->end())
 					return (*it)->second;
 				else
 				{
 					T new_second = T();
-					insert(value_type(key, new_second));
+					this->insert(value_type(key, new_second));
 					return new_second;
 				}
 			}
@@ -178,22 +179,22 @@ namespace ft
 			*/
 			iterator begin()
 			{
-				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				ft::Node<value_type> * ptr = this->_rbtree.getRoot();
 				return iterator(ptr->min());
-			}
-			const_iterator begin() const
-			{
-				ft::Node<const value_type> * ptr = _rbtree.getRoot();
-				return const_iterator(ptr->min());
 			}
 			iterator end()
 			{
-				ft::Node<value_type> * ptr = _rbtree.getRoot();
+				ft::Node<value_type> * ptr = this->_rbtree.getRoot();
 				return iterator(ptr->max());
+			}
+			const_iterator begin() const
+			{
+				ft::Node<const value_type> * ptr = this->_rbtree.getRoot();
+				return const_iterator(ptr->min());
 			}
 			const_iterator end() const
 			{
-				ft::Node<const value_type> * ptr = _rbtree.getRoot();
+				ft::Node<const value_type> * ptr = this->_rbtree.getRoot();
 				return const_iterator(ptr->max());
 			}
 			reverse_iterator rbegin(){ return reverse_iterator(end()); }
@@ -209,11 +210,11 @@ namespace ft
 			*/
 			bool empty() const
 			{
-				return (begin() == end());
+				return (this->begin() == this->end());
 			}
 			size_type size() const
 			{
-				return (std::distance(begin(), end()));
+				return (std::distance(this->begin(), this->end()));
 			}
 			size_type max_size() const
 			{
@@ -227,8 +228,8 @@ namespace ft
 			*/
 			void clear()
 			{
-				while (begin() != end())
-					this->erase(begin());
+				while (this->begin() != this->end())
+					this->erase(this->begin());
 			}
 			
 			ft::pair<iterator, bool> insert( const value_type& value )
@@ -246,7 +247,7 @@ namespace ft
 			{
 				while (first != last)
 				{
-					insert(*first);
+					this->insert(*first);
 					first++;
 				}
 			}
@@ -258,16 +259,16 @@ namespace ft
 			{
 				while (first != last)
 				{
-					erase(*first);
+					this->erase(*first);
 					first++;
 				}
 			}
 			size_type erase( const Key& key )
 			{
-				iterator it = find(key);
-				if (it != end())
+				iterator it = this->find(key);
+				if (it != this->end())
 				{
-					erase(it);
+					this->erase(it);
 					return (1);
 				}
 				return (0);
@@ -287,8 +288,8 @@ namespace ft
 			*/
 			size_type count( const Key& key ) const
 			{
-				const_iterator it = lower_bound(key);
-				const_iterator itend = end();
+				const_iterator it = this->lower_bound(key);
+				const_iterator itend = this->end();
 				if (it == itend)
 					return 0;
 				if (!this->_compare((*it).first, key) && !this->_compare(key, (*it).first))
@@ -297,21 +298,17 @@ namespace ft
 			}
 			iterator find( const Key& key )
 			{
-				iterator	it = begin();
-				iterator	ite = end();
-
-				while (it != ite)
+				iterator	it = this->lower_bound(key);
+				if (it != this->end() && (!this->_compare((*it).first, key) && !this->_compare(key, (*it).first)))
 				{
-					if ((*it).first == key)
-						return (it);
-					it++;
+					return (it);
 				}
-				return (ite);
+				return (this->end());
 			}
 			const_iterator find( const Key& key ) const
 			{
-				const_iterator	it = begin();
-				const_iterator	ite = end();
+				const_iterator	it = this->begin();
+				const_iterator	ite = this->end();
 
 				while (it != ite)
 				{
@@ -324,17 +321,17 @@ namespace ft
 			
 			std::pair<iterator,iterator> equal_range( const Key& key )
 			{
-				return (std::pair<iterator, iterator>(lower_bound(key), upper_bound(key)));
+				return (std::pair<iterator, iterator>(this->lower_bound(key), this->upper_bound(key)));
 			}
-			/*std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+			std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
 			{
-				return (std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key)));
-			}*/
+				return (std::pair<const_iterator, const_iterator>(this->lower_bound(key), this->upper_bound(key)));
+			}
 			iterator lower_bound( const Key& key )
 			{
 				Node<value_type> * node = this->_rbtree.getRoot();
-				iterator it = end();
-				while (node && (node->_left || node->_right))
+				iterator it = this->end();
+				while (node)
 				{
 					if (this->_compare(node->_value.first, key))
 						node = node->_right;
@@ -348,25 +345,24 @@ namespace ft
 			}
 			const_iterator lower_bound( const Key& key ) const
 			{
-				Node<const value_type> * node = this->_rbtree.getRoot();
-				const_iterator it = end();
-				while (node && (node->_left || node->_right))
+				const_iterator	it = this->begin();
+				const_iterator	ite = this->end();
+
+				while (it != ite)
 				{
-					if (this->_compare(node->_value.first, key))
-						node = node->_right;
-					else
-					{
-						it = const_iterator(node);
-						node = node->_left;
-					}
+					if (!this->_compare((*it).first, key) && !this->_compare(key, (*it).first))
+						return (it);
+					else if (this->_compare(key, (*it).first))
+						return (it);
+					it++;
 				}
-				return it;
+				return (ite);
 			}
 			iterator upper_bound( const Key& key )
 			{
 				Node<value_type> * node = this->_rbtree.getRoot();
-				iterator it = end();
-				while (node && (node->_left || node->_right))
+				iterator it = this->end();
+				while (node)
 				{
 					if (this->_compare(node->_value.first, key))
 						node = node->_right;
@@ -376,32 +372,23 @@ namespace ft
 						node = node->_left;
 					}
 					else
-					{
 						node = node->_right;
-					}
 				}
 				return it;
 			}
-			/*const_iterator upper_bound( const Key& key ) const
+			const_iterator upper_bound( const Key& key ) const
 			{
-				Node<value_type> * node = this->_rbtree.getRoot();
-				const_iterator it = end();
-				while (node && (node->_left || node->_right))
+				const_iterator	it = this->begin();
+				const_iterator	ite = this->end();
+
+				while (it != ite)
 				{
-					if (this->_compare(node->_value.first, key))
-						node = node->_right;
-					else if (this->_compare(key, node->_value.first))
-					{
-						it = const_iterator(node);
-						node = node->_left;
-					}
-					else
-					{
-						node = node->_right;
-					}
+					if (this->_compare(key, (*it).first))
+						return (it);
+					it++;
 				}
-				return it;
-			}*/
+				return (ite);
+			}
 			/*
 			** End of Lookup
 			*/
@@ -420,10 +407,26 @@ namespace ft
 			** End of Observers
 			*/
 
+			void	print_map(void)
+			{
+				Node<value_type> * node = this->_rbtree.getRoot();
+				while (node)
+				{
+					std::cout << node->_value.first << " " << node->_c << "--";
+					if (node->_right)
+					{
+						node = node->_right;
+						std::cout << node->_value.first << " " << node->_c << "--";
+						node = node->_parent;
+					}
+					std::cout << "|" << std::endl;
+					node = node->_left;
+				}
+			}
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;
-			ft::RedBlackTree<value_type> _rbtree;
+			ft::RedBlackTree<value_type, key_compare> _rbtree;
 	};
 
 	template< class Key, class T, class Compare, class Alloc >
