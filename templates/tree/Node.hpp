@@ -6,20 +6,18 @@ namespace ft
 {
 	enum COLOR {CRED, BLACK};
 
-	template <typename PAIR>
+	template <typename T>
 	class Node
 	{
 		public:
-			typedef PAIR value_type;
-	
-		public:
-			value_type  	_value;
+			typedef T		value_type;
+			T  				_value;
 			Node			*_parent, *_left, *_right;
 			COLOR			_c;
 
 		public:
 			Node(void): _value(), _parent(0), _left(0), _right(0), _c(CRED){}
-			Node(value_type const & value): _value(value)
+			Node(T const & value): _value(value)
 			{
 				_parent = _left = _right = 0;
 				_c = CRED;
@@ -66,6 +64,10 @@ namespace ft
 				return 0;
 			}
 	};
+	template <typename PAIR>
+	Node<PAIR> * max(Node<PAIR> * node) { return (node->_right == 0 ? node : max(node->_right)); }
+	template <typename PAIR>
+	Node<PAIR> * min(Node<PAIR> * node) { return (node->_left == 0 ? node : min(node->_left)); }
 }
 
 #endif

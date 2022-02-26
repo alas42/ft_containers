@@ -22,10 +22,8 @@ namespace ft
 			{}
 
 			template< typename U1, typename U2 >
-			pair( const pair<U1, U2>& p )
-			{
-				*this = p;
-			}
+			pair( const pair<U1, U2>& p ): first(p.first), second(p.second)
+			{}
 			/*
 			** Misc
 			*/

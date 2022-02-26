@@ -39,10 +39,7 @@ namespace ft
 				}
 				return *this;
 			}
-			rb_node * getRoot(void) const { return root; }
-			/*
-			** BASIC OPERATIONS ON NODES [SEARCH / INSERT / DELETE]
-			*/
+			rb_node * getRoot(void) const{ return root; }
 			rb_node * search(value_type const & val)
 			{
 				rb_node * temp = root;
