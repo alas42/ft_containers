@@ -9,7 +9,14 @@ HEADER_FILES = templates/containers/vector.hpp \
 	templates/iterators/iterator_traits.hpp \
 	templates/iterators/randomAccessIterator.hpp \
 	templates/iterators/reverse_iterator.hpp \
-	templates/iterators/bidirectionalIterator.hpp
+	templates/iterators/bidirectionalIterator.hpp \
+	templates/comparisons/binary_function.hpp \
+	templates/comparisons/equal.hpp \
+	templates/comparisons/lexicographical_compare.hpp \
+	templates/misc/enable_if.hpp \
+	templates/misc/integral_constant.hpp \
+	templates/misc/is_integral.hpp \
+	templates/pairs/pair.hpp
 
 SOURCES_FILES =	ft_containers_main.cpp
 SOURCES_FILES2 = stl_containers_main.cpp
@@ -35,14 +42,18 @@ $(NAME2): $(OBJS2)
 
 clean:
 	rm -f $(OBJS)
+
+clean2:
 	rm -f $(OBJS2)
 
 fclean: clean
 	rm -f $(NAME)
+
+fclean2: clean2
 	rm -f $(NAME2)
 
 re: fclean all
 
-re2: fclean all stl
+re2: fclean2 stl
 
 .PHONY: all clean fclean re stl

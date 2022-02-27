@@ -332,6 +332,38 @@ int main(int argc, char** argv)
 		std::cout << MAGENTA << "\n|****MAPS****|" << RESET << std::endl;
 		{
 			ft::map<int, int> myints;
+			ft::pair<int, int> x5(21, 90);
+
+			ft::pair<int, int> x1(20, 10);
+			ft::pair<int, int> x0(10, 20);
+			ft::pair<int, int> x2(5, 60);
+			ft::pair<int, int> x3(2, 55);
+			ft::pair<int, int> x4(1, 30);
+
+			myints.insert(x5);
+			myints.insert(x0);
+			myints.insert(x1);
+			myints.insert(x2);
+			myints.insert(x3);
+			myints.insert(x4);
+			ft::map<int, int>::iterator it = myints.begin();
+			while (it != myints.end()) // end() stops before, didn't do dummy node yet (change of code)
+			{
+				std::cout << (*it).first << "::" << (*it).second << std::endl;					
+				it++;
+			}
+			ft::map<int, int>::iterator lb = myints.lower_bound(5);
+			ft::map<int, int>::iterator ub = myints.upper_bound(5);
+			std::cout << "lower_bound{" << (*lb).second << "}{" << (*ub).second << "}upper_bound" << std::endl;
+			std::cout << "Is there a key 3 ? " << myints.count(3) << std::endl;
+			std::cout << "Is there a key 20 ? " << myints.count(20) << std::endl;
+			myints.clear();
+			it = myints.begin();
+			while (it != myints.end()) // end() stops before, didn't do dummy node yet (change of code)
+			{
+				std::cout << (*it).first << std::endl;
+				it++;
+			}
 		}
 	}
 	return (0);

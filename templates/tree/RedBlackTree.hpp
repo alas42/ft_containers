@@ -357,7 +357,6 @@ namespace ft
 					return x->_left;
 				return x->_right;
 			}
-
 	};
 }
 

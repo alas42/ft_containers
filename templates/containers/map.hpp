@@ -59,41 +59,7 @@ namespace ft
 			** Constructors
 			*/
 			map(void): _compare(), _alloc(), _rbtree()
-			{
-				std::cout << RED << _rbtree.getRoot() << RESET << std::endl;
-				value_type x5(21, 90);
-
-				value_type x1(20, 10);
-				value_type x0(10, 20);
-				value_type x2(5, 60);
-				value_type x3(2, 55);
-				value_type x4(1, 30);
-
-				this->insert(x5);
-				this->insert(x0);
-				this->insert(x1);
-				this->insert(x2);
-				this->insert(x3);
-				this->insert(x4);
-				iterator it = this->begin();
-				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
-				{
-					std::cout << (*it).first << "::" << (*it).second << std::endl;					
-					it++;
-				}
-				iterator lb = this->lower_bound(5);
-				iterator ub = this->upper_bound(5);
-				std::cout << "lower_bound{" << (*lb).second << "}{" << (*ub).second << "}upper_bound" << std::endl;
-				std::cout << "Is there a key 3 ? " << this->count(3) << std::endl;
-				std::cout << "Is there a key 20 ? " << this->count(20) << std::endl;
-				clear();
-				it = this->begin();
-				while (it != this->end()) // end() stops before, didn't do dummy node yet (change of code)
-				{
-					std::cout << (*it).first << std::endl;
-					it++;
-				}
-			}
+			{}
 
 			map(map const & other) { *this = other;	}
 

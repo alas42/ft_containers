@@ -9,7 +9,6 @@ namespace ft
 	class Node
 	{
 		public:
-			typedef T		value_type;
 			T  				_value;
 			Node			*_parent, *_left, *_right;
 			COLOR			_c;
