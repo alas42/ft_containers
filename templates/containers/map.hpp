@@ -9,6 +9,8 @@
 
 # include "../pairs/pair.hpp"
 # include "../comparisons/equal.hpp"
+# include "../misc/is_integral.hpp"
+# include "../misc/enable_if.hpp"
 # include "../comparisons/binary_function.hpp"
 # include "../tree/RedBlackTree.hpp"
 # include "../iterators/reverse_iterator.hpp"

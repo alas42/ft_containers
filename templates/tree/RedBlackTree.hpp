@@ -5,11 +5,11 @@
 
 namespace ft
 {
-	template <typename PAIR, typename Compare>
+	template <typename T, typename Compare>
 	class RedBlackTree
 	{
 		public:
-			typedef PAIR value_type;
+			typedef T value_type;
 			typedef Compare key_compare;
 			typedef Node<value_type> rb_node;
 

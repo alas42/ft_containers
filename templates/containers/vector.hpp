@@ -54,7 +54,7 @@ namespace ft
 				this->m_allocator = alloc;
 				try
 				{
-					m_data = this->m_allocator.allocate(count, m_data);
+					this->m_data = this->m_allocator.allocate(count, this->m_data);
 					for(size_type i = 0; i < this->m_size; i++)
 						this->m_allocator.construct(&m_data[i], value);
 				}
@@ -65,7 +65,8 @@ namespace ft
 				}
 			}
 
-			vector(iterator first, iterator last, Allocator const & alloc = Allocator())
+			template <class InputIterator>
+			vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last, Allocator const & alloc = Allocator())
 				: m_data(0), m_size(0), m_capacity(0) 
 			{
 				this->m_allocator = alloc;
@@ -88,7 +89,7 @@ namespace ft
 			~vector(void)
 			{
 				this->clear();
-				this->m_allocator.deallocate(m_data, this->m_capacity);
+				this->m_allocator.deallocate(this->m_data, this->m_capacity);
 			}
 
 			vector & operator = (vector const & other)
@@ -125,16 +126,16 @@ namespace ft
 			{
 				try
 				{
-					erase(begin(), end());
-					insert(begin(), count, value);
+					this->erase(begin(), end());
+					this->insert(begin(), count, value);
 				}
 				catch(const std::exception& e)
 				{
 					std::cerr << e.what() << '\n';
 				}
 			}
-
-			void assign(iterator first, iterator last)
+			template <class InputIterator>
+			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
 			{
 				try
 				{
@@ -153,10 +154,7 @@ namespace ft
 			/*
 			** Guetters and setters
 			*/
-			Allocator	get_allocator() const
-			{
-				return this->m_allocator;
-			}
+			Allocator	get_allocator() const {	return this->m_allocator; }
 			/*
 			** End of Guetters and setters
 			*/
@@ -177,41 +175,17 @@ namespace ft
 				return m_data[pos];
 			}
 
-			T & operator[]( size_type pos )
-			{
-				return m_data[pos];
-			}
-			T const & operator[]( size_type pos ) const
-			{
-				return m_data[pos];
-			}
+			T & operator[]( size_type pos ) { return m_data[pos]; }
+			T const & operator[]( size_type pos ) const { return m_data[pos]; }
 
-			T & front()
-			{
-				return m_data[0];
-			}
-			T const & front() const
-			{
-				return m_data[0];
-			}
+			T & front() { return m_data[0]; }
+			T const & front() const { return m_data[0]; }
 
-			T & back()
-			{
-				return m_data[m_size - 1];
-			}
-			T const & back() const
-			{
-				return m_data[m_size - 1];
-			}
+			T & back() { return m_data[m_size - 1];	}
+			T const & back() const { return m_data[m_size - 1]; }
 
-			T * data()
-			{
-				return m_data;
-			}
-			const T * data() const
-			{
-				return m_data;
-			}
+			T * data() { return m_data; }
+			const T * data() const { return m_data;	}
 			/*
 			** End of Element access
 			*/
@@ -219,40 +193,14 @@ namespace ft
 			/*
 			** Iterators WICHTIG
 			*/
-			iterator begin()
-			{
-				return iterator(&m_data[0]);
-			}
-			const_iterator begin() const
-			{
-				return const_iterator(&m_data[0]);
-			}
-
-			iterator end()
-			{
-				return iterator(&m_data[m_size]);
-			}
-			const_iterator end() const
-			{
-				return const_iterator(&m_data[m_size]);
-			}
-			reverse_iterator rbegin()
-			{
-				return reverse_iterator(end());
-			}
-			const_reverse_iterator rbegin() const
-			{
-				return const_reverse_iterator(end());
-			}
-
-			reverse_iterator rend()
-			{
-				return reverse_iterator(begin());
-			}
-			const_reverse_iterator rend() const
-			{
-				return const_reverse_iterator(begin());
-			}
+			iterator begin() { return iterator(&m_data[0]);	}
+			const_iterator begin() const { return const_iterator(&m_data[0]); }
+			iterator end() { return iterator(&m_data[m_size]); }
+			const_iterator end() const { return const_iterator(&m_data[m_size]); }
+			reverse_iterator rbegin() {	return reverse_iterator(end()); }
+			const_reverse_iterator rbegin() const {	return const_reverse_iterator(end()); }
+			reverse_iterator rend()	{ return reverse_iterator(begin());	}
+			const_reverse_iterator rend() const	{ return const_reverse_iterator(begin()); }
 			/*
 			** End ITERATORS
 			*/
@@ -260,20 +208,10 @@ namespace ft
 			/*
 			** Capacity
 			*/
-			bool empty() const
-			{
-				return (begin() == end());
-			}
+			bool empty() const{ return (begin() == end()); }
 
-			size_type size() const
-			{
-				return this->m_size;
-			}
-
-			size_type max_size() const
-			{
-				return this->m_allocator.max_size();
-			}
+			size_type size() const { return this->m_size; }
+			size_type max_size() const { return this->m_allocator.max_size(); }
 
 			void reserve( size_type new_cap )
 			{
@@ -346,9 +284,10 @@ namespace ft
 				this->m_size += count;
 			}
 
-			void insert( iterator pos, iterator first, iterator last )
+			template <class InputIterator>
+			void		insert(iterator position, typename enable_if<!is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
 			{
-				size_type offset = pos - this->begin();
+				size_type offset = position - this->begin();
 				size_type count = last - first;
 				this->reserve(this->m_size + count);
 
@@ -473,23 +412,10 @@ namespace ft
 			size_type						m_size;
 			size_type						m_capacity;
 			Allocator						m_allocator;
-
-		private:
-			void left_shift(iterator position)
-			{
-				while (position != end())
-				{
-					position = position + 1;
-					position++;
-				}
-			}
 	};
 
 	template <typename T>
-	void swap (ft::vector<T> & x, ft::vector<T> & y)
-	{
-		x.swap(y);
-	}
+	void swap (ft::vector<T> & x, ft::vector<T> & y) { x.swap(y); }
 	template <typename T>
 	bool operator==( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
@@ -505,10 +431,7 @@ namespace ft
 		return (true);
 	}
 	template <typename T>
-	bool operator!=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
-	{
-		return (!(lhs == rhs));
-	}
+	bool operator!=( const ft::vector<T> & lhs, const ft::vector<T> & rhs ) { return (!(lhs == rhs)); }
 	template <typename T>
 	bool operator<( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
 	{
@@ -519,20 +442,11 @@ namespace ft
 		return (ft::lexicographical_compare(ltb, lte, rtb, rte));
 	}
 	template <typename T>
-	bool operator<=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
-	{
-		return (lhs == rhs || lhs < rhs);
-	}
+	bool operator<=( const ft::vector<T> & lhs, const ft::vector<T> & rhs ) { return (lhs == rhs || lhs < rhs); }
 	template <typename T>
-	bool operator>( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
-	{
-		return (!(lhs <= rhs));
-	}
+	bool operator>( const ft::vector<T> & lhs, const ft::vector<T> & rhs ) { return (!(lhs <= rhs)); }
 	template <typename T>
-	bool operator>=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )
-	{
-		return (!(lhs < rhs));
-	}
+	bool operator>=( const ft::vector<T> & lhs, const ft::vector<T> & rhs )	{ return (!(lhs < rhs)); }
 }
 
 #endif

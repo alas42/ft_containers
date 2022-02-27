@@ -183,7 +183,7 @@ int main(int argc, char** argv)
 					ft::vector<int>::iterator it;
 					it = first.begin() + 1;
 
-					second.assign(it, first.end()-1); // the 5 central values of first
+					second.assign(it, --first.end()); // the 5 central values of first
 
 					int myints[] = {1776,7, 4};
 					third.assign(myints, myints + 3);   // assigning from array.

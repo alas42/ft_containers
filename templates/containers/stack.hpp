@@ -1,7 +1,16 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 
+# include <iostream>
+# include <stdexcept>
+# include <algorithm>
 # include "vector.hpp"
+# include "../comparisons/lexicographical_compare.hpp"
+# include "../iterators/iterator_traits.hpp"
+# include "../iterators/randomAccessIterator.hpp"
+# include "../iterators/reverse_iterator.hpp"
+# include "../misc/is_integral.hpp"
+# include "../misc/enable_if.hpp"
 
 namespace ft
 {

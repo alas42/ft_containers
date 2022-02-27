@@ -6,14 +6,11 @@ namespace ft
 	template< class T, T v >
 	struct integral_constant
 	{
-        static const T value = v;
-        typedef T value_type;
+        static const T                      value = v;
+        typedef T                           value_type;
         typedef ft::integral_constant<T, v> type;
 
-        operator value_type() const
-        {
-            return value;
-        }
+        operator value_type() const { return value; }
 	};
 }
 
