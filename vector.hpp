@@ -268,7 +268,7 @@ namespace ft
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
 				
-				for (size_type i = this->size(); i <= this->size(); i--)
+				for (size_type i = this->size(); i <= this->size(); i--)//wtf, cannot work
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -317,16 +317,21 @@ namespace ft
 			iterator erase( iterator first, iterator last )
 			{
 				iterator i;
+				size_type offset = first - this->begin();
+				size_type count = last - first;
 				try
 				{
 					if (last == end())
 						i = end();
 					else
 						i = last + 1;
-					while (first != last)
-					{ // erase doesn't move the values in place
-						this->m_allocator.destroy(&(*first));
-						first++;
+					for (size_type i = 0; i < count && last + i != end(); i++)
+					{
+						this->m_allocator.construct(&this->m_data[offset + i], *(last + i));
+					}
+					for (size_type i = 0; i < count; i++)
+					{// erase doesn't move the values in place
+						this->m_allocator.destroy(&this->m_data[offset + i]);
 						this->m_size--;
 					}
 					return (i);

@@ -97,11 +97,7 @@ int main(int argc, char** argv)
 
 			ft::vector<int>::iterator it = vector_int.begin();
 		
-			vector_int.insert(it, (size_t)15, 10);
-
-			it = vector_int.begin() + 5;
-			vector_int.insert(it, (size_t)30, 0);
-
+			vector_int.insert(it + 3, 3, 10);
 
 			std::cout << MAGENTA << "\n\nAFTER INSERT" << RESET << std::endl;
 			for (unsigned long i = 0; i < vector_int.size(); i++)
