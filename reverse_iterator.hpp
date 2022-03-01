@@ -25,7 +25,7 @@ namespace ft
 				*this = other;
 			}
 			template < class U>
-			reverse_iterator<Iter>& operator=( const reverse_iterator<U> & other )
+			reverse_iterator& operator=( const reverse_iterator<U> & other )
 			{
 				if (this != &other)
 				{
@@ -52,44 +52,44 @@ namespace ft
 			{
 				return base()[-n - 1];
 			}
-			reverse_iterator<Iter>& operator++()
+			reverse_iterator& operator++()
 			{
 				--current;
 				return *this;
 			}
-			reverse_iterator<Iter>& operator--()
+			reverse_iterator& operator--()
 			{
 				++current;
 				return *this;
 			}
-			reverse_iterator<Iter> operator++( int )
+			reverse_iterator operator++( int )
 			{
 				reverse_iterator tmp(*this);
 				--current;
 				return (tmp);
 			}
-			reverse_iterator<Iter> operator--( int )
+			reverse_iterator operator--( int )
 			{
 				reverse_iterator tmp(*this);
 				++current;
 				return (tmp);
 			}
-			reverse_iterator<Iter> operator+( difference_type n ) const
+			reverse_iterator operator+( difference_type n ) const
 			{
 				reverse_iterator temp(current - n);
 				return temp;
 			}
-			reverse_iterator<Iter> operator-( difference_type n ) const
+			reverse_iterator operator-( difference_type n ) const
 			{
 				reverse_iterator temp(current + n);
 				return temp;
 			}
-			reverse_iterator<Iter>& operator+=( difference_type n )
+			reverse_iterator& operator+=( difference_type n )
 			{
 				current -= n;
 				return (*this);
 			}
-			reverse_iterator<Iter>& operator-=( difference_type n )
+			reverse_iterator& operator-=( difference_type n )
 			{
 				current += n;
 				return (*this);

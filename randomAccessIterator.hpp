@@ -11,7 +11,7 @@ namespace ft
 	{
 			public:
 				typedef T								value_type;
-				typedef ft::random_access_iterator_tag	iterator_category;
+				typedef std::random_access_iterator_tag	iterator_category;
 				typedef std::ptrdiff_t					difference_type;
 				typedef T *								pointer;
 				typedef T &								reference;
@@ -19,10 +19,10 @@ namespace ft
 			public:
 				random_access_iterator(): m_ptr(0){}
 				random_access_iterator(pointer ptr): m_ptr(ptr){}
-				random_access_iterator(const random_access_iterator<T> & copy){*this = copy;}
+				random_access_iterator(const random_access_iterator & copy){*this = copy;}
 				~random_access_iterator(){}
-
-				random_access_iterator<T>&	operator=(const random_access_iterator<T>& copy)
+				operator random_access_iterator<const T>(void) const	{ return random_access_iterator<const T>(this->operator->()); }
+				random_access_iterator&	operator=(const random_access_iterator& copy)
 				{
 					if (this != &copy)
 					{
@@ -38,44 +38,44 @@ namespace ft
 				{
 					return this->m_ptr;
 				}
-				bool						operator!=(const random_access_iterator<T> & b)
+				bool						operator!=(const random_access_iterator & b)
 				{
 					return (this->m_ptr != b.m_ptr);
 				}
-				bool						operator==(const random_access_iterator<T> & b)
+				bool						operator==(const random_access_iterator & b)
 				{
 					return (this->m_ptr == b.m_ptr);
 				}
-				random_access_iterator<T>&	operator+=(const difference_type& movement){m_ptr += movement;return (*this);}
-				random_access_iterator<T>&	operator-=(const difference_type& movement){m_ptr -= movement;return (*this);}
-				random_access_iterator<T>&	operator++(){++m_ptr;return (*this);}
-				random_access_iterator<T>&	operator--(){--m_ptr;return (*this);}
+				random_access_iterator&	operator+=(const difference_type& movement){m_ptr += movement;return (*this);}
+				random_access_iterator&	operator-=(const difference_type& movement){m_ptr -= movement;return (*this);}
+				random_access_iterator&	operator++(){++m_ptr;return (*this);}
+				random_access_iterator&	operator--(){--m_ptr;return (*this);}
 
-				random_access_iterator<T>		operator++(int)
+				random_access_iterator		operator++(int)
 				{
 					random_access_iterator temp(*this);
 					++m_ptr;
 					return temp;
 				}
-				random_access_iterator<T>		operator--(int)
+				random_access_iterator		operator--(int)
 				{
 					random_access_iterator temp(*this);
 					--m_ptr;
 					return temp;
 				}
 				
-				random_access_iterator<T>		operator+(const difference_type& movement)
+				random_access_iterator		operator+(const difference_type& movement)
 				{
 					random_access_iterator temp(m_ptr + movement);
 					return temp;
 				}
-				random_access_iterator<T>		operator-(const difference_type & movement)
+				random_access_iterator		operator-(const difference_type & movement)
 				{
 					random_access_iterator temp(m_ptr - movement);
 					return temp;
 				}
 
-				difference_type				operator-(const random_access_iterator<T>& rawIterator)
+				difference_type				operator-(const random_access_iterator& rawIterator)
 				{
 					return std::distance(rawIterator.m_ptr, m_ptr);
 				}

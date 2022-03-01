@@ -4,18 +4,12 @@
 # include <iostream>
 # include <stdexcept>
 # include <algorithm>
-# include "../comparisons/lexicographical_compare.hpp"
-# include "../iterators/iterator_traits.hpp"
-# include "../iterators/randomAccessIterator.hpp"
-# include "../iterators/reverse_iterator.hpp"
-# include "../misc/is_integral.hpp"
-# include "../misc/enable_if.hpp"
-
-# define RESET "\033[0m"
-# define GREEN "\033[32m"
-# define MAGENTA "\033[35m"
-# define RED "\033[31m"
-
+# include "lexicographical_compare.hpp"
+# include "iterator_traits.hpp"
+# include "randomAccessIterator.hpp"
+# include "reverse_iterator.hpp"
+# include "is_integral.hpp"
+# include "enable_if.hpp"
 
 namespace ft
 {
@@ -32,10 +26,10 @@ namespace ft
 			typedef T const &																	const_reference;
 			typedef typename Allocator::pointer													pointer;
 			typedef typename Allocator::const_pointer											const_pointer;
-			typedef ft::random_access_iterator<T>										iterator;
-			typedef ft::random_access_iterator<const T> 									const_iterator;
-			typedef ft::reverse_iterator<iterator> 				reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+			typedef ft::random_access_iterator<T>												iterator;
+			typedef ft::random_access_iterator<const T> 										const_iterator;
+			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 			/*
 			** Constructors
@@ -48,12 +42,13 @@ namespace ft
 				this->m_allocator = alloc;
 			}
 
-			explicit vector(size_type count, T const & value, Allocator const & alloc = Allocator())
+			explicit vector(size_type count, T const & value = T(), Allocator const & alloc = Allocator())
 				:  m_data(0), m_size(count), m_capacity(count)
 			{
 				this->m_allocator = alloc;
 				try
 				{
+				//	if (count > 0)//
 					this->m_data = this->m_allocator.allocate(count, this->m_data);
 					for(size_type i = 0; i < this->m_size; i++)
 						this->m_allocator.construct(&m_data[i], value);
@@ -97,15 +92,17 @@ namespace ft
 				if (this != &other)
 				{
 					for (size_type i = 0; i < this->m_size; i++)
-						this->m_allocator.destroy(&m_data[0]);
-					this->m_allocator.deallocate(m_data, this->m_capacity);
+						this->m_allocator.destroy(&m_data[i]);
+					//if (this->m_capacity > 0)//
+					if (m_data)
+						this->m_allocator.deallocate(m_data, this->m_capacity);
 					this->m_size = other.size();
 					this->m_capacity = other.capacity();
 					try
 					{
 						this->m_data = this->m_allocator.allocate(this->m_capacity, this->m_data);
 						for(size_type i = 0; i < this->m_size; i++)
-							this->m_allocator.construct(&this->m_data[i], other.m_data[i]);
+							this->m_allocator.construct(&this->m_data[i], other[i]);
 					}
 					catch(const std::exception& e)
 					{
@@ -327,7 +324,7 @@ namespace ft
 					else
 						i = last + 1;
 					while (first != last)
-					{
+					{ // erase doesn't move the values in place
 						this->m_allocator.destroy(&(*first));
 						first++;
 						this->m_size--;

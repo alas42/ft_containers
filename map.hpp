@@ -7,19 +7,14 @@
 # include <utility>
 # include <functional>
 
-# include "../pairs/pair.hpp"
-# include "../comparisons/equal.hpp"
-# include "../misc/is_integral.hpp"
-# include "../misc/enable_if.hpp"
-# include "../comparisons/binary_function.hpp"
-# include "../tree/RedBlackTree.hpp"
-# include "../iterators/reverse_iterator.hpp"
-# include "../iterators/bidirectionalIterator.hpp"
-
-# define RESET "\033[0m"
-# define GREEN "\033[32m"
-# define MAGENTA "\033[35m"
-# define RED "\033[31m"
+# include "pair.hpp"
+# include "equal.hpp"
+# include "is_integral.hpp"
+# include "enable_if.hpp"
+# include "binary_function.hpp"
+# include "RedBlackTree.hpp"
+# include "reverse_iterator.hpp"
+# include "bidirectionalIterator.hpp"
 
 namespace ft
 {

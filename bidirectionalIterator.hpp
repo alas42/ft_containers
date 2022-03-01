@@ -2,7 +2,7 @@
 #define bidirectionalIterator_HPP
 
 #include "iterator_traits.hpp"
-#include "../tree/RedBlackTree.hpp"
+#include "RedBlackTree.hpp"
 
 namespace ft
 {

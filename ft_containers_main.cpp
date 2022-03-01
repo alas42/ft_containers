@@ -1,11 +1,16 @@
 #include <iostream>
 #include <string>
-#include "templates/containers/vector.hpp"
-#include "templates/containers/stack.hpp"
-#include "templates/containers/map.hpp"
+#include "vector.hpp"
+#include "stack.hpp"
+#include "map.hpp"
 
 #define MAX_RAM 215000
 #define BUFFER_SIZE 4096
+
+# define RESET "\033[0m"
+# define GREEN "\033[32m"
+# define MAGENTA "\033[35m"
+# define RED "\033[31m"
 
 struct Buffer
 {
