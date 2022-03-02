@@ -226,11 +226,14 @@ namespace ft
 			{
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
-
-				for (size_type i = this->size(); i <= this->size(); i--)
+				if (this->m_size == 0)
+				{
+					this->assign(count, value);
+					return ;
+				}
+				for (size_type i = offset; i < offset + count; i++)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
-					this->m_allocator.destroy(&this->m_data[i]);
 				}
 				for (size_type i = 0; i < count; i++)
 				{
@@ -242,15 +245,18 @@ namespace ft
 
 			template <class InputIterator>
 			void		insert(iterator position, typename enable_if<!is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
-			{
-				size_type offset = position - this->begin();
-				size_type count = last - first;
+			{ // 3 
+				size_type offset = position - this->begin(); // 3
+				size_type count = last - first; // 4
 				this->reserve(this->m_size + count);
-
-				for (size_type i = this->size(); i <= this->size(); i--)
-				{// PROBLEME quand size_0, cela rentre dans la boucle et tente de destroy des choses inexistantes - 
+				if (this->m_size == 0)
+				{
+					this->assign(first, last);
+					return ;
+				}
+				for (size_type i = offset; i < offset + count; i++)
+				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
-					this->m_allocator.destroy(&this->m_data[i]);
 				}
 				for (size_type i = 0; i < count; i++)
 				{
