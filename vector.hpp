@@ -34,45 +34,30 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			vector(void): m_data(0), m_size(0), m_capacity(0)
-			{}
-			
-			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0)
+			vector(void): m_data(0), m_size(0), m_capacity(0), m_allocator()
 			{
-				this->m_allocator = alloc;
+				this->m_data = this->m_allocator.allocate(0, 0);
+			}
+			
+			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0), m_allocator(alloc)
+			{
+				this->m_data = this->m_allocator.allocate(0, 0);
 			}
 
 			explicit vector(size_type count, T const & value = T(), Allocator const & alloc = Allocator())
-				:  m_data(0), m_size(count), m_capacity(count)
+				:  m_data(0), m_size(0), m_capacity(0), m_allocator(alloc)
 			{
-				this->m_allocator = alloc;
-				try
-				{
-					this->m_data = this->m_allocator.allocate(count, this->m_data);
-					for(size_type i = 0; i < this->m_size; i++)
-						this->m_allocator.construct(&m_data[i], value);
-				}
-				catch(const std::exception& e)
-				{
-					std::cerr << e.what() << '\n';
-					throw;
-				}
+				this->assign(count, value);
 			}
 
 			template <class InputIterator>
 			vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last, Allocator const & alloc = Allocator())
-				: m_data(0), m_size(0), m_capacity(0) 
+				: m_data(0), m_size(0), m_capacity(0), m_allocator(alloc)
 			{
-				this->m_allocator = alloc;
-				this->m_size = std::distance(first, last);
-				this->m_capacity = m_size;
-				std::uninitialized_copy(first, last, this->m_data);
+				this->assign(first, last);
 			}
 
-			vector(vector const & other): m_data(0), m_size(0), m_capacity(0)
-			{
-				*this = other;
-			}
+			vector(vector const & other): m_data(0), m_size(0), m_capacity(0), m_allocator() { *this = other; }
 			/*
 			** End of Constructors
 			*/
@@ -83,32 +68,14 @@ namespace ft
 			~vector(void)
 			{
 				this->clear();
-				this->m_allocator.deallocate(this->m_data, this->m_capacity);
+				if (this->m_data != 0 && this->m_capacity > 0)
+					this->m_allocator.deallocate(this->m_data, this->m_capacity);
 			}
 
 			vector & operator = (vector const & other)
 			{
 				if (this != &other)
-				{
-					for (size_type i = 0; i < this->m_size; i++)
-						this->m_allocator.destroy(&m_data[i]);
-					//if (this->m_capacity > 0)//
-					if (m_data)
-						this->m_allocator.deallocate(m_data, this->m_capacity);
-					this->m_size = other.size();
-					this->m_capacity = other.capacity();
-					try
-					{
-						this->m_data = this->m_allocator.allocate(this->m_capacity, this->m_data);
-						for(size_type i = 0; i < this->m_size; i++)
-							this->m_allocator.construct(&this->m_data[i], other[i]);
-					}
-					catch(const std::exception& e)
-					{
-						std::cerr << e.what() << '\n';
-						throw;
-					}
-				}
+					this->assign(other.begin(), other.end());
 				return *this;
 			}
 			/*
@@ -122,8 +89,9 @@ namespace ft
 			{
 				try
 				{
-					this->erase(begin(), end());
-					this->insert(begin(), count, value);
+					this->clear();
+					for(size_type i = 0; i < count; i++)
+						this->push_back(value);
 				}
 				catch(const std::exception& e)
 				{
@@ -135,8 +103,9 @@ namespace ft
 			{
 				try
 				{
-					this->erase(begin(), end());
-					this->insert(begin(), first, last);
+					this->clear();
+					while (first != last)
+						this->push_back(*first++);
 				}
 				catch(const std::exception& e)
 				{
@@ -218,7 +187,7 @@ namespace ft
 					throw std::length_error("length-error in reserve");
 				try
 				{
-					while (power_of_two < new_cap && power_of_two < max_size())
+					while (power_of_two < new_cap && power_of_two < this->max_size())
 						power_of_two *= 2;
 					value_type * new_data = this->m_allocator.allocate(power_of_two, 0);
 					for (size_type i = 0; i < this->size(); i++)
@@ -226,7 +195,7 @@ namespace ft
 						this->m_allocator.construct(&new_data[i], this->m_data[i]);
 						this->m_allocator.destroy(&this->m_data[i]);
 					}
-					if (this->m_data)
+					if (this->m_data != 0 && this->m_capacity > 0)
 						this->m_allocator.deallocate(m_data, this->m_capacity);
 					this->m_data = new_data;
 					this->m_capacity = power_of_two;
@@ -238,10 +207,7 @@ namespace ft
 				}
 			}
 
-			size_type capacity() const
-			{
-				return this->m_capacity;
-			}
+			size_type capacity() const { return this->m_capacity; }
 			/*
 			** End of capacity
 			*/
@@ -267,7 +233,7 @@ namespace ft
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
 				
-				for (size_type i = this->size() - 1; i <= this->size(); i--)
+				for (size_type i = this->size() - 1; i < this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -287,7 +253,7 @@ namespace ft
 				size_type count = last - first;
 				this->reserve(this->m_size + count);
 
-				for (size_type i = this->size() - 1; i <= this->size(); i--)
+				for (size_type i = this->size() - 1; i < this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -347,7 +313,7 @@ namespace ft
 				{
 					if (this->m_size == this->m_capacity)
 						this->reserve(m_size + 1);
-					this->m_data[this->m_size] = value;
+					this->m_allocator.construct(&this->m_data[this->m_size], value);
 					this->m_size++;
 				}
 				catch(const std::exception & e)
@@ -380,14 +346,10 @@ namespace ft
 					else if (count < this->m_size)
 					{
 						for (size_t i = count; i < this->m_size ; i++)
-						{
 							this->m_allocator.destroy(&this->m_data[i]);
-						}
 					}
 					for (size_type i = this->m_size; i < count; i++)
-					{
 						this->m_allocator.construct(&this->m_data[i], value);
-					}
 					this->m_size = count;
 				}
 				catch(const std::exception& e)
@@ -399,7 +361,7 @@ namespace ft
 
 			void swap( vector & other )
 			{
-				vector tmp(*this);
+				vector tmp = *this;
 				*this = other;
 				other = tmp;
 			}

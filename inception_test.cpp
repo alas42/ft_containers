@@ -83,7 +83,7 @@ int main()
 		std::cerr << "THERE IS A PROBLEM ON LINE 86\n";
 	std::cout << "Size of BOB " << BOB.size() << std::endl;
 	if (BOB.capacity() >= bob_resize)
-		std::cout << "Capacity of BOB is sufficient\n";
+		std::cout << "Capacity of BOB is sufficient : " << BOB.capacity() << "\n";
 	else
 		std::cerr << "THERE IS A PROBLEM ON LINE 91\n";
 	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
@@ -117,7 +117,7 @@ int main()
 		std::cerr << "THERE IS A PROBLEM ON LINE 120\n";
 	std::cout << "Size of BOB " << BOB.size() << std::endl;
 	if (BOB.capacity() >= bob_reserve)
-		std::cout << "Capacity of BOB is sufficient\n";
+		std::cout << "Capacity of BOB is sufficient : " << BOB.capacity() << "\n";
 	else
 		std::cerr << "THERE IS A PROBLEM ON LINE 125\n";
 	std::cout << "Size of MIKE " << MIKE.size() << std::endl;
@@ -154,7 +154,7 @@ int main()
 	std::cout << "\nASSIGN\n";
 	test.assign(3, 17);
 	BOB.assign(3, test);
-/*
+
 	//ASSIGN RANGE
 	std::cout << "\nASSIGN RANGE\n";
 	ft::vector<ft::vector<int> >	assign_range;
@@ -204,7 +204,7 @@ int main()
 	std::cout << "Const it.front() : " << std::endl;
 	std::cout << (*const_it).front() << '\n';
 
-
+/*
 	//INSERT
 	std::cout << "\nINSERT\n";
 	ft::vector<ft::vector<int> >	std_insert_in_me;
