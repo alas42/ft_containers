@@ -34,15 +34,9 @@ namespace ft
 			/*
 			** Constructors
 			*/
-			vector(void): m_data(0), m_size(0), m_capacity(0), m_allocator()
-			{
-				this->m_data = this->m_allocator.allocate(0, 0);
-			}
+			vector(void): m_data(0), m_size(0), m_capacity(0), m_allocator(){}
 			
-			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0), m_allocator(alloc)
-			{
-				this->m_data = this->m_allocator.allocate(0, 0);
-			}
+			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0), m_allocator(alloc){}
 
 			explicit vector(size_type count, T const & value = T(), Allocator const & alloc = Allocator())
 				:  m_data(0), m_size(0), m_capacity(0), m_allocator(alloc)
@@ -232,8 +226,8 @@ namespace ft
 			{
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
-				
-				for (size_type i = this->size() - 1; i < this->size(); i--)
+
+				for (size_type i = this->size(); i <= this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -253,8 +247,8 @@ namespace ft
 				size_type count = last - first;
 				this->reserve(this->m_size + count);
 
-				for (size_type i = this->size() - 1; i < this->size(); i--)
-				{
+				for (size_type i = this->size(); i <= this->size(); i--)
+				{// PROBLEME quand size_0, cela rentre dans la boucle et tente de destroy des choses inexistantes - 
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
 				}
