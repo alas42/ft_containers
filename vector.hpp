@@ -48,7 +48,6 @@ namespace ft
 				this->m_allocator = alloc;
 				try
 				{
-				//	if (count > 0)//
 					this->m_data = this->m_allocator.allocate(count, this->m_data);
 					for(size_type i = 0; i < this->m_size; i++)
 						this->m_allocator.construct(&m_data[i], value);
@@ -215,20 +214,20 @@ namespace ft
 				size_type power_of_two = 2;
 				if (new_cap <= this->m_capacity)
 					return ;
-				else if (new_cap > max_size())
+				else if (new_cap > this->max_size())
 					throw std::length_error("length-error in reserve");
 				try
 				{
 					while (power_of_two < new_cap && power_of_two < max_size())
 						power_of_two *= 2;
-					allocator_type alloc;
-					value_type * new_data = alloc.allocate(power_of_two, 0);
+					value_type * new_data = this->m_allocator.allocate(power_of_two, 0);
 					for (size_type i = 0; i < this->size(); i++)
 					{
-						alloc.construct(&new_data[i], this->m_data[i]);
-						alloc.destroy(&this->m_data[i]);
+						this->m_allocator.construct(&new_data[i], this->m_data[i]);
+						this->m_allocator.destroy(&this->m_data[i]);
 					}
-					alloc.deallocate(m_data, this->m_capacity);
+					if (this->m_data)
+						this->m_allocator.deallocate(m_data, this->m_capacity);
 					this->m_data = new_data;
 					this->m_capacity = power_of_two;
 				}
@@ -268,7 +267,7 @@ namespace ft
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
 				
-				for (size_type i = this->size(); i <= this->size(); i--)//wtf, cannot work
+				for (size_type i = this->size() - 1; i <= this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -288,7 +287,7 @@ namespace ft
 				size_type count = last - first;
 				this->reserve(this->m_size + count);
 
-				for (size_type i = this->size(); i <= this->size(); i--)
+				for (size_type i = this->size() - 1; i <= this->size(); i--)
 				{
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
 					this->m_allocator.destroy(&this->m_data[i]);
@@ -316,24 +315,23 @@ namespace ft
 
 			iterator erase( iterator first, iterator last )
 			{
-				iterator i;
+				iterator i = end();
+				size_type deleted = last - first;
 				size_type offset = first - this->begin();
-				size_type count = last - first;
+				size_type n = 0;
 				try
 				{
-					if (last == end())
-						i = end();
-					else
+					if (last != end())
 						i = last + 1;
-					for (size_type i = 0; i < count && last + i != end(); i++)
+					while (last + n != end())
 					{
-						this->m_allocator.construct(&this->m_data[offset + i], *(last + i));
+						this->m_allocator.destroy(&this->m_data[offset + n]);
+						this->m_allocator.construct(&this->m_data[offset + n], *(last + n));
+						n++;
 					}
-					for (size_type i = 0; i < count; i++)
-					{// erase doesn't move the values in place
-						this->m_allocator.destroy(&this->m_data[offset + i]);
-						this->m_size--;
-					}
+					for (size_type c = 1; c <= deleted; c++)
+						this->m_allocator.destroy(&this->m_data[this->m_size - c]);
+					this->m_size -= deleted;
 					return (i);
 				}
 				catch(const std::exception & e)

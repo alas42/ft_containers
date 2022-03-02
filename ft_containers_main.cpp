@@ -34,6 +34,10 @@ int main(int argc, char** argv)
 	std::string arg = argv[2];
 	if (arg.compare("vector") == 0)
 	{
+
+		{
+			ft::vector<ft::vector<int> > Bob;
+		}
 		std::cout << MAGENTA << "\n|****VECTORS****|" << RESET << std::endl;
 
 		const int seed = atoi(argv[1]);
