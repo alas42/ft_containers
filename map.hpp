@@ -15,6 +15,7 @@
 # include "RedBlackTree.hpp"
 # include "reverse_iterator.hpp"
 # include "bidirectionalIterator.hpp"
+# include "lexicographical_compare.hpp"
 
 namespace ft
 {
@@ -80,6 +81,8 @@ namespace ft
 				{
 					this->_compare = other.key_comp();
 					this->_alloc = other.get_allocator();
+					this->clear();
+					this->insert(other.begin(), other.end());
 				}
 				return (*this);
 			}
@@ -102,26 +105,26 @@ namespace ft
 			{
 				iterator	it = this->find(key);
 				if (it != this->end())
-					return (*it)->second;
+					return (*it).second;
 				throw std::out_of_range("key not found");
 			}
 			const T& at( const Key& key ) const
 			{
 				const_iterator	it = this->find(key);
 				if (it != this->end())
-					return (*it)->second;
+					return (*it).second;
 				throw std::out_of_range("key not found");
 			}
 			T& operator[]( const Key& key )
 			{
 				iterator	it = this->find(key);
 				if (it != this->end())
-					return (*it)->second;
+					return (*it).second;
 				else
 				{
 					T new_second = T();
-					this->insert(value_type(key, new_second));
-					return new_second;
+					ft::pair<iterator, bool> pairit = this->insert(value_type(key, new_second));
+					return ((*pairit.first).second);
 				}
 			}
 			/*
@@ -151,7 +154,7 @@ namespace ft
 			size_type max_size() const { return this->_alloc.max_size(); }
 			/*
 			** End of capacity
-			*/ 
+			*/
 			/*
 			** Modifiers
 			*/
@@ -175,19 +178,14 @@ namespace ft
 			void insert( InputIt first, InputIt last )
 			{
 				while (first != last)
-				{
-					this->insert(*first);
-					first++;
-				}
+					this->insert(*first++);
 			}
+
 			void erase( iterator pos ) { this->_rbtree.deleteByValue(*pos); }
 			void erase( iterator first, iterator last )
 			{
 				while (first != last)
-				{
-					this->erase(*first);
-					first++;
-				}
+					this->erase(first++);
 			}
 			size_type erase( const Key& key )
 			{
@@ -199,11 +197,12 @@ namespace ft
 				}
 				return (0);
 			}
+
 			void swap( map& other )
 			{
-				map temp = other;
-				other = *this;
-				*this = temp;
+				ft::RedBlackTree<value_type, key_compare> tree_tmp = other._rbtree;
+				other._rbtree = this->_rbtree;
+				this->_rbtree = tree_tmp;
 			}
 			/*
 			** End of Modifiers
@@ -246,8 +245,8 @@ namespace ft
 				return (ite);
 			}
 			
-			std::pair<iterator,iterator> equal_range( const Key& key ) { return (std::pair<iterator, iterator>(this->lower_bound(key), this->upper_bound(key))); }
-			std::pair<const_iterator,const_iterator> equal_range( const Key& key ) const { return (std::pair<const_iterator, const_iterator>(this->lower_bound(key), this->upper_bound(key))); }
+			ft::pair<iterator,iterator> equal_range( const Key& key ) { return (ft::pair<iterator, iterator>(this->lower_bound(key), this->upper_bound(key))); }
+			ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const { return (ft::pair<const_iterator, const_iterator>(this->lower_bound(key), this->upper_bound(key))); }
 			/*
 			iterator lower_bound( const Key& key )
 			{
@@ -348,7 +347,7 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return (false);
-		return (ft::equal(lhs.begin(), rhs.begin(), rhs.begin()));
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator!=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
