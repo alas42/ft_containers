@@ -62,7 +62,7 @@ namespace ft
 			~vector(void)
 			{
 				this->clear();
-				if (this->m_data != 0 && this->m_capacity > 0)
+				if (this->m_capacity > 0)
 					this->m_allocator.deallocate(this->m_data, this->m_capacity);
 			}
 
@@ -93,7 +93,7 @@ namespace ft
 				}
 			}
 			template <class InputIterator>
-			void assign(typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
+			void assign(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
 			{
 				try
 				{
@@ -181,10 +181,12 @@ namespace ft
 					throw std::length_error("length-error in reserve");
 				try
 				{
-					while (power_of_two < new_cap && power_of_two < this->max_size())
+					while (power_of_two < new_cap)
 						power_of_two *= 2;
+					if (power_of_two > this->max_size())
+						power_of_two = new_cap;
 					value_type * new_data = this->m_allocator.allocate(power_of_two, 0);
-					for (size_type i = 0; i < this->size(); i++)
+					for (size_type i = 0; i < this->m_size; i++)
 					{
 						this->m_allocator.construct(&new_data[i], this->m_data[i]);
 						this->m_allocator.destroy(&this->m_data[i]);
@@ -226,43 +228,33 @@ namespace ft
 			{
 				size_type offset = pos - this->begin();
 				this->reserve(this->m_size + count);
-				if (this->m_size == 0)
+				for (size_type i = this->m_size - 1; i >= offset; i--)
 				{
-					this->assign(count, value);
-					return ;
-				}
-				for (size_type i = offset; i < offset + count; i++)
-				{
+					if (i > this->m_size)
+						break;
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
+					this->m_allocator.destroy(&m_data[i]);
 				}
-				for (size_type i = 0; i < count; i++)
-				{
-					this->m_allocator.destroy(&this->m_data[offset + i]);
-					this->m_allocator.construct(&this->m_data[offset + i], value);
-				}
+				for(size_type i = offset; i < offset + count; i++)
+					this->m_allocator.construct(&this->m_data[i], value);
 				this->m_size += count;
 			}
 
 			template <class InputIterator>
-			void		insert(iterator position, typename enable_if<!is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
-			{ // 3 
-				size_type offset = position - this->begin(); // 3
-				size_type count = last - first; // 4
+			void		insert(iterator position, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::value_type first, InputIterator last)
+			{
+				size_type offset = position - this->begin();
+				size_type count = last - first;
 				this->reserve(this->m_size + count);
-				if (this->m_size == 0)
+				for (size_type i = this->m_size - 1; i >= offset; i--)
 				{
-					this->assign(first, last);
-					return ;
-				}
-				for (size_type i = offset; i < offset + count; i++)
-				{
+					if (i > this->m_size)
+						break;
 					this->m_allocator.construct(&this->m_data[i + count], this->m_data[i]);
+					this->m_allocator.destroy(&m_data[i]);
 				}
-				for (size_type i = 0; i < count; i++)
-				{
-					this->m_allocator.destroy(&this->m_data[offset + i]);
-					this->m_allocator.construct(&this->m_data[offset + i], *first++);
-				}
+				for(size_type i = offset; i < offset + count; i++)
+					this->m_allocator.construct(&this->m_data[i], *first++);
 				this->m_size += count;
 			}
 
@@ -361,9 +353,15 @@ namespace ft
 
 			void swap( vector & other )
 			{
-				vector tmp = *this;
-				*this = other;
-				other = tmp;
+				value_type * tmp = other.data();
+				size_type size_tmp = other.size();
+				size_type capacity_tmp = other.capacity();
+				other.m_data = this->m_data;
+				other.m_size = this->m_size;
+				other.m_capacity = this->m_capacity;
+				this->m_data = tmp;
+				this->m_size = size_tmp;
+				this->m_capacity = capacity_tmp;
 			}
 			/*
 			** End of modifiers

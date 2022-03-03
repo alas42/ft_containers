@@ -204,7 +204,7 @@ int main()
 	std::cout << "Const it.front() : " << std::endl;
 	std::cout << (*const_it).front() << '\n';
 
-/*
+
 	//INSERT
 	std::cout << "\nINSERT\n";
 	ft::vector<ft::vector<int> >	std_insert_in_me;
@@ -373,6 +373,5 @@ int main()
 	std::cout << '\n';
 
 	std::cout << std::endl;
-*/
 	return 0;
 }
