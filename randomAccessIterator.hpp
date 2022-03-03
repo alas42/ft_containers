@@ -64,18 +64,18 @@ namespace ft
 					return temp;
 				}
 				
-				random_access_iterator		operator+(const difference_type& movement)
+				random_access_iterator		operator+(const difference_type& movement) const
 				{
 					random_access_iterator temp(m_ptr + movement);
 					return temp;
 				}
-				random_access_iterator		operator-(const difference_type & movement)
+				random_access_iterator		operator-(const difference_type & movement) const
 				{
 					random_access_iterator temp(m_ptr - movement);
 					return temp;
 				}
 
-				difference_type				operator-(const random_access_iterator& rawIterator)
+				difference_type				operator-(const random_access_iterator& rawIterator) const
 				{
 					return std::distance(rawIterator.m_ptr, m_ptr);
 				}

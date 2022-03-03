@@ -18,7 +18,7 @@ namespace ft
 			typedef typename ft::iterator_traits<Iter>::reference				reference;
 
 			reverse_iterator(void){}
-			explicit reverse_iterator( iterator_type x ): current(x){}
+			explicit reverse_iterator( iterator_type const & x ): current(x){}
 			template < class U>
 			reverse_iterator( const reverse_iterator<U> & other )
 			{
