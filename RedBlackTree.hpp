@@ -16,18 +16,22 @@ namespace ft
 		protected:
 			Compare		compare;
 			rb_node *	root;
-			rb_node *	before_begin;
 			rb_node *	after_end;
 
 		public:
 			RedBlackTree(void): compare()
 			{
-				root = 0;
-				before_begin = new rb_node();
 				after_end = new rb_node();
+				after_end->_right = 0;
+				root = after_end;
 			}
 			RedBlackTree(RedBlackTree const & other) { *this == other; }
-			~RedBlackTree(void){ delete before_begin; delete after_end; }
+			~RedBlackTree(void)
+			{
+				root = after_end;
+				if (after_end)
+					delete after_end;
+			}
 			RedBlackTree operator=(RedBlackTree const & other)
 			{
 				if (this == &other)
@@ -43,8 +47,7 @@ namespace ft
 			rb_node * search(value_type const & val)
 			{
 				rb_node * temp = root;
-
-				while (temp != 0)
+				while (temp != 0 && temp != after_end)
 				{
 					if (compare(val.first, temp->_value.first))
 					{
@@ -57,7 +60,7 @@ namespace ft
 						break ;
 					else
 					{
-						if (temp->_right == 0)
+						if (temp->_right == 0 || temp->_right == after_end)
 							break ;
 						temp = temp->_right;
 					}
@@ -67,10 +70,13 @@ namespace ft
 			ft::pair<rb_node *, bool>	insert(const value_type & val)
 			{
 				rb_node * new_node = new rb_node(val);
-				if (root == 0)
+				rb_node * before_end = 0;
+				if (root == after_end)
 				{
 					new_node->_c = BLACK;
 					root = new_node;
+					root->_right = after_end;
+					after_end->_parent = root;
 				}
 				else
 				{
@@ -80,23 +86,41 @@ namespace ft
 						delete new_node;
 						return ft::pair<rb_node *, bool>(temp, false);
 					}
+					before_end = after_end->_parent;
+					before_end->_right = 0;
+					after_end->_parent = 0;
 					new_node->_parent = temp;
 					if (compare(val.first, temp->_value.first))
 						temp->_left = new_node;
 					else
 						temp->_right = new_node;
 					fixRedNode(new_node);
+					before_end = max(root);
+					before_end->_right = after_end;
+					after_end->_parent = before_end;
 				}
 				return ft::pair<rb_node *, bool>(new_node, true);
 			}
 			void	deleteByValue(value_type const & val)
 			{
-				if (root == 0)
+				rb_node * before_end = 0;
+				if (root == after_end)
 					return ;
 				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
+				before_end = after_end->_parent;
+				before_end->_right = 0;
+				after_end->_parent = 0;
 				deleteNode(nodel);
+				if (root != 0 && root != after_end)
+				{
+					before_end = max(root);
+					before_end->_right = after_end;
+					after_end->_parent = before_end;
+				}
+				else
+					root = after_end;
 			}
 			void deleteNode(rb_node * x)
 			{
@@ -148,7 +172,7 @@ namespace ft
 					return ;
 				}
 				swapNodes(replacing_node, x);
-				deleteNode(x); // can be replacing_node if I did my math wrong
+				deleteNode(x);
 			}
 			/*
 			** GETTERS FOR FAMILY MEMBERS
