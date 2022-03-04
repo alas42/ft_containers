@@ -26,7 +26,7 @@ void	print(ft::map<Key, T>& lst)
 int main ()
 {
   ft::map<char,int> mymap;
-  ft::map<char,int>::iterator it;
+  ft::map<char,int>::iterator it, it2;
 
   mymap['a']=50;
   mymap['b']=100;
@@ -35,11 +35,12 @@ int main ()
 
   it = mymap.find('b');
   if (it != mymap.end())
-    mymap.erase (it);
+    mymap.erase(it);
 
   // print content:
   std::cout << "elements in mymap:" << '\n';
   std::cout << "a => " << mymap.find('a')->second << '\n';
+  std::cout << "b => " << mymap.find('b')->second << '\n';
   std::cout << "c => " << mymap.find('c')->second << '\n';
   std::cout << "d => " << mymap.find('d')->second << '\n';
 

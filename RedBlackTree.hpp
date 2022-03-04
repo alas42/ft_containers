@@ -113,24 +113,27 @@ namespace ft
 				before_end->_right = 0;
 				after_end->_parent = 0;
 				deleteNode(nodel);
+				std::cout << "root after deletion of node:" << (*root)._value.first << std::endl;
 				if (root != 0 && root != after_end)
 				{
 					before_end = max(root);
 					before_end->_right = after_end;
 					after_end->_parent = before_end;
 				}
-				else
-					root = after_end;
+				/*else
+					root = after_end;*/
+				std::cout << "root after checking if root null:" << (*root)._value.first << std::endl;
 			}
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = BRTreplace(x);
+				std::cout << "replacing_node : " << (*replacing_node)._value.first << std::endl;
 				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
 				{
 					if (x == root)
-						root = 0;
+						root = after_end;
 					else
 					{
 						if (both_black)
@@ -152,8 +155,8 @@ namespace ft
 				{
 					if (x == root)
 					{
-						replacing_node->_right = replacing_node->_left = 0;
 						this->root = replacing_node;
+						this->root->_right = this->root->_left = 0;
 						delete x;
 					}
 					else
@@ -171,8 +174,8 @@ namespace ft
 					}
 					return ;
 				}
-				swapNodes(replacing_node, x);
-				deleteNode(x);
+				swapValues(replacing_node, x);
+				deleteNode(replacing_node);
 			}
 			/*
 			** GETTERS FOR FAMILY MEMBERS
@@ -239,18 +242,23 @@ namespace ft
 				x1->_c = x2->_c;
 				x2->_c = temp;
 			}
+			void	swapValues(rb_node *x1, rb_node *x2)
+			{
+				std::swap(x1->_value, x2->_value);
+			}
 			void	swapNodes(rb_node *x1, rb_node *x2)
 			{
-				rb_node x(x1->_value);
-				x._parent = x1->_parent;
-				x._left = x1->_left;
-				x._right = x1->_right;
+				rb_node * x = new rb_node();
+				x->_parent = x1->_parent;
+				x->_left = x1->_left;
+				x->_right = x1->_right;
 				x1->_parent = x2->_parent;
 				x1->_left = x2->_left;
 				x1->_right = x2->_right;
-				x2->_parent = x._parent;
-				x2->_left = x._left;
-				x2->_right = x._right;
+				x2->_parent = x->_parent;
+				x2->_left = x->_left;
+				x2->_right = x->_right;
+				delete x;
 			}
 			/*
 			** FIXING POST-OPERATIONS ON TREE

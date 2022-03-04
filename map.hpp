@@ -114,16 +114,7 @@ namespace ft
 					return (*it).second;
 				throw std::out_of_range("key not found");
 			}
-			T& operator[]( const Key& key )
-			{
-				iterator	it = this->find(key);
-
-				if (it != this->end())
-					return (*it).second;
-				T new_second = T();
-				ft::pair<iterator, bool> pairit = this->insert(value_type(key, new_second));
-				return ((*pairit.first).second);
-			}
+			T& operator[]( const Key& key ){ return (insert(ft::make_pair(key, T())).first->second); }
 			/*
 			** End of Element access
 			*/
@@ -143,28 +134,19 @@ namespace ft
 			** End of Iterators
 			*/
 
-			/*
-			** Capacity
-			*/
 			bool empty() const { return (this->begin() == this->end()); }
 			size_type size() const { return (std::distance(this->begin(), this->end()));}
 			size_type max_size() const { return this->_alloc.max_size(); }
-			/*
-			** End of capacity
-			*/
+
 			/*
 			** Modifiers
 			*/
-			void clear()
-			{
-				while (this->begin() != this->end())
-					this->erase(this->begin());
-			}
+			void clear() { while (this->begin() != this->end()) this->erase(this->begin());	}
 			
 			ft::pair<iterator, bool> insert( const value_type& value )
 			{
 				ft::pair<ft::Node<value_type> *, bool> inserted = this->_rbtree.insert(value);
-				return (ft::pair<iterator, bool>(iterator(inserted.first), inserted.second));
+				return (ft::make_pair(iterator(inserted.first), inserted.second));
 			}
 			iterator insert( iterator hint, const value_type& value )
 			{
