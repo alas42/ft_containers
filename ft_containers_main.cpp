@@ -3,7 +3,6 @@
 #include "vector.hpp"
 #include "stack.hpp"
 #include "map.hpp"
-
 #define MAX_RAM 215000
 #define BUFFER_SIZE 4096
 

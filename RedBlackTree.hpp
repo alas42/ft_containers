@@ -25,7 +25,7 @@ namespace ft
 				after_end->_right = 0;
 				root = after_end;
 			}
-			RedBlackTree(RedBlackTree const & other) { *this == other; }
+			RedBlackTree(RedBlackTree const & other) { *this = other; }
 			~RedBlackTree(void)
 			{
 				root = after_end;
@@ -174,8 +174,8 @@ namespace ft
 					}
 					return ;
 				}
-				swapValues(replacing_node, x);
-				deleteNode(replacing_node);
+				swapNodes(replacing_node, x); // change the position of the two nodes basically "moving" the node we want deleted to a leaf ()
+				deleteNode(x);
 			}
 			/*
 			** GETTERS FOR FAMILY MEMBERS
@@ -242,23 +242,27 @@ namespace ft
 				x1->_c = x2->_c;
 				x2->_c = temp;
 			}
-			void	swapValues(rb_node *x1, rb_node *x2)
-			{
-				std::swap(x1->_value, x2->_value);
-			}
 			void	swapNodes(rb_node *x1, rb_node *x2)
 			{
-				rb_node * x = new rb_node();
-				x->_parent = x1->_parent;
-				x->_left = x1->_left;
-				x->_right = x1->_right;
-				x1->_parent = x2->_parent;
-				x1->_left = x2->_left;
-				x1->_right = x2->_right;
-				x2->_parent = x->_parent;
-				x2->_left = x->_left;
-				x2->_right = x->_right;
-				delete x;
+				rb_node * x1_parent = x1->_parent;
+				rb_node * x1_left = x1->_left;
+				rb_node * x1_right = x1->_right;
+
+				rb_node * x2_parent = x2->_parent;
+				rb_node * x2_left = x2->_left;
+				rb_node * x2_right = x2->_right;
+
+				x2->_parent = x1_parent;
+				x2->_left = x1_left;
+				x2->_right = x1_right;
+
+				x1->_parent = x2_parent;
+				x1->_left = x2_left;
+				x2->_right = x2_right;
+				if (x1 == this->root)
+				{
+					this->root = x2;
+				}
 			}
 			/*
 			** FIXING POST-OPERATIONS ON TREE

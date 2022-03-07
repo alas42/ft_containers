@@ -54,7 +54,7 @@ namespace ft
 	{
 		if (lhs.first < rhs.first)
 			return true;
-		else if (lhs.first == rhs.second && lhs.second < lhs.second)
+		else if (lhs.first == rhs.first && lhs.second < lhs.second)
 			return true;
 		return false;
 	}

@@ -3,9 +3,6 @@ NAME2 = stl_containers
 
 HEADER_FILES = vector.hpp \
 	stack.hpp \
-	map.hpp \
-	RedBlackTree.hpp \
-	Node.hpp \
 	iterator_traits.hpp \
 	randomAccessIterator.hpp \
 	reverse_iterator.hpp \
@@ -16,7 +13,11 @@ HEADER_FILES = vector.hpp \
 	enable_if.hpp \
 	integral_constant.hpp \
 	is_integral.hpp \
-	pair.hpp
+	pair.hpp \
+	map.hpp \
+	RedBlackTree.hpp \
+	Node.hpp \
+	
 
 SOURCES_FILES =	ft_containers_main.cpp
 SOURCES_FILES2 = find_main.cpp

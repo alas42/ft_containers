@@ -141,7 +141,16 @@ namespace ft
 			/*
 			** Modifiers
 			*/
-			void clear() { while (this->begin() != this->end()) this->erase(this->begin());	}
+			void clear()
+			{
+				const_iterator ci = this->begin();
+				const_iterator ce = this->end();
+				while (ci != ce)
+				{
+					this->erase(ci);
+					ci++;
+				}
+			}
 			
 			ft::pair<iterator, bool> insert( const value_type& value )
 			{
@@ -314,7 +323,7 @@ namespace ft
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator!=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs ) { return (!(lhs == rhs)); }
 	template< class Key, class T, class Compare, class Alloc >
-	bool operator<( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs ) { return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lhs.key_comp())); }
+	bool operator<( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs ) { return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())); }
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs ) { return (!(rhs < lhs)); }
 	template< class Key, class T, class Compare, class Alloc >
