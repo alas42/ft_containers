@@ -34,12 +34,7 @@ namespace ft
 			RedBlackTree operator=(RedBlackTree const & other)
 			{
 				if (this == &other)
-				{
 					this->compare = other.compare;
-					/*
-					** DEEP COPY PLZ
-					*/
-				}
 				return *this;
 			}
 			rb_node * getRoot(void) const{ return root; }
@@ -123,7 +118,7 @@ namespace ft
 			}
 			void deleteNode(rb_node * x)
 			{
-				rb_node * replacing_node = BRTreplace(x);
+				rb_node * replacing_node = findReplacement(x);
 				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
@@ -170,11 +165,12 @@ namespace ft
 					}
 					return ;
 				}
-				swapNodes(replacing_node, x); // change the position of the two nodes basically "moving" the node we want deleted to a leaf ()
+				swapNodes(replacing_node, x);
 				deleteNode(x);
 			}
+
 			/*
-			** GETTERS FOR FAMILY MEMBERS
+			** Lookup
 			*/
 			rb_node *uncle(rb_node *x)
 			{
@@ -192,8 +188,9 @@ namespace ft
 					return x->_parent->_right;
 				return x->_parent->_left;
 			}
+
 			/*
-			** MOVING A NODE IN THE TREE
+			** Modifiers 
 			*/
 			void	moveDown(rb_node *x, rb_node *n_parent)
 			{
@@ -260,9 +257,7 @@ namespace ft
 					this->root = x2;
 				}
 			}
-			/*
-			** FIXING POST-OPERATIONS ON TREE
-			*/
+
 			void	fixDoubleBlack(rb_node * x)
 			{
 				if (x == root)
@@ -372,19 +367,19 @@ namespace ft
 					}
 				}
 			}
-			rb_node * successor_deletion(rb_node * x)
+			rb_node * successor_for_deletion(rb_node * x)
 			{
 				rb_node * temp = x;
 				while (temp->_left != 0)
 					temp = temp->_left;
 				return temp;
 			}
-			rb_node * BRTreplace(rb_node * x)
+			rb_node * findReplacement(rb_node * x)
 			{
 				if (x->_left == 0 && x->_right == 0)
 					return 0;
 				if (x->_left != 0 && x->_right != 0)
-					return successor_deletion(x->_right);
+					return successor_for_deletion(x->_right);
 				if (x->_left != 0)
 					return x->_left;
 				return x->_right;

@@ -31,9 +31,6 @@ namespace ft
 			typedef ft::reverse_iterator<iterator> 												reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>										const_reverse_iterator;
 
-			/*
-			** Constructors
-			*/
 			vector(void): m_data(0), m_size(0), m_capacity(0), m_allocator(){}
 			
 			explicit vector(Allocator const & alloc): m_data(0), m_size(0), m_capacity(0), m_allocator(alloc){}
@@ -52,13 +49,6 @@ namespace ft
 			}
 
 			vector(vector const & other): m_data(0), m_size(0), m_capacity(0), m_allocator() { *this = other; }
-			/*
-			** End of Constructors
-			*/
-
-			/*
-			** Destructor and = operator
-			*/
 			~vector(void)
 			{
 				this->clear();
@@ -72,13 +62,7 @@ namespace ft
 					this->assign(other.begin(), other.end());
 				return *this;
 			}
-			/*
-			** End of Destructor and = operator
-			*/
 
-			/*
-			** Misc
-			*/
 			void assign(size_type count, value_type const & value)
 			{
 				try
@@ -106,17 +90,8 @@ namespace ft
 					std::cerr << e.what() << '\n';
 				}
 			}
-			/*
-			** End of Misc
 
-			*/
-			/*
-			** Guetters and setters
-			*/
 			Allocator	get_allocator() const {	return this->m_allocator; }
-			/*
-			** End of Guetters and setters
-			*/
 
 			/*
 			** Element access
@@ -145,12 +120,9 @@ namespace ft
 
 			T * data() { return m_data; }
 			const T * data() const { return m_data;	}
-			/*
-			** End of Element access
-			*/
 
 			/*
-			** Iterators WICHTIG
+			** Iterators
 			*/
 			iterator begin() { return iterator(&m_data[0]);	}
 			const_iterator begin() const { return const_iterator(&m_data[0]); }
@@ -160,15 +132,11 @@ namespace ft
 			const_reverse_iterator rbegin() const {	return const_reverse_iterator(end()); }
 			reverse_iterator rend()	{ return reverse_iterator(begin());	}
 			const_reverse_iterator rend() const	{ return const_reverse_iterator(begin()); }
-			/*
-			** End ITERATORS
-			*/
 
 			/*
 			** Capacity
 			*/
 			bool empty() const{ return (begin() == end()); }
-
 			size_type size() const { return this->m_size; }
 			size_type max_size() const { return this->m_allocator.max_size(); }
 
@@ -204,9 +172,6 @@ namespace ft
 			}
 
 			size_type capacity() const { return this->m_capacity; }
-			/*
-			** End of capacity
-			*/
 
 			/*
 			** Modifiers
@@ -363,9 +328,6 @@ namespace ft
 				this->m_size = size_tmp;
 				this->m_capacity = capacity_tmp;
 			}
-			/*
-			** End of modifiers
-			*/
 
 		protected:
 			value_type *					m_data;

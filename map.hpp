@@ -17,6 +17,12 @@
 # include "bidirectionalIterator.hpp"
 # include "lexicographical_compare.hpp"
 
+// typedef allocator <class Type> struct rebind { typedef allocator<Type> other; }
+/*
+** 
+** should maybe test rend and rbegin too
+*/
+
 namespace ft
 {
 
@@ -51,9 +57,7 @@ namespace ft
 				protected:
 					Compare comp;
 			};
-			/*
-			** Constructors
-			*/
+
 			map(void): _compare(), _alloc(), _rbtree(){}
 			map(map const & other) { *this = other;	}
 			explicit map(const Compare & comp, const Allocator & alloc = Allocator()): _compare(comp), _alloc(alloc), _rbtree(){}
@@ -63,14 +67,11 @@ namespace ft
 			{
 				this->insert(first, last);
 			}
-			/*
-			** End of Constructors
-			*/
 
-			/*
-			** Destructor and = operator
-			*/
-			~map(void) { this->clear();	}
+			~map(void)
+			{
+				this->clear();
+			}
 
 			map & operator = (map const & other)
 			{
@@ -83,17 +84,9 @@ namespace ft
 				}
 				return (*this);
 			}
-			/*
-			** End of destructor and = operator
-			*/
 
-			/*
-			** Getter
-			*/
 			Allocator get_allocator() const { return this->_alloc; }
-			/*
-			** End of Getter
-			*/
+
 
 			/*
 			** Element access
@@ -115,9 +108,6 @@ namespace ft
 				throw std::out_of_range("key not found");
 			}
 			T& operator[]( const Key& key ){ return (insert(ft::make_pair(key, T())).first->second); }
-			/*
-			** End of Element access
-			*/
 
 			/*
 			** Iterators
@@ -130,10 +120,10 @@ namespace ft
 			const_reverse_iterator rbegin() const{ return const_reverse_iterator(end()); }
 			reverse_iterator rend(){ return reverse_iterator(begin()); }
 			const_reverse_iterator rend() const{ return const_reverse_iterator(begin()); }
-			/*
-			** End of Iterators
-			*/
 
+			/*
+			** Capacity
+			*/
 			bool empty() const { return (this->begin() == this->end()); }
 			size_type size() const { return (std::distance(this->begin(), this->end()));}
 			size_type max_size() const { return this->_alloc.max_size(); }
@@ -293,17 +283,13 @@ namespace ft
 				}
 				return (ite);
 			}
-			/*
-			** End of Lookup
-			*/
+
 			/*
 			** Oberservers
 			*/
 			key_compare key_comp() const { return this->_compare; }
 			map::value_compare value_comp() const {	return this->value_comp(); }
-			/*
-			** End of Observers
-			*/
+
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;

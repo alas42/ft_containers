@@ -24,9 +24,6 @@ namespace ft
 			typedef typename Container::reference		reference;	
 			typedef typename Container::const_reference const_reference;
 
-			/*
-			** Canonical Form
-			*/
 			explicit stack( const Container& cont = Container() ): C(cont){}
 			~stack(void)
 			{}
@@ -39,9 +36,6 @@ namespace ft
 				return *this;
 			}
 
-			/*
-			** Misc
-			*/
 			reference top()
 			{
 				return (this->C.back());
@@ -66,6 +60,7 @@ namespace ft
 			{
 				this->C.pop_back();
 			}
+			
 			template <typename U, typename Cont >
 			friend bool operator==( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs );
 			template <typename U, typename Cont >
