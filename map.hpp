@@ -23,6 +23,9 @@ namespace ft
 	template < typename Key, typename T, typename Compare = std::less<Key>, typename Allocator = std::allocator<ft::pair<const Key, T> > >
 	class map
 	{
+		private :
+			typedef typename Allocator:: template rebind<Node<ft::pair<const Key, T> > >::other	_alloc_node;
+
 		public :
 			typedef Key																			key_type;
 			typedef T																			mapped_type;
@@ -120,7 +123,11 @@ namespace ft
 			*/
 			bool empty() const { return (this->begin() == this->end()); }
 			size_type size() const { return (std::distance(this->begin(), this->end()));}
-			size_type max_size() const { return this->_alloc.max_size(); }
+			size_type max_size() const
+			{
+				_alloc_node  node_allocator;
+				return node_allocator.max_size();
+			}
 
 			/*
 			** Modifiers

@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 #include "map.hpp"
 
 template <class Key, class T>
@@ -27,7 +28,8 @@ int main()
 {
 	ft::pair<int, std::string>			my_pair(746, "salut");
 	ft::map<int, std::string>			test;
-	ft::map<int, std::string>::iterator	it;
+	std::map<int, std::string>			std_test;
+	/*ft::map<int, std::string>::iterator	it;
 
 	test.insert(my_pair);
 	test.insert(ft::pair<int, std::string>(-4, "bar"));
@@ -42,13 +44,9 @@ int main()
 		// std::cout << "start of while\n";
 		std::cout << it->first << ", " << it->second << '\n';
 		it++;
-// 		std::cout << "iterator incremented\n";
-
-// #ifndef STD
-// 		std::cout << it.getPointer() << '\n';
-// 		std::cout << test.end().getPointer() << '\n';
-// #endif
-
 	}
+	*/
+	std::cout << "stl::max_size() = " << std_test.max_size() << std::endl;
+	std::cout << "ft::max_size() = " << test.max_size() << std::endl;
 	std::cout << "End of display loop\n";
 }
