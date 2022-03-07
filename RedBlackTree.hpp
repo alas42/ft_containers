@@ -114,6 +114,7 @@ namespace ft
 				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
+				std::cout << "root before deletion :" << (*_root)._value.first << std::endl;
 				before_end = _after_end->_parent;
 				before_end->_right = 0;
 				_after_end->_parent = 0;
@@ -126,6 +127,7 @@ namespace ft
 				}
 				else
 					_root = _after_end;
+				std::cout << "root after deletion :" << (*_root)._value.first << std::endl;
 			}
 			void deleteNode(rb_node * x)
 			{
@@ -251,14 +253,11 @@ namespace ft
 			}
 			void	swapNodes(rb_node *x1, rb_node *x2)
 			{
-				rb_node * x1_parent = x1->_parent;
-				rb_node * x1_left = x1->_left;
-				rb_node * x1_right = x1->_right;
+				rb_node *x1_parent = x1->_parent, *x1_left = x1->_left, *x1_right = x1->_right;
+				rb_node *x2_parent = x2->_parent, *x2_left = x2->_left, *x2_right = x2->_right;
 
-				rb_node * x2_parent = x2->_parent;
-				rb_node * x2_left = x2->_left;
-				rb_node * x2_right = x2->_right;
-
+				if (x1_right && x1_right->_right)
+					x1_right->_right = 
 				x2->_parent = x1_parent;
 				x2->_left = x1_left;
 				x2->_right = x1_right;
@@ -266,9 +265,9 @@ namespace ft
 				x1->_parent = x2_parent;
 				x1->_left = x2_left;
 				x2->_right = x2_right;
-				if (x1 == this->_root)
+				if (x2 == this->_root)
 				{
-					this->_root = x2;
+					this->_root = x1;
 				}
 			}
 
