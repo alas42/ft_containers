@@ -22,7 +22,6 @@ namespace ft
 			RedBlackTree(void): compare()
 			{
 				after_end = new rb_node();
-				after_end->_right = 0;
 				root = after_end;
 			}
 			RedBlackTree(RedBlackTree const & other) { *this = other; }
@@ -113,21 +112,18 @@ namespace ft
 				before_end->_right = 0;
 				after_end->_parent = 0;
 				deleteNode(nodel);
-				std::cout << "root after deletion of node:" << (*root)._value.first << std::endl;
 				if (root != 0 && root != after_end)
 				{
 					before_end = max(root);
 					before_end->_right = after_end;
 					after_end->_parent = before_end;
 				}
-				/*else
-					root = after_end;*/
-				std::cout << "root after checking if root null:" << (*root)._value.first << std::endl;
+				else
+					root = after_end;
 			}
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = BRTreplace(x);
-				std::cout << "replacing_node : " << (*replacing_node)._value.first << std::endl;
 				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)

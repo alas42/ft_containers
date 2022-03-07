@@ -143,12 +143,9 @@ namespace ft
 			*/
 			void clear()
 			{
-				const_iterator ci = this->begin();
-				const_iterator ce = this->end();
-				while (ci != ce)
+				while (this->begin() != this->end())
 				{
-					this->erase(ci);
-					ci++;
+					this->erase(this->begin());
 				}
 			}
 			
