@@ -17,12 +17,6 @@
 # include "bidirectionalIterator.hpp"
 # include "lexicographical_compare.hpp"
 
-// typedef allocator <class Type> struct rebind { typedef allocator<Type> other; }
-/*
-** 
-** should maybe test rend and rbegin too
-*/
-
 namespace ft
 {
 
@@ -176,7 +170,7 @@ namespace ft
 
 			void swap( map& other )
 			{
-				ft::RedBlackTree<value_type, key_compare> tree_tmp = other._rbtree;
+				ft::RedBlackTree<value_type, key_compare, Allocator> tree_tmp = other._rbtree;
 				other._rbtree = this->_rbtree;
 				this->_rbtree = tree_tmp;
 			}
@@ -293,7 +287,7 @@ namespace ft
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;
-			ft::RedBlackTree<value_type, key_compare> _rbtree;
+			ft::RedBlackTree<value_type, key_compare, Allocator> _rbtree;
 	};
 
 	template< class Key, class T, class Compare, class Alloc >

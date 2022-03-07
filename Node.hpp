@@ -20,7 +20,7 @@ namespace ft
 				_parent = _left = _right = 0;
 				_c = CRED;
 			}
-			Node(Node const & other) { *this == other; }
+			Node(Node const & other): _value(other._value), _parent(other._parent), _left(other._left), _right(other._right), _c(other._c){}
 			Node operator=(Node const & other)
 			{
 				if (this != &other)

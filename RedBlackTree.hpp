@@ -5,56 +5,65 @@
 
 namespace ft
 {
-	template <typename T, typename Compare>
+	template <typename T, typename Compare, typename Allocator>
 	class RedBlackTree
 	{
 		public:
 			typedef T value_type;
 			typedef Compare key_compare;
 			typedef Node<value_type> rb_node;
+			typedef typename Allocator:: template rebind<rb_node>::other	alloc_node;
 
 		protected:
-			Compare		compare;
-			rb_node *	root;
-			rb_node *	after_end;
+			Compare		_compare;
+			rb_node *	_root;
+			rb_node *	_after_end;
+			alloc_node	_alloc;
 
 		public:
-			RedBlackTree(void): compare()
+			RedBlackTree(void): _compare(), _alloc()
 			{
-				after_end = new rb_node();
-				root = after_end;
+				_after_end = _alloc.allocate(1, 0);
+				_alloc.construct(_after_end, rb_node());
+				_root = _after_end;
 			}
 			RedBlackTree(RedBlackTree const & other) { *this = other; }
 			~RedBlackTree(void)
 			{
-				root = after_end;
-				if (after_end)
-					delete after_end;
+				_root = _after_end;
+				if (_after_end)
+				{
+					_alloc.destroy(_after_end);
+					_alloc.deallocate(_after_end, 1);
+				}
 			}
 			RedBlackTree operator=(RedBlackTree const & other)
 			{
 				if (this == &other)
-					this->compare = other.compare;
+				{
+					this->_compare = other._compare;
+					this->_alloc = other._alloc;
+				}
 				return *this;
 			}
-			rb_node * getRoot(void) const{ return root; }
+			rb_node * getRoot(void) const{ return _root; }
 			rb_node * search(value_type const & val)
 			{
-				rb_node * temp = root;
-				while (temp != 0 && temp != after_end)
+				rb_node * temp = _root;
+				while (temp != 0 && temp != _after_end)
 				{
-					if (compare(val.first, temp->_value.first))
+					if (_compare(val.first, temp->_value.first))
 					{
 						if (temp->_left == 0)
 							break;
 						else
 							temp = temp->_left;
 					}
-					else if ((!compare(val.first, temp->_value.first) && !compare(temp->_value.first, val.first)))
+					else if ((!_compare(val.first, temp->_value.first) && !_compare(temp->_value.first, val.first)))
 						break ;
 					else
 					{
-						if (temp->_right == 0 || temp->_right == after_end)
+						if (temp->_right == 0 || temp->_right == _after_end)
 							break ;
 						temp = temp->_right;
 					}
@@ -63,58 +72,60 @@ namespace ft
 			}
 			ft::pair<rb_node *, bool>	insert(const value_type & val)
 			{
-				rb_node * new_node = new rb_node(val);
+				rb_node * new_node = _alloc.allocate(1, 0);
+				_alloc.construct(new_node, val);
 				rb_node * before_end = 0;
-				if (root == after_end)
+				if (_root == _after_end)
 				{
 					new_node->_c = BLACK;
-					root = new_node;
-					root->_right = after_end;
-					after_end->_parent = root;
+					_root = new_node;
+					_root->_right = _after_end;
+					_after_end->_parent = _root;
 				}
 				else
 				{
 					rb_node * temp = search(val);
-					if ((!compare(val.first, temp->_value.first) && !compare(temp->_value.first, val.first)))
+					if ((!_compare(val.first, temp->_value.first) && !_compare(temp->_value.first, val.first)))
 					{
-						delete new_node;
+						_alloc.destroy(new_node);
+						_alloc.deallocate(new_node, 1);
 						return ft::pair<rb_node *, bool>(temp, false);
 					}
-					before_end = after_end->_parent;
+					before_end = _after_end->_parent;
 					before_end->_right = 0;
-					after_end->_parent = 0;
+					_after_end->_parent = 0;
 					new_node->_parent = temp;
-					if (compare(val.first, temp->_value.first))
+					if (_compare(val.first, temp->_value.first))
 						temp->_left = new_node;
 					else
 						temp->_right = new_node;
 					fixRedNode(new_node);
-					before_end = max(root);
-					before_end->_right = after_end;
-					after_end->_parent = before_end;
+					before_end = max(_root);
+					before_end->_right = _after_end;
+					_after_end->_parent = before_end;
 				}
 				return ft::pair<rb_node *, bool>(new_node, true);
 			}
 			void	deleteByValue(value_type const & val)
 			{
 				rb_node * before_end = 0;
-				if (root == after_end)
+				if (_root == _after_end)
 					return ;
 				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
-				before_end = after_end->_parent;
+				before_end = _after_end->_parent;
 				before_end->_right = 0;
-				after_end->_parent = 0;
+				_after_end->_parent = 0;
 				deleteNode(nodel);
-				if (root != 0 && root != after_end)
+				if (_root != 0 && _root != _after_end)
 				{
-					before_end = max(root);
-					before_end->_right = after_end;
-					after_end->_parent = before_end;
+					before_end = max(_root);
+					before_end->_right = _after_end;
+					_after_end->_parent = before_end;
 				}
 				else
-					root = after_end;
+					_root = _after_end;
 			}
 			void deleteNode(rb_node * x)
 			{
@@ -123,8 +134,8 @@ namespace ft
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
 				{
-					if (x == root)
-						root = after_end;
+					if (x == _root)
+						_root = _after_end;
 					else
 					{
 						if (both_black)
@@ -139,16 +150,18 @@ namespace ft
 						else
 							parent->_right = 0;
 					}
-					delete x;
+					_alloc.destroy(x);
+					_alloc.deallocate(x, 1);
 					return ;
 				}
 				if (x->_left == 0 || x->_right == 0)
 				{
-					if (x == root)
+					if (x == _root)
 					{
-						this->root = replacing_node;
-						this->root->_right = this->root->_left = 0;
-						delete x;
+						this->_root = replacing_node;
+						this->_root->_right = this->_root->_left = 0;
+						_alloc.destroy(x);
+						_alloc.deallocate(x, 1);
 					}
 					else
 					{
@@ -156,7 +169,8 @@ namespace ft
 							parent->_left = replacing_node;
 						else
 							parent->_right = replacing_node;
-						delete x;
+						_alloc.destroy(x);
+						_alloc.deallocate(x, 1);
 						replacing_node->_parent = parent;
 						if (both_black)
 							fixDoubleBlack(replacing_node);
@@ -207,8 +221,8 @@ namespace ft
 			void	leftRotate(rb_node *x)
 			{
 				rb_node * n_parent = x->_right;
-				if (x == root)
-					root = n_parent;
+				if (x == _root)
+					_root = n_parent;
 				moveDown(x, n_parent);
 				x->_right = n_parent->_left;
 				if (n_parent->_left != 0)
@@ -218,8 +232,8 @@ namespace ft
 			void	rightRotate(rb_node *x)
 			{
 				rb_node * n_parent = x->_left;
-				if (x == root)
-					root = n_parent;
+				if (x == _root)
+					_root = n_parent;
 				moveDown(x, n_parent);
 				x->_left = n_parent->_right;
 				if (n_parent->_right != 0)
@@ -252,15 +266,15 @@ namespace ft
 				x1->_parent = x2_parent;
 				x1->_left = x2_left;
 				x2->_right = x2_right;
-				if (x1 == this->root)
+				if (x1 == this->_root)
 				{
-					this->root = x2;
+					this->_root = x2;
 				}
 			}
 
 			void	fixDoubleBlack(rb_node * x)
 			{
-				if (x == root)
+				if (x == _root)
 					return ;
 				rb_node * sibling = this->sibling(x), * parent = x->_parent;
 				if (sibling == 0)
@@ -326,7 +340,7 @@ namespace ft
 			}
 			void	fixRedNode(rb_node *x)
 			{
-				if (x == root)
+				if (x == _root)
 				{
 					x->_c = BLACK;
 					return ;
