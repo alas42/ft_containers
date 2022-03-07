@@ -251,13 +251,46 @@ namespace ft
 				x1->_c = x2->_c;
 				x2->_c = temp;
 			}
+			/*
+			**
+			**
+			**a->next = c
+			**d->previous = b
+			**root = c         
+			**      b
+			**   a         c
+			** f   g     l     p  
+			**s v	x	y	o	i	k	d                         
+			** 
+			*/
 			void	swapNodes(rb_node *x1, rb_node *x2)
 			{
 				rb_node *x1_parent = x1->_parent, *x1_left = x1->_left, *x1_right = x1->_right;
 				rb_node *x2_parent = x2->_parent, *x2_left = x2->_left, *x2_right = x2->_right;
+				
+				if (x1_right)
+					x1_right->_parent = x2;
+				if (x1_left)
+					x1_left->_parent = x2;
+				if (x1_parent)
+				{
+					if (x1->isOnLeft())
+						x1_parent->_left = x2;
+					else
+						x1_parent->_right = x2;
+				}
+				if (x2_right)
+					x2_right->_parent = x1;
+				if (x2_left)
+					x2_left->_parent = x1;
+				if (x2_parent)
+				{
+					if (x2->isOnLeft())
+						x2_parent->_left = x1;
+					else
+						x2_parent->_right = x1;
+				}
 
-				if (x1_right && x1_right->_right)
-					x1_right->_right = 
 				x2->_parent = x1_parent;
 				x2->_left = x1_left;
 				x2->_right = x1_right;
