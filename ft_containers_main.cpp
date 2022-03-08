@@ -350,6 +350,7 @@ int main(int argc, char** argv)
 			myints.insert(x1);
 			myints.insert(x2);
 			myints.insert(x3);
+			myints.erase(myints.begin());
 			myints.insert(x4);
 			ft::map<int, int>::iterator it = myints.begin();
 			while (it != myints.end()) // end() stops before, didn't do dummy node yet (change of code)

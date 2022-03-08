@@ -23,8 +23,11 @@ namespace ft
 		public:
 			RedBlackTree(void): _compare(), _alloc()
 			{
+				/*
 				_after_end = _alloc.allocate(1, 0);
 				_alloc.construct(_after_end, rb_node());
+				*/
+				_after_end = new rb_node();
 				_root = _after_end;
 			}
 			RedBlackTree(RedBlackTree const & other) { *this = other; }
@@ -33,8 +36,11 @@ namespace ft
 				_root = _after_end;
 				if (_after_end)
 				{
+					delete _after_end;
+					/*
 					_alloc.destroy(_after_end);
 					_alloc.deallocate(_after_end, 1);
+					*/
 				}
 			}
 			RedBlackTree operator=(RedBlackTree const & other)
@@ -72,8 +78,11 @@ namespace ft
 			}
 			ft::pair<rb_node *, bool>	insert(const value_type & val)
 			{
+				/*
 				rb_node * new_node = _alloc.allocate(1, 0);
 				_alloc.construct(new_node, val);
+				*/
+				rb_node * new_node = new rb_node(val);
 				rb_node * before_end = 0;
 				if (_root == _after_end)
 				{
@@ -87,8 +96,11 @@ namespace ft
 					rb_node * temp = search(val);
 					if ((!_compare(val.first, temp->_value.first) && !_compare(temp->_value.first, val.first)))
 					{
+						delete new_node;
+						/*
 						_alloc.destroy(new_node);
 						_alloc.deallocate(new_node, 1);
+						*/
 						return ft::pair<rb_node *, bool>(temp, false);
 					}
 					before_end = _after_end->_parent;
@@ -152,8 +164,11 @@ namespace ft
 						else
 							parent->_right = 0;
 					}
+					delete x;
+					/*
 					_alloc.destroy(x);
 					_alloc.deallocate(x, 1);
+					*/
 					return ;
 				}
 				if (x->_left == 0 || x->_right == 0)
@@ -162,8 +177,11 @@ namespace ft
 					{
 						this->_root = replacing_node;
 						this->_root->_right = this->_root->_left = 0;
+						delete x;
+						/*
 						_alloc.destroy(x);
 						_alloc.deallocate(x, 1);
+						*/
 					}
 					else
 					{
@@ -171,8 +189,11 @@ namespace ft
 							parent->_left = replacing_node;
 						else
 							parent->_right = replacing_node;
+						delete x;
+						/*
 						_alloc.destroy(x);
 						_alloc.deallocate(x, 1);
+						*/
 						replacing_node->_parent = parent;
 						if (both_black)
 							fixDoubleBlack(replacing_node);
@@ -268,36 +289,40 @@ namespace ft
 				rb_node *x1_parent = x1->_parent, *x1_left = x1->_left, *x1_right = x1->_right;
 				rb_node *x2_parent = x2->_parent, *x2_left = x2->_left, *x2_right = x2->_right;
 				
-				if (x1_right)
-					x1_right->_parent = x2;
-				if (x1_left)
-					x1_left->_parent = x2;
-				if (x1_parent)
+				if (x1 && x2)
 				{
-					if (x1->isOnLeft())
-						x1_parent->_left = x2;
-					else
-						x1_parent->_right = x2;
-				}
-				if (x2_right)
-					x2_right->_parent = x1;
-				if (x2_left)
-					x2_left->_parent = x1;
-				if (x2_parent)
-				{
-					if (x2->isOnLeft())
-						x2_parent->_left = x1;
-					else
-						x2_parent->_right = x1;
-				}
+					if (x1_parent)
+					{
+						if (x1->isOnLeft())
+							x1_parent->_left = x2;
+						else
+							x1_parent->_right = x2;
+					}
+					if (x1_right)
+						x1_right->_parent = x2;
+					if (x1_left)
+						x1_left->_parent = x2;
+					
+					if (x2_parent)
+					{
+						if (x2->isOnLeft())
+							x2_parent->_left = x1;
+						else
+							x2_parent->_right = x1;
+					}
+					if (x2_right)
+						x2_right->_parent = x1;
+					if (x2_left)
+						x2_left->_parent = x1;
 
-				x2->_parent = x1_parent;
-				x2->_left = x1_left;
-				x2->_right = x1_right;
+					x2->_parent = x1_parent;
+					x2->_left = x1_left;
+					x2->_right = x1_right;
 
-				x1->_parent = x2_parent;
-				x1->_left = x2_left;
-				x2->_right = x2_right;
+					x1->_parent = x2_parent;
+					x1->_left = x2_left;
+					x2->_right = x2_right;
+				}
 				if (x2 == this->_root)
 				{
 					this->_root = x1;
