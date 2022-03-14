@@ -35,7 +35,7 @@ $(NAME): $(OBJS) $(HEADER_FILES)
 
 stl : $(NAME2)
 
-$(NAME2): $(OBJS2)
+$(NAME2): $(OBJS2) $(HEADER_FILES)
 	$(CC) $(CPPFLAGS) $(SOURCES_FILES2) -o $(NAME2)
 
 %.o: %.cpp

@@ -14,15 +14,6 @@
 #include <string>
 #include "map.hpp"
 
-template <class Key, class T>
-void	print(ft::map<Key, T>& lst)
-{
-	for (typename ft::map<Key, T>::iterator it = lst.begin(); it != lst.end(); it++)
-		std::cout << *it << ' ';
-	std::cout << '\n';
-}
-
-
 int main ()
 {
   ft::map<char,int> mymap;
@@ -31,18 +22,15 @@ int main ()
   mymap['a']=50;
   mymap['b']=100;
   mymap['c']=150;
-  mymap['d']=200;
 
   it = mymap.find('b');
+  std::cout << it->first << std::endl;
   if (it != mymap.end())
     mymap.erase(it);
 
-  // print content:
   std::cout << "elements in mymap:" << '\n';
   std::cout << "a => " << mymap.find('a')->second << '\n';
-  std::cout << "b => " << mymap.find('b')->second << '\n';
   std::cout << "c => " << mymap.find('c')->second << '\n';
-  std::cout << "d => " << mymap.find('d')->second << '\n';
 
   return 0;
 }

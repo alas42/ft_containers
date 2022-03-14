@@ -2,6 +2,8 @@
 # define REDBLACKTREE_HPP
 
 # include "Node.hpp"
+# include <iostream>
+# include <string>
 
 namespace ft
 {
@@ -78,10 +80,6 @@ namespace ft
 			}
 			ft::pair<rb_node *, bool>	insert(const value_type & val)
 			{
-				/*
-				rb_node * new_node = _alloc.allocate(1, 0);
-				_alloc.construct(new_node, val);
-				*/
 				rb_node * new_node = new rb_node(val);
 				rb_node * before_end = 0;
 				if (_root == _after_end)
@@ -97,10 +95,6 @@ namespace ft
 					if ((!_compare(val.first, temp->_value.first) && !_compare(temp->_value.first, val.first)))
 					{
 						delete new_node;
-						/*
-						_alloc.destroy(new_node);
-						_alloc.deallocate(new_node, 1);
-						*/
 						return ft::pair<rb_node *, bool>(temp, false);
 					}
 					before_end = _after_end->_parent;
@@ -126,24 +120,31 @@ namespace ft
 				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
-				std::cout << "root before deletion :" << (*_root)._value.first << std::endl;
+				std::cout << "root before deletion :" << _root << ", value : " << _root->_value.first << "\n" << std::endl;
+				
 				before_end = _after_end->_parent;
 				before_end->_right = 0;
 				_after_end->_parent = 0;
 				deleteNode(nodel);
+				
 				if (_root != 0 && _root != _after_end)
 				{
 					before_end = max(_root);
 					before_end->_right = _after_end;
 					_after_end->_parent = before_end;
 				}
-				else
-					_root = _after_end;
-				std::cout << "root after deletion :" << (*_root)._value.first << std::endl;
+				
+				std::cout << "root after deletion :" << _root << ", value : " << _root->_value.first << "\n" << std::endl;
 			}
+
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = findReplacement(x);
+				std::cout << "node x to delete : " << x << ", value : " << x->_value.first << std::endl;
+				if (replacing_node)
+					std::cout << "replacing_node = " << replacing_node << ", value : " << replacing_node->_value.first << std::endl;
+				else
+					std::cout << "replacing_node = " << replacing_node << std::endl;
 				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
 				if (replacing_node == 0)
@@ -164,11 +165,9 @@ namespace ft
 						else
 							parent->_right = 0;
 					}
+
+					std::cout << "delete " << x << ", value : " << x->_value.first << std::endl; 
 					delete x;
-					/*
-					_alloc.destroy(x);
-					_alloc.deallocate(x, 1);
-					*/
 					return ;
 				}
 				if (x->_left == 0 || x->_right == 0)
@@ -177,11 +176,8 @@ namespace ft
 					{
 						this->_root = replacing_node;
 						this->_root->_right = this->_root->_left = 0;
+						std::cout << "delete " << x << ", value : " << x->_value.first << std::endl; 
 						delete x;
-						/*
-						_alloc.destroy(x);
-						_alloc.deallocate(x, 1);
-						*/
 					}
 					else
 					{
@@ -190,10 +186,7 @@ namespace ft
 						else
 							parent->_right = replacing_node;
 						delete x;
-						/*
-						_alloc.destroy(x);
-						_alloc.deallocate(x, 1);
-						*/
+						
 						replacing_node->_parent = parent;
 						if (both_black)
 							fixDoubleBlack(replacing_node);
@@ -202,8 +195,25 @@ namespace ft
 					}
 					return ;
 				}
-				swapNodes(replacing_node, x);
+				swapNodes(&replacing_node, &x);
+				std::cout << "x->_left = " << x->_left << ", x->_right = " << x->_right << ", x->_parent = " << x->_parent << std::endl;
 				deleteNode(x);
+			}
+
+			/*
+			** SWAPINGS
+			*/
+			void	swapNodes(rb_node **x1, rb_node **x2)
+			{
+				rb_node *tmp = *x2;
+				*x2 = *x1;
+				*x1 = tmp;
+			}
+			void	swapColors(rb_node *x1, rb_node *x2)
+			{
+				ft::COLOR temp = x1->_c;
+				x1->_c = x2->_c;
+				x2->_c = temp;
 			}
 
 			/*
@@ -262,71 +272,6 @@ namespace ft
 				if (n_parent->_right != 0)
 					n_parent->_right->_parent = x;
 				n_parent->_right = x;
-			}
-			/*
-			** SWAPINGS
-			*/
-			void	swapColors(rb_node *x1, rb_node *x2)
-			{
-				ft::COLOR temp = x1->_c;
-				x1->_c = x2->_c;
-				x2->_c = temp;
-			}
-			/*
-			**
-			**
-			**a->next = c
-			**d->previous = b
-			**root = c         
-			**      b
-			**   a         c
-			** f   g     l     p  
-			**s v	x	y	o	i	k	d                         
-			** 
-			*/
-			void	swapNodes(rb_node *x1, rb_node *x2)
-			{
-				rb_node *x1_parent = x1->_parent, *x1_left = x1->_left, *x1_right = x1->_right;
-				rb_node *x2_parent = x2->_parent, *x2_left = x2->_left, *x2_right = x2->_right;
-				
-				if (x1 && x2)
-				{
-					if (x1_parent)
-					{
-						if (x1->isOnLeft())
-							x1_parent->_left = x2;
-						else
-							x1_parent->_right = x2;
-					}
-					if (x1_right)
-						x1_right->_parent = x2;
-					if (x1_left)
-						x1_left->_parent = x2;
-					
-					if (x2_parent)
-					{
-						if (x2->isOnLeft())
-							x2_parent->_left = x1;
-						else
-							x2_parent->_right = x1;
-					}
-					if (x2_right)
-						x2_right->_parent = x1;
-					if (x2_left)
-						x2_left->_parent = x1;
-
-					x2->_parent = x1_parent;
-					x2->_left = x1_left;
-					x2->_right = x1_right;
-
-					x1->_parent = x2_parent;
-					x1->_left = x2_left;
-					x2->_right = x2_right;
-				}
-				if (x2 == this->_root)
-				{
-					this->_root = x1;
-				}
 			}
 
 			void	fixDoubleBlack(rb_node * x)
