@@ -22,15 +22,15 @@ int main ()
   mymap['a']=50;
   mymap['b']=100;
   mymap['c']=150;
+  mymap['d'] = 200;
 
   it = mymap.find('b');
-  std::cout << it->first << std::endl;
   if (it != mymap.end())
     mymap.erase(it);
 
   std::cout << "elements in mymap:" << '\n';
   std::cout << "a => " << mymap.find('a')->second << '\n';
   std::cout << "c => " << mymap.find('c')->second << '\n';
-
+  std::cout << "c => " << mymap.find('d')->second << '\n';
   return 0;
 }

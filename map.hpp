@@ -291,10 +291,13 @@ namespace ft
 			key_compare key_comp() const { return this->_compare; }
 			map::value_compare value_comp() const {	return this->value_comp(); }
 
+
 		protected :
 			Compare		_compare;
 			Allocator	_alloc;
+		public:
 			ft::RedBlackTree<value_type, key_compare, Allocator> _rbtree;
+			
 	};
 
 	template< class Key, class T, class Compare, class Alloc >
