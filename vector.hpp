@@ -142,7 +142,7 @@ namespace ft
 
 			void reserve( size_type new_cap )
 			{
-				size_type power_of_two = 2;
+				size_type power_of_two = 1;
 				if (new_cap <= this->m_capacity)
 					return ;
 				else if (new_cap > this->max_size())
@@ -268,8 +268,9 @@ namespace ft
 			{
 				try
 				{
+					
 					if (this->m_size == this->m_capacity)
-						this->reserve(m_size + 1);
+						this->reserve(!this->m_capacity ? 1 : this->m_capacity * 2);
 					this->m_allocator.construct(&this->m_data[this->m_size], value);
 					this->m_size++;
 				}

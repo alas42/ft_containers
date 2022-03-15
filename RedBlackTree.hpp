@@ -124,13 +124,12 @@ namespace ft
 			void	deleteByValue(value_type const & val)
 			{
 				rb_node * before_end = 0;
+				
 				if (_root == _after_end)
 					return ;
 				rb_node * nodel = search(val);
 				if (nodel->_value != val)
 					return ;
-				//std::cout << "root before deletion :" << _root << ", value : " << _root->_value.first << "\n" << std::endl;
-				
 				before_end = _after_end->_parent;
 				before_end->_right = 0;
 				_after_end->_parent = 0;
@@ -142,31 +141,20 @@ namespace ft
 					before_end->_right = _after_end;
 					_after_end->_parent = before_end;
 				}
-				
-				//std::cout << "root after deletion : " << _root << ", value : " << _root->_value.first << "\n" << std::endl;
 			}
 
 			void deleteNode(rb_node * x)
 			{
 				rb_node * replacing_node = findReplacement(x);
-				/*std::cout << "node x to delete : " << x << ", value : " << x->_value.first
-					<< ", x->_left = " << x->_left
-					<< ", x->_right = " << x->_right
-					<< ", x->_parent = " << x->_parent
-					<< std::endl;
-				if (replacing_node)
-					std::cout << "replacing_node = " << replacing_node << ", value : " << replacing_node->_value.first << std::endl;
-				else
-					std::cout << "replacing_node = " << replacing_node << std::endl;*/
 				bool both_black = ((replacing_node == 0 || replacing_node->_c == BLACK) && (x->_c == BLACK));
 				rb_node * parent = x->_parent;
+
 				if (replacing_node == 0)
 				{
 					if (x == _root)
 						_root = _after_end;
 					else
 					{
-						//std::cout << "both-black ?  " << both_black << std::endl;
 						if (both_black)
 							fixDoubleBlack(x);
 						else
@@ -179,8 +167,6 @@ namespace ft
 						else
 							parent->_right = 0;
 					}
-
-					//std::cout << "delete " << x << ", value : " << x->_value.first << std::endl; 
 					delete x;
 					return ;
 				}
@@ -190,7 +176,6 @@ namespace ft
 					{
 						this->_root = replacing_node;
 						this->_root->_right = this->_root->_left = 0;
-						//std::cout << "delete " << x << ", value : " << x->_value.first << std::endl; 
 						delete x;
 					}
 					else
@@ -209,34 +194,10 @@ namespace ft
 					}
 					return ;
 				}
-				/*std::cout << "\n" << "x->value.fist = " << x->_value.first
-					<< ", x->_left = " << x->_left
-					<< ", x->_right = " << x->_right
-					<< ", x->_parent = " << x->_parent
-					<< std::endl;
-				std::cout << "replacing->_left = " << replacing_node->_left
-					<< ", replacing->_right = " << replacing_node->_right
-					<< ", replacing->_parent = " << replacing_node->_parent
-					<< "\n" << std::endl;*/
 				swapNodes(replacing_node, x);
-				/*std::cout << "x->value.fist = " << x->_value.first
-					<< ", x->_left = " << x->_left
-					<< ", x->_right = " << x->_right
-					<< ", x->_parent = " << x->_parent
-					<< std::endl;
-				std::cout << "replacing->_left = " << replacing_node->_left
-					<< ", replacing->_right = " << replacing_node->_right
-					<< ", replacing->_parent = " << replacing_node->_parent
-					<< "\n" << std::endl;*/
 				deleteNode(x);
 			}
 
-
-    /*
-    **      b 1
-    **a 1       d 0
-    **             f 1
-    */
 			/*
 			** SWAPINGS
 			*/
@@ -265,57 +226,55 @@ namespace ft
 				rb_node * x2_p = x2->_parent, * x2_l = x2->_left, * x2_r = x2->_right;
 				rb_node * x1_p = x1->_parent, * x1_l = x1->_left, * x1_r = x1->_right;
 
-				x1->_left = (x2->_left == x1) ? x2 : x2->_left; //c->left = a
-				x1->_parent = (x2->_parent == x1) ? x2 : x2->_parent; //c->parent = 0
-				x1->_right = (x2->_right == x1) ? x2 : x2->_right; //c->right = d
-				/* Jusque la c'est bon */
+				x1->_left = (x2->_left == x1) ? x2 : x2->_left;
+				x1->_parent = (x2->_parent == x1) ? x2 : x2->_parent;
+				x1->_right = (x2->_right == x1) ? x2 : x2->_right;
 
-				if (x2_p && x2_p != x1) //0
+				if (x2_p && x2_p != x1)
 				{
 					if (x2_on_left)
-						x2_p->_left = x1; // 
+						x2_p->_left = x1; 
 					else
-						x2_p->_right = x1; //d->right = c
+						x2_p->_right = x1;
 				}
 
 				if (x2_l)
 				{
 					if(x2_l != x1)
-						x2_l->_parent = x1; //a->parent = c
+						x2_l->_parent = x1;
 				}
 				if (x2_r)
 				{
 					if(x2_r != x1)
-						x2_r->_parent = x1; // d->parent = c
+						x2_r->_parent = x1;
 				}
 
-				x2->_left = (x1_l == x2) ? x1: x1_l; // b->left = 0
-				x2->_right = (x1_r == x2) ? x1 : x1_r; // b->right = 0
-				x2->_parent = (x1_p == x2) ? x1: x1_p; // b->parent = d
-				/* Jusque la c'est bon */
+				x2->_left = (x1_l == x2) ? x1: x1_l;
+				x2->_right = (x1_r == x2) ? x1 : x1_r;
+				x2->_parent = (x1_p == x2) ? x1: x1_p;
 
-				if (x1_p && x1_p != x2) //0
+				if (x1_p && x1_p != x2)
 				{
 					if (x1_on_left)
-						x1_p->_left = x2; // 
+						x1_p->_left = x2;
 					else
-						x1_p->_right = x2; //d->right = c
+						x1_p->_right = x2;
 				}
 
 				if (x1_l)
 				{
 					if(x1_l != x2)
-						x1_l->_parent = x2; //a->parent = c
+						x1_l->_parent = x2;
 				}
 				if (x1_r)
 				{
 					if(x1_r != x2)
-						x1_r->_parent = x2; // d->parent = c
+						x1_r->_parent = x2;
 				}
 				swapColors(x1, x2);
 			}
 
-			void	swapColors(rb_node *x1, rb_node *x2) // if root is moved, the new root shall be black, the ancient root shoold be the color of the replacing one
+			void	swapColors(rb_node *x1, rb_node *x2)
 			{
 				ft::COLOR temp = x1->_c;
 				x1->_c = x2->_c;
@@ -382,16 +341,12 @@ namespace ft
 
 			void	fixDoubleBlack(rb_node * x)
 			{
-				//std::cout << "fixdoubleblack" << std::endl;
 				if (x == _root)
 				{
-					//std::cout << "x == _root" << std::endl;
 					return ;
 				}
 				rb_node * sibling = this->sibling(x);
 				rb_node * parent = x->_parent;
-				/*if (sibling)
-					std::cout << "sibling ? = " << sibling->_value.first << std::endl;*/
 				if (sibling == 0)
 					fixDoubleBlack(parent);
 				else

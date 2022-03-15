@@ -27,10 +27,7 @@ namespace ft
 			template < class U>
 			reverse_iterator& operator=( const reverse_iterator<U> & other )
 			{
-				if (this != &other)
-				{
-					current = other.base();
-				}
+				current = other.base();
 				return *this;
 			}
 			iterator_type base() const
