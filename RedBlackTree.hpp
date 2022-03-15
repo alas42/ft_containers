@@ -46,14 +46,22 @@ namespace ft
 					*/
 				}
 			}
-			RedBlackTree operator=(RedBlackTree const & other)
+			RedBlackTree & operator=(RedBlackTree const & other)
 			{
-				if (this == &other)
+				if (this != &other)
 				{
 					this->_compare = other._compare;
 					this->_alloc = other._alloc;
 				}
 				return *this;
+			}
+			void		swap(RedBlackTree & other)
+			{
+				rb_node * tmp_root = this->_root, * tmp_after_end = this->_after_end;
+				this->_root = other._root;
+				this->_after_end = other._after_end;
+				other._root = tmp_root;
+				other._after_end = tmp_after_end;
 			}
 			rb_node * getRoot(void) const{ return _root; }
 			rb_node * search(value_type const & val)

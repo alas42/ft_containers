@@ -51,6 +51,7 @@ namespace ft
 						return (comp(left.first, right.first));
 					}
 					value_compare(Compare c) : comp(c){}
+
 				protected:
 					Compare comp;
 			};
@@ -75,8 +76,8 @@ namespace ft
 				if (this != &other)
 				{
 					this->clear();
+					this->_rbtree = other._rbtree;
 					this->_compare = other.key_comp();
-					this->_alloc = other.get_allocator();
 					this->insert(other.begin(), other.end());
 				}
 				return (*this);
@@ -177,9 +178,7 @@ namespace ft
 
 			void swap( map& other )
 			{
-				ft::RedBlackTree<value_type, key_compare, Allocator> tree_tmp = other._rbtree;
-				other._rbtree = this->_rbtree;
-				this->_rbtree = tree_tmp;
+				this->_rbtree.swap(other._rbtree);
 			}
 			/*
 			** End of Modifiers
@@ -289,7 +288,7 @@ namespace ft
 			** Oberservers
 			*/
 			key_compare key_comp() const { return this->_compare; }
-			map::value_compare value_comp() const {	return this->value_comp(); }
+			map::value_compare value_comp() const {	return value_compare(_compare); }
 
 
 		protected :
