@@ -20,7 +20,7 @@ HEADER_FILES = vector.hpp \
 	
 
 SOURCES_FILES =	ft_containers_main.cpp
-SOURCES_FILES2 = erase_main.cpp
+SOURCES_FILES2 = find_main.cpp
 
 OBJS = $(SOURCES_FILES:.cpp=.o)
 OBJS2 = $(SOURCES_FILES2:.cpp=.o)

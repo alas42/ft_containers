@@ -145,8 +145,8 @@ namespace ft
 					<< ", x->_left = " << x->_left
 					<< ", x->_right = " << x->_right
 					<< ", x->_parent = " << x->_parent
-					<< std::endl;*/
-			/*	if (replacing_node)
+					<< std::endl;
+				if (replacing_node)
 					std::cout << "replacing_node = " << replacing_node << ", value : " << replacing_node->_value.first << std::endl;
 				else
 					std::cout << "replacing_node = " << replacing_node << std::endl;*/
@@ -227,8 +227,7 @@ namespace ft
     /*
     **      b 1
     **a 1       d 0
-    **      c  1     e 1
-    **                  f 0
+    **             f 1
     */
 			/*
 			** SWAPINGS
@@ -254,6 +253,7 @@ namespace ft
 					if (x1->isOnLeft())
 						x1_on_left = true;
 				}
+
 				rb_node * x2_p = x2->_parent, * x2_l = x2->_left, * x2_r = x2->_right;
 				rb_node * x1_p = x1->_parent, * x1_l = x1->_left, * x1_r = x1->_right;
 
@@ -281,16 +281,28 @@ namespace ft
 						x2_r->_parent = x1; // d->parent = c
 				}
 
-				x2->_left = (x1_l == x2) ? x1 : x1_l; // b->left = 0
+				x2->_left = (x1_l == x2) ? x1: x1_l; // b->left = 0
 				x2->_right = (x1_r == x2) ? x1 : x1_r; // b->right = 0
-				x2->_parent = (x1_p == x2) ? x1 : x1_p; // b->parent = d
+				x2->_parent = (x1_p == x2) ? x1: x1_p; // b->parent = d
+				/* Jusque la c'est bon */
 
-				if (x1_p)
+				if (x1_p && x1_p != x2) //0
 				{
 					if (x1_on_left)
-						x1_p->_left = x2; // d->left = b
+						x1_p->_left = x2; // 
 					else
-						x1_p->_right = x2; // d->right = b
+						x1_p->_right = x2; //d->right = c
+				}
+
+				if (x1_l)
+				{
+					if(x1_l != x2)
+						x1_l->_parent = x2; //a->parent = c
+				}
+				if (x1_r)
+				{
+					if(x1_r != x2)
+						x1_r->_parent = x2; // d->parent = c
 				}
 				swapColors(x1, x2);
 			}
