@@ -142,18 +142,15 @@ namespace ft
 
 			void reserve( size_type new_cap )
 			{
-				size_type power_of_two = 1;
 				if (new_cap <= this->m_capacity)
 					return ;
 				else if (new_cap > this->max_size())
 					throw std::length_error("length-error in reserve");
 				try
 				{
-					while (power_of_two < new_cap)
-						power_of_two *= 2;
-					if (power_of_two > this->max_size())
-						power_of_two = new_cap;
-					value_type * new_data = this->m_allocator.allocate(power_of_two, 0);
+					if (new_cap > this->max_size())
+						new_cap = this->max_size();
+					value_type * new_data = this->m_allocator.allocate(new_cap, 0);
 					for (size_type i = 0; i < this->m_size; i++)
 					{
 						this->m_allocator.construct(&new_data[i], this->m_data[i]);
@@ -162,7 +159,7 @@ namespace ft
 					if (this->m_data != 0 && this->m_capacity > 0)
 						this->m_allocator.deallocate(m_data, this->m_capacity);
 					this->m_data = new_data;
-					this->m_capacity = power_of_two;
+					this->m_capacity = new_cap;
 				}
 				catch(const std::exception& e)
 				{
